@@ -1,10 +1,10 @@
 // ── Rivals ─────────────────────────────────────────────────────────────────
 const RIVALS = [
-  { name: 'ルーキー あいこ', icon: '👧', hp: 4, flavor: 'え…リーチって何？',    prob: [1,2,3,4,5] },
-  { name: 'ほのか',          icon: '🎀', hp: 5, flavor: 'ちょっとは読めるよ？',  prob: [2,3,4,5,6,7] },
-  { name: '中堅 タケシ',     icon: '🤨', hp: 6, flavor: '筋ぐらいは読んでる',   prob: [5,6,7,8,9,10] },
-  { name: '強豪 リサ',       icon: '😤', hp: 7, flavor: '舐めないでよ！',        prob: [7,8,9,10,11,12,13] },
-  { name: '黒龍 ジン',       icon: '🐉', hp: 8, flavor: '…ロン確定だ。',         prob: [9,10,11,12,13,14,15] },
+  { name: '天野 マリン',    icon: '👧', hp: 4, flavor: 'え…リーチって何のこと？',          prob: [1,2,3,4,5] },
+  { name: '罠師 リオ',     icon: '🎀', hp: 5, flavor: '危険牌は…こっそり隠してあるの♪',   prob: [2,3,4,5,6,7] },
+  { name: '鬼牌 ジョウ',   icon: '🤨', hp: 6, flavor: '筋ぐらいは読んでるぜ！',           prob: [5,6,7,8,9,10] },
+  { name: '覇王 カリン',   icon: '😤', hp: 7, flavor: '私の牌読みに死角はない！',          prob: [7,8,9,10,11,12,13] },
+  { name: '冥龍 カイト',   icon: '🐉', hp: 8, flavor: '…お前のツモは終わりだ。',           prob: [9,10,11,12,13,14,15] },
 ];
 
 // ── Run skills (temp, expire each run) ─────────────────────────────────────
@@ -36,6 +36,7 @@ const UPGRADES = [
 
 // ── Move names ─────────────────────────────────────────────────────────────
 const MOVES = {
+  clutch:   ['土壇場逆転！！','ギリギリ大打撃！！','CLUTCH HIT!!','崖っぷちの一手！！'],
   safe:     ['現物切り！','安全牌確保！','読み勝ち！','守備完璧！','PERFECT GUARD'],
   safe_c2:  ['ダブルガード！'],
   safe_c3:  ['トリプルガード！！', '轟盲牌！！'],
@@ -50,7 +51,7 @@ const MOVES = {
 };
 
 // ── Random event chars ──────────────────────────────────────────────────────
-const NPC = ['ゆい','みか','そら','えみ','はな','りか'];
+const NPC = ['アンズ','ホンダ','バクラ','マリク','レベッカ','アテム'];
 
 // ── Tile display ────────────────────────────────────────────────────────────
 const SUIT_KANJI = { m:'萬', p:'筒', s:'索' };
@@ -321,8 +322,11 @@ function selectTile(td,el) {
     const is現物 = p.opponentDiscards.includes(td.tile);
     // クリティカル = 現物じゃない安全牌を当てた（うまい手の読み！）
     const isCrit = !is現物;
-    const hpDmg = isCrit ? G.critMult : G.rivalDmgMult;
+    // 土壇場コンボ: 残り1〜2秒 かつ コンボ2以上 → +150pt + ボーナスダメージ + 専用演出
+    const isClutch = _tv <= 2 && G.combo >= 2;
+    const hpDmg = (isCrit ? G.critMult : G.rivalDmgMult) + (isClutch ? 1 : 0);
     let pts=(isCrit?200:100)+Math.min(G.combo,5)*20;
+    if(isClutch) pts+=150;
     if(G.mouhaiNext){G.mouhaiNext=false;pts*=3;}
     if(G.scoreDblOnce){pts*=2;G.scoreDblOnce=false;}
     if(hasRunSkill('shinsoku')&&_tv>=5) pts+=200;
@@ -331,9 +335,11 @@ function selectTile(td,el) {
     const comboTimeBonus = isCrit ? 4 : is現物 ? 1 : 0;
     G.carryTime = Math.min(_tv + comboTimeBonus, 15);
 
-    flashGreen(); spawnPop(pts,el,isCrit);
-    revealHand(td); showMoveName(isCrit?'critical':'safe',isCrit?pick(MOVES.crit):pickSafeMove(G.combo));
-    showToast('safe',pts,p.waitShape,isCrit,0);
+    flashGreen(); spawnPop(pts,el,isClutch||isCrit);
+    const moveMode = isClutch ? 'clutch' : isCrit ? 'critical' : 'safe';
+    const moveTxt  = isClutch ? pick(MOVES.clutch) : isCrit ? pick(MOVES.crit) : pickSafeMove(G.combo);
+    revealHand(td); showMoveName(moveMode, moveTxt);
+    showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
     G.rivalHp=Math.max(0,G.rivalHp-hpDmg); renderRivalHp(true); updateHUD();
     if(G.rivalHp<=0) setTimeout(rivalDefeated,600);
     else sched(1000);
@@ -414,7 +420,7 @@ function showSkillSelection() {
   container.innerHTML='';
 
   // Auto-proceed countdown
-  let countdown = 6;
+  let countdown = 20;
   const countEl = document.createElement('div');
   countEl.style.cssText='text-align:center;color:#6b7280;font-size:12px;padding:8px 0;';
   countEl.textContent=`${countdown}秒後に自動でおまかせ選択…`;
@@ -463,6 +469,7 @@ function showVictory() {
   const expEarned=calcExp();
   save.exp+=expEarned;
   writeSave(save);
+  G.lastExpEarned=expEarned; // btn-again で shop に渡す用
   $('victory-score').textContent  = `スコア：${G.score.toLocaleString()} 点`;
   $('victory-detail').textContent = `全 ${RIVALS.length} ライバル撃破！ +${expEarned} EXP`;
   setTimeout(()=>showScreen('screen-victory'),1200);
@@ -608,7 +615,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-title').addEventListener('click', ()=>{ showScreen('screen-title'); updateTitleUI(); });
   $('btn-next-run').addEventListener('click', startGame);
   $('btn-shop-title').addEventListener('click', ()=>{ showScreen('screen-title'); updateTitleUI(); });
-  $('btn-again').addEventListener('click',  startGame);
+  $('btn-again').addEventListener('click',  ()=>openShop(G.lastExpEarned||0));
   $('btn-vtitle').addEventListener('click', ()=>{ showScreen('screen-title'); updateTitleUI(); });
 
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});

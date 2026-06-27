@@ -93,11 +93,23 @@ test.describe('E2E フロー', () => {
     await expect(page.locator('#victory-score')).toContainText('点');
   });
 
-  test('「もう一度！」でリスタートできる', async ({ page }) => {
+  test('「もう一度！」でショップ画面に遷移する', async ({ page }) => {
     await page.goto(BASE);
     await playThrough(page);
     await page.click('#btn-again');
-    // 新しいゲームが始まる（stage transition → game screen）
+    // 勝利後は shop に行く（EXP を使えるようにするため）
+    await page.waitForTimeout(500);
+    const screen = await page.evaluate(() => document.querySelector('.screen.active')?.id);
+    expect(screen).toBe('screen-upgrade');
+  });
+
+  test('ショップから次のランへ進める', async ({ page }) => {
+    await page.goto(BASE);
+    await playThrough(page);
+    await page.click('#btn-again');
+    await page.waitForTimeout(500);
+    await page.click('#btn-next-run');
+    // stage transition → game screen
     await page.waitForTimeout(3000);
     const screen = await page.evaluate(() => document.querySelector('.screen.active')?.id);
     expect(screen).toBe('screen-game');
