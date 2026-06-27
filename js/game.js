@@ -1,10 +1,10 @@
 // ── Rivals ─────────────────────────────────────────────────────────────────
 const RIVALS = [
-  { name: '天野 マリン',  icon: '👧', hp: 4, flavor: 'これ…ガッチャじゃないの？',               prob: [1,2,3,4,5] },
-  { name: '罠師 リオ',   icon: '🎀', hp: 5, flavor: '危険牌は…こっそり隠してあるの。ふぅん',   prob: [2,3,4,5,6,7] },
-  { name: '鬼牌 ジョウ', icon: '🤨', hp: 6, flavor: '打牌ファイヤーだ！受けてみろ！',           prob: [5,6,7,8,9,10] },
-  { name: '覇王 カリン', icon: '😤', hp: 7, flavor: '強靭！無敵！最強！私の牌読み！',           prob: [7,8,9,10,11,12,13] },
-  { name: '冥龍 カイト', icon: '🐉', hp: 8, flavor: '粉砕…玉砕…お前のライフ…大喝采。',         prob: [9,10,11,12,13,14,15] },
+  { name: '天野 マリン',  icon: '👧', hp:  5, flavor: 'これ…ガッチャじゃないの？',               prob: [1,2,3,4,5] },
+  { name: '罠師 リオ',   icon: '🎀', hp:  7, flavor: '危険牌は…こっそり隠してあるの。ふぅん',   prob: [2,3,4,5,6,7] },
+  { name: '鬼牌 ジョウ', icon: '🤨', hp:  9, flavor: '打牌ファイヤーだ！受けてみろ！',           prob: [5,6,7,8,9,10] },
+  { name: '覇王 カリン', icon: '😤', hp: 11, flavor: '強靭！無敵！最強！私の牌読み！',           prob: [7,8,9,10,11,12,13] },
+  { name: '冥龍 カイト', icon: '🐉', hp: 14, flavor: '粉砕…玉砕…お前のライフ…大喝采。',         prob: [9,10,11,12,13,14,15] },
 ];
 
 // ── Run skills (temp, expire each run) ─────────────────────────────────────
@@ -194,6 +194,17 @@ function loadNextProblem() {
     G.safeOneNext=false;
     const dangerous=G.currentProblem.hand.filter(td=>!td.safe);
     if (dangerous.length>0) { const t=pick(dangerous); t.safe=true; t.lucky=true; }
+  }
+
+  // Danger scaler: 上位ライバルほど「今回は安全」フィラー牌を危険牌化
+  // 現物・筋読み等の戦略的安全牌は維持。常に最低1枚の安全牌を保証
+  if (!EASY_MODE && !DEBUG_MODE && G.rivalIdx >= 1) {
+    const MAX_FILLER = [99, 2, 1, 1, 0][G.rivalIdx] ?? 0;
+    const prob = G.currentProblem;
+    const filler = prob.hand.filter(td => td.safe && !td.lucky && (td.reason||'').includes('今回は安全'));
+    const otherSafe = prob.hand.filter(td => td.safe && !td.lucky && !(td.reason||'').includes('今回は安全')).length;
+    const keep = Math.max(MAX_FILLER, 1 - otherSafe);
+    shuffle(filler).slice(keep).forEach(td => { td.safe = false; td.damage = 1; });
   }
 
   // Random event (before rendering)
