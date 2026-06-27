@@ -1,6 +1,9 @@
-const CACHE = 'mahjong-sweeper-v1';
-const ASSETS = ['/', '/index.html', '/manifest.json', '/css/style.css',
-  '/js/tiles.js', '/js/problems.js', '/js/game.js', '/icons/icon.svg'];
+const CACHE = 'mahjong-sweeper-v2';
+// self.location = https://host/path/sw.js → base = /path/
+const BASE = self.location.pathname.replace(/sw\.js$/, '');
+const ASSETS = [BASE, BASE + 'index.html', BASE + 'manifest.json',
+  BASE + 'css/style.css', BASE + 'js/tiles.js',
+  BASE + 'js/problems.js', BASE + 'js/game.js', BASE + 'icons/icon.svg'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));

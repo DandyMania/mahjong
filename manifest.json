@@ -2,7 +2,7 @@
   "name": "斬★牌★王",
   "short_name": "斬★牌★王",
   "description": "捨て牌ローグライク・バトル！リーチを読んで生き残れ！",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0d4f31",
   "theme_color": "#0d4f31",
