@@ -1,0 +1,59 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"C:/Users/y_syo/.claude/scripts/mode-guard.sh\"",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash \"C:/Users/y_syo/.claude/scripts/keepout-guard.sh\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"C:/Users/y_syo/.claude/scripts/session-resume.sh\"",
+            "timeout": 10000
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"C:/Users/y_syo/.claude/scripts/turn-counter.sh\"",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "powershell -File \"C:/Users/y_syo/.claude/scripts/notify-if-slow.ps1\"",
+            "timeout": 8000
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"C:/Users/y_syo/.claude/scripts/inject-rules.sh\"",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -180,7 +180,7 @@ const PROBLEMS = [
     description: '筋に見えても危険なことがある。スジは 100% じゃない！',
     opponentDiscards: ['3m', '7p', '5s', '2z'],
     hand: [
-      { tile: '6m',  safe: false, reason: '振り込み！3m の筋に見えるが 6m 単騎待ちだった！' },
+      { tile: '6m',  safe: false, reason: '振り込み！3m の筋に見えるが 6m 単騎待ちだった！', damage: 2 },
       { tile: '7m',  safe: true,  reason: '今回は安全' },
       { tile: '1s',  safe: true,  reason: '今回は安全' },
       { tile: '4s',  safe: true,  reason: '今回は安全' },
@@ -258,8 +258,8 @@ const PROBLEMS = [
     description: '筋に見える牌でも危険な「裏筋」がある',
     opponentDiscards: ['2m', '5m', '8p', '4s', '1z'],
     hand: [
-      { tile: '8m',  safe: false, reason: '振り込み！5m の筋に見えるが 7m-9m のカンチャン（8m）だった！' },
-      { tile: '7p',  safe: false, reason: '振り込み！6p-8p のカンチャン（7p）待ち' },
+      { tile: '8m',  safe: false, reason: '振り込み！5m の筋に見えるが 7m-9m のカンチャン（8m）だった！', damage: 2 },
+      { tile: '7p',  safe: false, reason: '振り込み！6p-8p のカンチャン（7p）待ち', damage: 2 },
       { tile: '4m',  safe: true,  reason: '今回は安全' },
       { tile: '2p',  safe: true,  reason: '今回は安全' },
       { tile: '3s',  safe: true,  reason: '今回は安全' },

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-  <meta name="theme-color" content="#0d4f31">
+  <meta name="theme-color" content="#0a1a30">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="麻雀スイーパー">
@@ -18,10 +18,10 @@
 <!-- ── Title ─────────────────────────────────────────── -->
 <div id="screen-title" class="screen">
   <div class="title-inner">
-    <div class="title-emoji">🀄</div>
+    <div class="title-tile">中</div>
     <h1>麻雀<br>マインスイーパー</h1>
     <p class="subtitle">危険牌を見切れ！</p>
-    <button id="btn-start" class="btn-primary">スタート</button>
+    <button id="btn-start" class="btn-primary">スタート！</button>
     <button id="btn-how" class="btn-secondary">遊び方</button>
   </div>
 </div>
@@ -32,25 +32,23 @@
   <div class="how-body">
     <div class="how-step">
       <div class="step-num">1</div>
-      <div class="step-text">相手がリーチ！捨て牌を確認する</div>
+      <div class="step-text">ライバルがリーチ！捨て牌を確認</div>
     </div>
     <div class="how-step">
       <div class="step-num">2</div>
-      <div class="step-text">自分の手牌から「安全な牌」を選んで切る</div>
+      <div class="step-text">10秒以内に安全な牌を1枚タップ！</div>
     </div>
     <div class="how-step">
       <div class="step-num">3</div>
-      <div class="step-text">危険牌を切ったら振り込み！ライフ −1</div>
+      <div class="step-text">安全牌→ライバルにダメージ！危険牌→自分のライフ−1</div>
     </div>
     <div class="how-step">
       <div class="step-num">4</div>
-      <div class="step-text">ライフ 0 でゲームオーバー。スコアを競おう！</div>
+      <div class="step-text">ライバルHPを0にして倒せ！全員倒したら完全制覇！</div>
     </div>
-    <div class="diff-section">
-      <h3>難易度</h3>
-      <div class="diff-row"><span class="diff-badge diff-beginner">初級</span> 現物（相手が捨てた牌）を探す</div>
-      <div class="diff-row"><span class="diff-badge diff-medium">中級</span> 筋（スジ）読みが必要</div>
-      <div class="diff-row"><span class="diff-badge diff-advanced">上級</span> 複合待ち・カンチャンに挑戦</div>
+    <div class="how-tip">
+      <div class="tip-icon">💡</div>
+      <div class="tip-text">捨て牌と同じ牌（現物）は絶対安全！<br>連続セーフでコンボボーナス！</div>
     </div>
     <button id="btn-how-back" class="btn-secondary">戻る</button>
   </div>
@@ -58,60 +56,87 @@
 
 <!-- ── Game ──────────────────────────────────────────── -->
 <div id="screen-game" class="screen">
-  <div class="hud">
-    <div id="lives-display">❤️❤️❤️</div>
-    <div id="score-display">0</div>
-    <div id="round-display">第 1 問</div>
-  </div>
-  <div class="game-body">
-    <div class="problem-meta">
-      <div class="riichi-banner">⚡ リーチ！</div>
-      <span id="difficulty-badge" class="diff-badge diff-beginner">初級</span>
-    </div>
-    <div class="problem-title" id="problem-title"></div>
-    <div class="problem-desc"  id="problem-desc"></div>
 
-    <div>
-      <div class="section-label">相手の捨て牌</div>
-      <div class="tile-row" id="discards-row"></div>
-    </div>
-
-    <div>
-      <div class="section-label">手牌から 1 枚切る ↓ タップして選択</div>
-      <div class="tile-row" id="hand-row"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ── Result overlay ───────────────────────────────── -->
-<div id="result-overlay" class="overlay hidden">
-  <div class="result-card">
-    <div class="result-top">
-      <div id="result-icon"></div>
-      <div class="result-texts">
-        <div id="result-title"></div>
-        <div id="result-score"></div>
+  <!-- ▲ 相手ゾーン ─────────────────────────────────── -->
+  <div class="zone-opp">
+    <div class="rival-row">
+      <span id="rival-icon" class="rival-icon"></span>
+      <div class="rival-texts">
+        <div id="rival-name"  class="rival-name"></div>
+        <div id="rival-flavor" class="rival-flavor"></div>
       </div>
     </div>
-    <div class="result-divider"></div>
-    <div id="result-wait"></div>
-    <div id="result-explanation"></div>
-    <div id="result-hand"></div>
-    <button id="btn-next" class="btn-primary">次へ →</button>
+    <div class="rival-hp-wrap">
+      <div class="rival-hp-track">
+        <div id="rival-hp-bar" class="rival-hp-fill"></div>
+      </div>
+      <div id="rival-hp-text" class="rival-hp-text">4 / 4</div>
+    </div>
+    <div class="discards-wrap">
+      <div class="zone-tag">捨て牌</div>
+      <div class="tile-row" id="discards-row"></div>
+    </div>
+  </div>
+
+  <!-- ▶ バトルライン ────────────────────────────────── -->
+  <div class="zone-battle">
+    <div class="timer-track">
+      <div id="timer-bar" class="timer-fill t-green"></div>
+      <div id="timer-num" class="timer-num">10</div>
+    </div>
+    <div class="battle-row">
+      <div class="riichi-banner" id="riichi-banner">⚡ リーチ！</div>
+      <div id="round-display" class="round-label"></div>
+    </div>
+  </div>
+
+  <!-- ▼ 自分ゾーン ─────────────────────────────────── -->
+  <div class="zone-player">
+    <div class="player-hud">
+      <div id="lives-display">❤️❤️❤️</div>
+      <div id="combo-display" class="combo-hidden"></div>
+      <div id="score-display">0</div>
+    </div>
+    <div class="cut-line-row">
+      <span class="cut-line">どれ切る？</span>
+      <button id="btn-hint" class="btn-hint">💡 現物</button>
+    </div>
+    <div class="hand-area">
+      <div class="tile-row hand-row" id="hand-row"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Victory ────────────────────────────────────────── -->
+<div id="screen-victory" class="screen">
+  <div class="victory-inner">
+    <div class="victory-trophy">🏆</div>
+    <h2>完全制覇！！</h2>
+    <div id="victory-score"></div>
+    <div id="victory-detail"></div>
+    <button id="btn-again"  class="btn-primary">もう一度！</button>
+    <button id="btn-vtitle" class="btn-secondary">タイトルへ</button>
   </div>
 </div>
 
 <!-- ── Game over ─────────────────────────────────────── -->
 <div id="screen-gameover" class="screen">
   <div class="gameover-inner">
-    <div class="gameover-emoji">💀</div>
+    <div class="gameover-skull">💀</div>
     <h2>ゲームオーバー</h2>
     <div id="final-score"></div>
-    <div id="final-round"></div>
-    <button id="btn-retry" class="btn-primary">もう一度</button>
+    <div id="final-detail"></div>
+    <button id="btn-retry" class="btn-primary">もう一度！</button>
     <button id="btn-title" class="btn-secondary">タイトルへ</button>
   </div>
 </div>
+
+<!-- ── Effects ────────────────────────────────────────── -->
+<div id="screen-flash" class="screen-flash"></div>
+<div id="popup-layer"  class="popup-layer"></div>
+<div id="move-name"    class="move-name"><div id="move-name-text" class="move-name-text"></div></div>
+<div id="game-toast"   class="game-toast"></div>
 
 <script src="js/tiles.js"></script>
 <script src="js/problems.js"></script>

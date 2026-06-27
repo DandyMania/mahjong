@@ -1,0 +1,6 @@
+# Files Claude must not touch
+.git/**
+node_modules/**
+dist/**
+*.lock
+package-lock.json
