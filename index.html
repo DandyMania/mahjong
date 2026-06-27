@@ -6,22 +6,27 @@
   <meta name="theme-color" content="#0a1a30">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="麻雀スイーパー">
+  <meta name="apple-mobile-web-app-title" content="斬★牌★王">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg">
   <link rel="apple-touch-icon" href="icons/icon.svg">
   <link rel="stylesheet" href="css/style.css">
-  <title>麻雀マインスイーパー</title>
+  <title>斬★牌★王</title>
 </head>
 <body>
 
 <!-- ── Title ─────────────────────────────────────────── -->
 <div id="screen-title" class="screen">
   <div class="title-inner">
-    <div class="title-tile">中</div>
-    <h1>麻雀<br>マインスイーパー</h1>
-    <p class="subtitle">危険牌を見切れ！</p>
+    <div class="title-tile">斬</div>
+    <h1>斬★牌★王</h1>
+    <p class="subtitle">捨て牌ローグライク・バトル</p>
+    <div id="title-hs" class="title-hs"></div>
     <button id="btn-start" class="btn-primary">スタート！</button>
+    <div class="title-modes">
+      <button id="btn-easy"  class="mode-toggle">💡 かんたん</button>
+      <button id="btn-debug" class="mode-toggle">🛠 デバッグ</button>
+    </div>
     <button id="btn-how" class="btn-secondary">遊び方</button>
   </div>
 </div>
@@ -66,7 +71,7 @@
         <div id="rival-flavor" class="rival-flavor"></div>
       </div>
     </div>
-    <div class="rival-hp-wrap">
+    <div id="rival-hp-wrap" class="rival-hp-wrap">
       <div class="rival-hp-track">
         <div id="rival-hp-bar" class="rival-hp-fill"></div>
       </div>
@@ -108,6 +113,31 @@
 
 </div>
 
+<!-- ── Upgrade shop ───────────────────────────────────── -->
+<div id="screen-upgrade" class="screen">
+  <div class="shop-header">
+    <div class="shop-title">強化ショップ</div>
+    <div class="shop-exp-row">
+      <div id="shop-exp-earned" class="shop-exp-earned"></div>
+      <div class="shop-exp-total">EXP: <span id="shop-exp">0</span></div>
+    </div>
+  </div>
+  <div class="shop-list" id="shop-list"></div>
+  <div class="shop-footer">
+    <button id="btn-next-run" class="btn-primary">次のランへ →</button>
+    <button id="btn-shop-title" class="btn-secondary">タイトルへ</button>
+  </div>
+</div>
+
+<!-- ── Skill selection (after rival defeat) ──────────── -->
+<div id="screen-skill" class="screen">
+  <div class="skill-header">
+    <div class="skill-title">✨ スキル選択</div>
+    <div class="skill-sub">1つ選んで次のライバルに備えよう！</div>
+  </div>
+  <div class="skill-cards" id="skill-cards"></div>
+</div>
+
 <!-- ── Victory ────────────────────────────────────────── -->
 <div id="screen-victory" class="screen">
   <div class="victory-inner">
@@ -130,6 +160,15 @@
     <button id="btn-retry" class="btn-primary">もう一度！</button>
     <button id="btn-title" class="btn-secondary">タイトルへ</button>
   </div>
+</div>
+
+<!-- ── Stage transition overlay ───────────────────────── -->
+<div id="stage-trans" class="stage-trans hidden">
+  <div class="stage-num" id="trans-stage"></div>
+  <div class="stage-vs">VS</div>
+  <div class="stage-rival-icon" id="trans-icon"></div>
+  <div class="stage-rival-name" id="trans-name"></div>
+  <div class="stage-rival-flavor" id="trans-flavor"></div>
 </div>
 
 <!-- ── Effects ────────────────────────────────────────── -->

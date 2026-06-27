@@ -1,0 +1,14 @@
+{
+  "name": "mahjong-minesweeper",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "python -m http.server 8080",
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "sim": "node tests/simulate.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.1"
+  }
+}
