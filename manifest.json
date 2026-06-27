@@ -1,0 +1,13 @@
+{
+  "name": "麻雀マインスイーパー",
+  "short_name": "麻雀スイーパー",
+  "description": "リーチに対して安全牌を切る！危険牌判断ゲーム",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0d4f31",
+  "theme_color": "#0d4f31",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
