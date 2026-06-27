@@ -420,7 +420,7 @@ function showSkillSelection() {
   container.innerHTML='';
 
   // Auto-proceed countdown
-  let countdown = 20;
+  let countdown = 10;
   const countEl = document.createElement('div');
   countEl.style.cssText='text-align:center;color:#6b7280;font-size:12px;padding:8px 0;';
   countEl.textContent=`${countdown}秒後に自動でおまかせ選択…`;
