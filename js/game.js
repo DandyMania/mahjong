@@ -58,6 +58,60 @@ const SUIT_KANJI = { m:'萬', p:'筒', s:'索' };
 const HONOR_MAP  = { '1z':'東','2z':'南','3z':'西','4z':'北','5z':'白','6z':'発','7z':'中' };
 const KANJI_NUM  = ['','一','二','三','四','五','六','七','八','九'];
 
+// SVG tile content (viewBox 60×80)
+const P_POS = [
+  [], [[30,40]], [[30,22],[30,58]], [[30,16],[19,56],[41,56]],
+  [[19,22],[41,22],[19,56],[41,56]],
+  [[19,18],[41,18],[30,40],[19,62],[41,62]],
+  [[19,17],[41,17],[19,40],[41,40],[19,63],[41,63]],
+  [[30,12],[19,32],[41,32],[19,52],[41,52],[19,70],[41,70]],
+  [[19,12],[41,12],[19,33],[41,33],[19,54],[41,54],[19,75],[41,75]],
+  [[16,12],[30,12],[44,12],[16,40],[30,40],[44,40],[16,68],[30,68],[44,68]],
+];
+const P_R = [0,14,11,10,10,9,9,8,7,7];
+
+function pinzuSVG(n) {
+  const r = P_R[n]||8;
+  const circles = (P_POS[n]||[]).map(([cx,cy])=>
+    `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.5"/>` +
+    `<circle cx="${cx}" cy="${cy}" r="${r-4}" fill="#60a5fa" opacity="0.55"/>` +
+    `<circle cx="${cx-2}" cy="${cy-2}" r="${Math.max(2,r-7)}" fill="#fff" opacity="0.45"/>`
+  ).join('');
+  return `<svg viewBox="0 0 60 80" width="100%" height="100%">${circles}</svg>`;
+}
+
+const S_LAYOUT = [
+  null, null,
+  {c:1,w:16,h:30,gx:0,gy:8}, {c:1,w:16,h:18,gx:0,gy:5},
+  {c:2,w:14,h:28,gx:8,gy:7}, {c:2,w:13,h:23,gx:7,gy:5},
+  {c:2,w:13,h:18,gx:7,gy:5}, {c:2,w:13,h:16,gx:7,gy:4},
+  {c:2,w:13,h:14,gx:7,gy:4}, {c:3,w:13,h:18,gx:4,gy:5},
+];
+function souzuSVG(n) {
+  if (n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">
+    <rect x="27" y="12" width="6" height="50" rx="3" fill="#166534"/>
+    <rect x="21" y="25" width="18" height="6" rx="3" fill="#4ade80"/>
+    <rect x="21" y="40" width="18" height="6" rx="3" fill="#4ade80"/>
+    <ellipse cx="30" cy="9" rx="9" ry="7" fill="#f59e0b"/>
+    <circle cx="34" cy="7" r="2" fill="#92400e"/>
+  </svg>`;
+  const {c,w,h,gx,gy} = S_LAYOUT[n]||{c:2,w:12,h:13,gx:5,gy:4};
+  const rows = Math.ceil(n/c);
+  const sx = Math.round((60 - (c*w+(c-1)*gx))/2);
+  const sy = Math.round((80 - (rows*h+(rows-1)*gy))/2);
+  let seg='';
+  for(let i=0;i<n;i++){
+    const col=i%c, row=Math.floor(i/c);
+    const x=sx+col*(w+gx), y=sy+row*(h+gy);
+    const fill = row%2===0 ? '#15803d' : '#4ade80';
+    seg += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="${fill}"/>` +
+           `<rect x="${x}" y="${y}" width="${w}" height="3" rx="1.5" fill="#052e16" opacity="0.5"/>` +
+           `<rect x="${x}" y="${y+h-3}" width="${w}" height="3" rx="1.5" fill="#052e16" opacity="0.5"/>` +
+           `<rect x="${x+2}" y="${y+3}" width="2" height="${h-6}" rx="1" fill="#bbf7d0" opacity="0.4"/>`;
+  }
+  return `<svg viewBox="0 0 60 80" width="100%" height="100%">${seg}</svg>`;
+}
+
 // ── Save ────────────────────────────────────────────────────────────────────
 const SAVE_KEY = 'mj-sweeper-v1';
 function getSave() {
@@ -294,12 +348,14 @@ function renderProblem() {
 }
 function mkTile(id,type,blind=false) {
   const el=document.createElement('div');
-  const suit=id[1], num=id[0];
+  const suit=id[1], num=parseInt(id[0]);
   el.className=`tile tile-${type}`+(suit!=='z'?` suit-${suit}`:'')+(blind?' tile-blind':'');
   el.dataset.tile=id;
   if(blind){const s=document.createElement('span');s.className='tc-blind';s.textContent='？';el.appendChild(s);}
   else if(suit==='z'){const s=document.createElement('span');s.className=`tc-honor honor-${id}`;s.textContent=HONOR_MAP[id]||'?';el.appendChild(s);}
-  else{const n=document.createElement('span');n.className='tc-num';n.textContent=KANJI_NUM[parseInt(num)]||num;const s=document.createElement('span');s.className='tc-suit';s.textContent=SUIT_KANJI[suit];el.appendChild(n);el.appendChild(s);}
+  else if(suit==='p'){el.innerHTML=pinzuSVG(num);}
+  else if(suit==='s'){el.innerHTML=souzuSVG(num);}
+  else{const n=document.createElement('span');n.className='tc-num';n.textContent=KANJI_NUM[num]||num;const s=document.createElement('span');s.className='tc-suit';s.textContent=SUIT_KANJI[suit];el.appendChild(n);el.appendChild(s);}
   return el;
 }
 function addRipple(el,e) {

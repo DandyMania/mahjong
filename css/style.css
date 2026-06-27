@@ -232,6 +232,9 @@ html, body {
 .tc-suit { display: block; font-weight: 700; text-align: center; }
 .tc-honor{ display: block; font-weight: 900; text-align: center; line-height: 1.2; font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif; }
 
+/* SVG tile content (pinzu circles, souzu bamboo) */
+.tile > svg { display: block; width: 100%; flex: 1; min-height: 0; padding: 3px; }
+
 .tile-discard .tc-num  { font-size: 20px; }
 .tile-discard .tc-suit { font-size: 9px;  margin-top: 2px; opacity: .8; }
 .tile-discard .tc-honor{ font-size: 16px; }
