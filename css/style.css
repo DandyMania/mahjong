@@ -422,3 +422,38 @@ html, body {
 .toast-safe   { background: #0f3d1f; color: #bbf7d0; border: 1.5px solid #22c55e; box-shadow: 0 4px 20px rgba(34,197,94,.25); }
 .toast-danger { background: #3d0f0f; color: #fecaca; border: 1.5px solid #ef4444; box-shadow: 0 4px 20px rgba(239,68,68,.25); }
 .toast-crit   { background: #2a0f38; color: #f5d0fe; border: 1.5px solid #d946ef; box-shadow: 0 4px 20px rgba(217,70,239,.35); }
+
+/* ── Pause button ───────────────────────────────────── */
+.btn-pause {
+  width: 32px; height: 32px;
+  background: rgba(255,255,255,.08);
+  border: 1.5px solid rgba(255,255,255,.18);
+  color: rgba(255,255,255,.65);
+  border-radius: 50%;
+  font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; touch-action: manipulation;
+  flex-shrink: 0;
+  transition: background .15s, transform .1s;
+}
+.btn-pause:active { background: rgba(255,255,255,.22); transform: scale(.88); }
+
+/* ── Pause overlay ──────────────────────────────────── */
+.pause-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.82);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200;
+}
+.pause-overlay.hidden { display: none; }
+.pause-panel {
+  display: flex; flex-direction: column; align-items: center; gap: 16px;
+  padding: 36px 32px;
+  width: 100%; max-width: 320px;
+}
+.pause-title {
+  font-size: 30px; font-weight: 900; color: #fff;
+  letter-spacing: .14em; margin-bottom: 8px;
+  text-shadow: 0 0 30px rgba(251,191,36,.6);
+}

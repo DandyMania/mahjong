@@ -404,6 +404,8 @@ function revealHand(selected) {
 
 // ── Rival defeated ────────────────────────────────────────────────────────────
 function rivalDefeated() {
+  G.phase = 'rival_defeated';
+  stopTimer(); hideToast();
   showMoveName('rival',pick(MOVES.defeated));
   setTimeout(()=>{
     if(G.rivalIdx>=RIVALS.length-1) showVictory();
@@ -463,6 +465,7 @@ function hasRunSkill(id){ return G.runSkills.some(s=>s.id===id); }
 
 // ── Victory ───────────────────────────────────────────────────────────────────
 function showVictory() {
+  G.phase = 'victory'; stopTimer(); hideToast();
   showMoveName('rival',pick(MOVES.victory));
   const save=getSave(); save.runs++;
   if(G.score>save.bestScore) save.bestScore=G.score;
@@ -604,6 +607,33 @@ function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────────
+// ── Pause / resume / go-title ─────────────────────────────────────────────────
+function pauseGame() {
+  if (G.phase !== 'playing') return;
+  G.phase = 'paused';
+  stopTimer();
+  $('pause-overlay').classList.remove('hidden');
+}
+function resumeGame() {
+  if (G.phase !== 'paused') return;
+  $('pause-overlay').classList.add('hidden');
+  G.phase = 'playing';
+  _renderTimer();
+  _timer = setInterval(() => {
+    _tv--; _renderTimer();
+    if (_tv <= 0) { clearInterval(_timer); _timer = null; onTimeUp(); }
+  }, 1000);
+}
+function goTitle() {
+  stopTimer();
+  if (_adv) { clearTimeout(_adv); _adv = null; }
+  if (_skillTimer) { clearInterval(_skillTimer); _skillTimer = null; }
+  $('pause-overlay').classList.add('hidden');
+  G.phase = 'title';
+  showScreen('screen-title');
+  updateTitleUI();
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   $('btn-start').addEventListener('click', startGame);
   $('btn-how').addEventListener('click',   ()=>showScreen('screen-how'));
@@ -617,6 +647,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-shop-title').addEventListener('click', ()=>{ showScreen('screen-title'); updateTitleUI(); });
   $('btn-again').addEventListener('click',  ()=>openShop(G.lastExpEarned||0));
   $('btn-vtitle').addEventListener('click', ()=>{ showScreen('screen-title'); updateTitleUI(); });
+  $('btn-pause').addEventListener('click',  pauseGame);
+  $('btn-resume').addEventListener('click', resumeGame);
+  $('btn-pause-title').addEventListener('click', goTitle);
 
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
   updateTitleUI();
