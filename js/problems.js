@@ -288,5 +288,64 @@ const PROBLEMS = [
     waits: ['2s', '5s', '8s'],
     waitShape: '3s-4s-5s-6s-7s の三面張（2s・5s・8s 待ち）',
     explanation: '3s-4s-5s-6s-7s は三面張！\n2s・5s・8s すべて危険。9m と 1p は筋で安全。'
+  },
+
+  // ===== ADVANCED+ (現物ゼロ・スジ読み必須) =====
+  {
+    id: 16,
+    difficulty: 'medium',
+    title: '現物なし！筋牌で生き延びろ',
+    description: '手牌に現物がない時こそ筋（スジ）読みが頼り！',
+    opponentDiscards: ['7m', '9p', '2s', '5z', '6z'],
+    hand: [
+      { tile: '5p',  safe: false, reason: '振り込み！6p-7p の両面待ち' },
+      { tile: '8p',  safe: false, reason: '振り込み！6p-7p の両面待ち' },
+      { tile: '4m',  safe: true,  reason: '7m の筋（7-3=4）で安全' },
+      { tile: '6p',  safe: true,  reason: '9p の筋（9-3=6）で安全' },
+      { tile: '1z',  safe: true,  reason: '今回は安全' },
+      { tile: '3s',  safe: true,  reason: '今回は安全' },
+      { tile: '9m',  safe: true,  reason: '今回は安全' },
+    ],
+    waits: ['5p', '8p'],
+    waitShape: '6p-7p の両面待ち',
+    explanation: '捨て牌に現物なし！筋牌を使う。\n7m が捨ててある → 4m は筋で安全。\n9p が捨ててある → 6p は筋で安全。'
+  },
+  {
+    id: 17,
+    difficulty: 'advanced',
+    title: '⚠️ 筋の裏は危険！現物なし罠問題',
+    description: '筋に見えても単騎待ちが刺さることがある',
+    opponentDiscards: ['3m', '7p', '4s', '1z', '2z'],
+    hand: [
+      { tile: '6m',  safe: false, reason: '罠！3m の筋に見えるが 6m 単騎待ち！', damage: 2 },
+      { tile: '4p',  safe: false, reason: '振り込み！5p-6p の両面待ち' },
+      { tile: '7p',  safe: false, reason: '振り込み！7p は現物に見えるが 7p 単騎待ち！', damage: 2 },
+      { tile: '1m',  safe: true,  reason: '端牌（1m）は当たりにくい' },
+      { tile: '9s',  safe: true,  reason: '端牌（9s）は当たりにくい' },
+      { tile: '5z',  safe: true,  reason: '今回は安全' },
+      { tile: '6z',  safe: true,  reason: '今回は安全' },
+    ],
+    waits: ['6m', '4p', '7p'],
+    waitShape: '6m 単騎 + 5p-6p 両面 + 7p 単騎（複合）',
+    explanation: '3m の筋で 6m が安全そうに見えるが単騎待ち！\n7p も捨て牌に見えるが別コピーで単騎待ち！\n端牌（1m・9s）が比較的安全。現物がない時は端牌が頼り。'
+  },
+  {
+    id: 18,
+    difficulty: 'advanced',
+    title: '完全スジ読み：現物ゼロ、罠だらけ',
+    description: '筋と端牌で生き残れるか？超上級の降り問題',
+    opponentDiscards: ['5m', '2p', '8s', '3z', '4z'],
+    hand: [
+      { tile: '2m',  safe: true,  reason: '5m の筋（5-3=2）で安全' },
+      { tile: '8m',  safe: true,  reason: '5m の筋（5+3=8）で安全' },
+      { tile: '5p',  safe: false, reason: '振り込み！4p-6p のカンチャン待ち' },
+      { tile: '3p',  safe: false, reason: '罠！2p の筋に見えるが 3p-4p 形で 3p 待ち！', damage: 2 },
+      { tile: '5s',  safe: false, reason: '振り込み！6s-7s の両面待ち' },
+      { tile: '2s',  safe: false, reason: '振り込み！6s-7s の両面待ち? いや 1s-2s-3s 待ちだ！' },
+      { tile: '1m',  safe: true,  reason: '今回は安全' },
+    ],
+    waits: ['5p', '3p', '5s', '2s'],
+    waitShape: '4p-6p カンチャン + 3p 単騎 + 6s-7s 両面 + 1s-3s 複合',
+    explanation: '5m が捨ててある → 2m と 8m は筋で安全！\n2p の筋に見える 3p は単騎待ちの罠。\n5s・2s は複合待ちで危険。筋だけが頼りの超難問。'
   }
 ];
