@@ -1350,25 +1350,30 @@ function updateTitleUI() {
     startRankScroll(rankEl);
   }
 
-  // 実績バッジ
-  const achEl=$('title-achievements');
-  if(achEl){
-    const unlocked=save.achievements||{};
-    const badges=ACHIEVEMENTS.map(a=>{
-      const isUnlocked=!!unlocked[a.id];
-      if(!isUnlocked && a.hidden) return `<div class="ach-badge locked" title="???">🔒 ????</div>`;
-      const cls=isUnlocked?'ach-badge':'ach-badge locked';
-      return `<div class="${cls}" title="${a.desc}">${a.icon} ${a.name}</div>`;
-    }).join('');
-    achEl.innerHTML=`<div class="ach-section-label">🏅 実績</div><div class="ach-badges-row">${badges}</div>`;
-  }
-
   $('btn-easy').classList.toggle('active',EASY_MODE);
   $('btn-debug').classList.toggle('active',DEBUG_MODE);
   const resetBtn=$('btn-reset'); if(resetBtn) resetBtn.style.display=DEBUG_MODE?'':'none';
   let badge=document.querySelector('.debug-badge');
   if(DEBUG_MODE){if(!badge){badge=document.createElement('div');badge.className='debug-badge';badge.textContent='DEBUG';document.body.appendChild(badge);}}
   else if(badge) badge.remove();
+}
+
+// ── Achievements screen ─────────────────────────────────────────────────────────
+function showAchievements(){
+  const save=getSave();
+  const unlocked=save.achievements||{};
+  const body=$('ach-body');
+  if(body){
+    const rows=ACHIEVEMENTS.map(a=>{
+      const isUnlocked=!!unlocked[a.id];
+      if(!isUnlocked && a.hidden) return `<div class="ach-row ach-row-locked"><span class="ach-row-icon">🔒</span><div class="ach-row-info"><div class="ach-row-name">????</div><div class="ach-row-desc">???</div></div></div>`;
+      const cls=isUnlocked?'ach-row':'ach-row ach-row-locked';
+      return `<div class="${cls}"><span class="ach-row-icon">${a.icon}</span><div class="ach-row-info"><div class="ach-row-name">${a.name}</div><div class="ach-row-desc">${a.desc}</div></div>${isUnlocked?'<span class="ach-row-check">✅</span>':''}</div>`;
+    }).join('');
+    body.innerHTML=rows+`<button id="btn-ach-back" class="btn-secondary" style="margin-top:16px">戻る</button>`;
+    body.querySelector('#btn-ach-back').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  }
+  showScreen('screen-ach');
 }
 
 // ── Utils ──────────────────────────────────────────────────────────────────────
@@ -1436,6 +1441,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-start').addEventListener('click',startGame);
   $('btn-how').addEventListener('click',  ()=>showScreen('screen-how'));
   $('btn-how-back').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  $('btn-ach').addEventListener('click',  ()=>showAchievements());
   $('btn-easy').addEventListener('click', ()=>{EASY_MODE=!EASY_MODE;updateTitleUI();});
   $('btn-debug').addEventListener('click',()=>{DEBUG_MODE=!DEBUG_MODE;updateTitleUI();});
   $('btn-reset').addEventListener('click',()=>{if(confirm('セーブデータを全削除しますか？')){localStorage.removeItem(SAVE_KEY);location.reload();}});

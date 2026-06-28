@@ -25,14 +25,16 @@
     <p class="subtitle">ルール無用の闇の捨て牌ローグライクバトル</p>
     <div id="title-hs" class="title-hs"></div>
     <div id="title-ranking" class="title-ranking"></div>
-    <div id="title-achievements" class="title-achs"></div>
     <button id="btn-start" class="btn-primary" style="margin-top: calc(10px * var(--s,1));">スタート！</button>
     <div class="title-modes">
       <button id="btn-easy"  class="mode-toggle">💡 かんたん</button>
       <button id="btn-debug" class="mode-toggle">🛠 デバッグ</button>
       <button id="btn-reset" class="mode-toggle" style="display:none">🗑 リセット</button>
     </div>
-    <button id="btn-how" class="btn-secondary">遊び方</button>
+    <div class="title-nav-row">
+      <button id="btn-how" class="btn-secondary">遊び方</button>
+      <button id="btn-ach" class="btn-secondary">🏅 実績</button>
+    </div>
   </div>
 </div>
 
@@ -70,6 +72,12 @@
     </div>
     <button id="btn-how-back" class="btn-secondary">戻る</button>
   </div>
+</div>
+
+<!-- ── Achievements ──────────────────────────────────── -->
+<div id="screen-ach" class="screen">
+  <div class="how-header">🏅 実績</div>
+  <div class="how-body" id="ach-body"></div>
 </div>
 
 <!-- ── Game ──────────────────────────────────────────── -->
