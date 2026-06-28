@@ -152,7 +152,7 @@ const RUN_SKILLS = [
   { id: 'crit_triple', icon: '🀄',   name: '現物の極意',  desc: 'クリティカル（非現物安全牌）で与えるダメージ×3' },
   { id: 'heal',        icon: '❤️‍🩹',  name: '回復',        desc: 'ライフ+1回復（即時）' },
   { id: 'time_next5',  icon: '😌',   name: '余裕',        desc: '次の問題だけタイマー+5秒' },
-  { id: 'mouhai',      icon: '🦾',   name: '轟盲牌',      desc: 'ピンチ時（ライフ1）に1回発動可能。手牌が全部「白」になるが正解で3倍スコア！' },
+  { id: 'mouhai',      icon: '🦾',   name: '轟盲牌',      desc: 'ピンチ時（ライフ1）に1回発動可能。牌を指で削り全部「白」に！感触だけで読み切れば3倍スコア！！' },
   { id: 'reitan',      icon: '🧊',   name: '冷たい打ち手', desc: 'このランでコンボが0にならない' },
   { id: 'shinsoku',    icon: '⚡⚡',  name: '捨て牌三倍速', desc: '残り5秒以上で正解したらスコア+200' },
   { id: 'tsumikomi',  icon: '🃏',   name: '積み込み',    desc: '次の問題の危険牌を1枚除外する' },
