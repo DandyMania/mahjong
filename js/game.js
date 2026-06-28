@@ -139,16 +139,16 @@ const RUN_SKILLS = [
 
 // ── Permanent upgrades ──────────────────────────────────────────────────────
 const UPGRADES = [
-  { id: 'hp',       icon: '❤️',  name: '体力強化',     maxLv: 2, costs: [15,45],   descs: ['+1ライフ（最大4）', '+1ライフ（最大5）'] },
-  { id: 'time',     icon: '⏱️',  name: '時間延長',     maxLv: 2, costs: [18,50],   descs: ['+2秒（12秒）', '+2秒（14秒）'] },
-  { id: 'hint',     icon: '💡',  name: 'ヒント全開',   maxLv: 1, costs: [30],      descs: ['ヒントで安全牌が全部光る'] },
-  { id: 'lucky',    icon: '🍀',  name: '幸運お守り',   maxLv: 2, costs: [22,55],   descs: ['ラッキーイベント確率2倍', 'ツモ被害を受けない'] },
-  { id: 'combo',    icon: '🔥',  name: 'コンボキープ', maxLv: 1, costs: [35],      descs: ['ミスでコンボが-1のみ'] },
-  { id: 'ins',      icon: '🛡️',  name: '初回ミス保険', maxLv: 1, costs: [18],      descs: ['1ランに1回、最初のミスを無効'] },
-  { id: 'score_up', icon: '💎',  name: 'スコア底上げ', maxLv: 3, costs: [15,40,100], descs: ['正解ごと+50点', '正解ごと+100点', '正解ごと+150点'] },
-  { id: 'exp_rate', icon: '📈',  name: 'EXP効率アップ', maxLv: 2, costs: [20,50],  descs: ['EXP獲得量+30%', 'EXP獲得量+60%'] },
-  { id: 'crit_up',  icon: '⚔️',  name: '斬撃強化',     maxLv: 2, costs: [28,70],   descs: ['クリティカル+150点ボーナス', 'クリティカル+300点ボーナス'] },
-  { id: 'start_hp', icon: '💊',  name: '鋼の意志',     maxLv: 1, costs: [35],      descs: ['ライバル戦開始時ライフ1回復'] },
+  { id: 'hp',       icon: '❤️',  name: '体力強化',     maxLv: 2, costs: [20,80],    descs: ['+1ライフ（最大4）', '+1ライフ（最大5）'] },
+  { id: 'time',     icon: '⏱️',  name: '時間延長',     maxLv: 2, costs: [20,80],    descs: ['+2秒（12秒）', '+2秒（14秒）'] },
+  { id: 'hint',     icon: '💡',  name: 'ヒント全開',   maxLv: 1, costs: [50],       descs: ['ヒントで安全牌が全部光る'] },
+  { id: 'lucky',    icon: '🍀',  name: '幸運お守り',   maxLv: 2, costs: [30,100],   descs: ['ラッキーイベント確率2倍', 'ツモ被害を受けない'] },
+  { id: 'combo',    icon: '🔥',  name: 'コンボキープ', maxLv: 1, costs: [70],       descs: ['ミスでコンボが-1のみ'] },
+  { id: 'ins',      icon: '🛡️',  name: '初回ミス保険', maxLv: 1, costs: [25],       descs: ['1ランに1回、最初のミスを無効'] },
+  { id: 'score_up', icon: '💎',  name: 'スコア底上げ', maxLv: 3, costs: [20,60,180], descs: ['正解ごと+50点', '正解ごと+100点', '正解ごと+150点'] },
+  { id: 'exp_rate', icon: '📈',  name: 'EXP効率アップ', maxLv: 2, costs: [35,100],  descs: ['EXP獲得量+30%', 'EXP獲得量+60%'] },
+  { id: 'crit_up',  icon: '⚔️',  name: '斬撃強化',     maxLv: 2, costs: [50,180],   descs: ['クリティカル+150点ボーナス', 'クリティカル+300点ボーナス'] },
+  { id: 'start_hp', icon: '💊',  name: '鋼の意志',     maxLv: 1, costs: [70],       descs: ['ライバル戦開始時ライフ1回復'] },
 ];
 
 // ── Achievements ────────────────────────────────────────────────────────────
