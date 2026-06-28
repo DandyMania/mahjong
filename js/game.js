@@ -677,13 +677,15 @@ function selectTile(td, el) {
       _adv=setTimeout(advanceTurn,1200);
 
     } else {
-      // Turn 3 (final, riichi mode) safe → normal HP hit
+      // Turn 3 (final, riichi mode) safe → ULTIMATE!! 演出
       const hpDmg=(isCrit?G.critMult:G.rivalDmgMult)+(isClutch?1:0);
       revealHand(td);
       showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
+      flashGold();
+      setTimeout(showUltimateSplash,80);
       G.rivalHp=Math.max(0,G.rivalHp-hpDmg); renderRivalHp(true);
-      if(G.rivalHp<=0) setTimeout(rivalDefeated,600);
-      else sched(1000);
+      if(G.rivalHp<=0) setTimeout(rivalDefeated,2200);
+      else sched(2600);
     }
 
   } else {
@@ -986,6 +988,8 @@ function buyUpgrade(id) {
 
 // ── Effects ────────────────────────────────────────────────────────────────────
 function flashGreen(){const f=$('screen-flash');f.style.background='rgba(34,197,94,.3)';f.classList.add('active');setTimeout(()=>{f.classList.add('fade');f.classList.remove('active');setTimeout(()=>f.classList.remove('fade'),260);},80);}
+function flashGold(){const f=$('screen-flash');f.style.background='rgba(255,255,255,.92)';f.classList.add('active');setTimeout(()=>{f.classList.remove('active');f.style.background='rgba(251,191,36,.6)';f.classList.add('active');setTimeout(()=>f.classList.remove('active'),220);},60);}
+function showUltimateSplash(){const el=$('ultimate-splash');if(!el)return;el.classList.remove('hidden');['','ult-main','ult-sub'].forEach(sel=>{const t=sel?el.querySelector('.'+sel):el;if(t){t.style.animation='none';void t.offsetWidth;t.style.animation='';}});setTimeout(()=>el.classList.add('hidden'),2400);}
 function flashRed(dmg){const f=$('screen-flash');f.style.background=dmg>=2?'rgba(239,68,68,.75)':'rgba(239,68,68,.5)';f.className='screen-flash active';setTimeout(()=>f.classList.remove('active'),80);setTimeout(()=>f.classList.add('active'),180);setTimeout(()=>f.classList.remove('active'),260);if(dmg>=2){setTimeout(()=>f.classList.add('active'),380);setTimeout(()=>f.classList.remove('active'),480);}}
 function shakeScreen(){const el=$('screen-game');el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),380);}
 function hitLives(){const el=$('lives-display');el.classList.remove('lives-hit');void el.offsetWidth;el.classList.add('lives-hit');setTimeout(()=>el.classList.remove('lives-hit'),380);}
