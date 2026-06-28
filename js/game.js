@@ -336,6 +336,24 @@ function rollEvent() {
   const badRate  = EASY_MODE ? 0 : 0.06+diff*0.12;
   const goodRate = 0.08*(upg.lucky>=1?2:1);
   const r=Math.random();
+
+  // ごうもうぱい: ピンチ時(lives=1)に25%発動
+  // 危険牌を全部白(5z)に見せかける。ただし1枚だけニセ白(damage×2)が混じる
+  if (G.lives===1 && Math.random()<0.25) {
+    const p=G.currentProblem;
+    const dangers=p.hand.filter(td=>!td.safe&&!td.lucky);
+    if (dangers.length>=2) {
+      const fakeIdx=Math.floor(Math.random()*dangers.length);
+      dangers.forEach((td,i)=>{
+        td.tile='5z';
+        if(i===fakeIdx){ td.safe=false; td.damage=2; td.reason='ごうもうぱい失敗（ニセ白）'; }
+        else           { td.safe=true;                td.reason='ごうもうぱい成功（白化）'; }
+      });
+      showEventToast('🤍 ごうもうぱい！…でも1枚だけ染みてないかも？','safe');
+      return;
+    }
+  }
+
   if (r<badRate && !(upg.lucky>=2)) {
     const name=pick(NPC);
     if (G.hasBlock) { G.hasBlock=false; showEventToast(`🛡️ ${name}のツモ！でも鉄壁で防いだ！`,'safe'); }
