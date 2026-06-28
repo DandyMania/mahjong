@@ -273,6 +273,7 @@ html, body {
 .yaku-label      { font-size: 10px; color: #c084fc; font-weight: 700; }
 .yaku-name-text  { font-size: 13px; font-weight: 900; color: #f0abfc; }
 .yaku-stars-text { font-size: 11px; color: #fbbf24; letter-spacing: .08em; }
+.yaku-tap-hint   { font-size: 10px; color: #a78bfa; margin-left: auto; opacity: .8; }
 
 .discards-wrap { }
 .zone-tag { font-size: 10px; font-weight: 700; color: #9d79c0; letter-spacing: .1em; margin-bottom: 6px; }
