@@ -520,17 +520,23 @@ html, body {
 }
 
 /* ── Revealed tiles ──────────────────────────────────── */
-.tile-safe   { background: linear-gradient(155deg, #f0fdf4 0%, #bbf7d0 100%) !important; border-color: var(--safe) !important; outline: 2.5px solid var(--safe); }
-.tile-danger { background: linear-gradient(155deg, #fff1f1 0%, #fecaca 100%) !important; border-color: var(--danger) !important; outline: 2.5px solid var(--danger); }
-.tile-crit   { background: linear-gradient(155deg, #fdf4ff 0%, #f5d0fe 100%) !important; border-color: var(--crit) !important; outline: 2.5px solid var(--crit); }
+.tile-safe   { border-color: var(--safe) !important; outline: 2.5px solid var(--safe); }
+.tile-danger { border-color: var(--danger) !important; outline: 2.5px solid var(--danger); }
+.tile-crit   { border-color: var(--crit) !important; outline: 2.5px solid var(--crit); }
+.tile-safe::after, .tile-danger::after, .tile-crit::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+}
+.tile-safe::after   { background: rgba(134,239,172,.45); }
+.tile-danger::after { background: rgba(252,165,165,.45); }
+.tile-crit::after   { background: rgba(240,171,252,.45); }
 .tile-picked-safe   { transform: translateY(-8px) scale(1.1); z-index: 10; box-shadow: 0 12px 0 rgba(34,197,94,.4), 0 14px 20px rgba(34,197,94,.3); }
 .tile-picked-danger { transform: translateY(-8px) scale(1.1); z-index: 10; animation: tile-shiver .25s ease-in-out 2; box-shadow: 0 12px 0 rgba(239,68,68,.4), 0 14px 20px rgba(239,68,68,.3); }
 .tile-picked-crit   { transform: translateY(-10px) scale(1.12); z-index: 10; box-shadow: 0 12px 0 rgba(217,70,239,.4), 0 14px 20px rgba(217,70,239,.4); }
 @keyframes tile-shiver { 0%,100%{transform:translateY(-8px) scale(1.1) rotate(0)} 30%{transform:translateY(-8px) scale(1.1) rotate(-8deg)} 70%{transform:translateY(-8px) scale(1.1) rotate(8deg)} }
-.tile-label { font-size: 9px; font-weight: 900; margin-top: 2px; display: block; text-align: center; }
-.tile-safe   .tile-label { color: #15803d; }
-.tile-danger .tile-label { color: #b91c1c; }
-.tile-crit   .tile-label { color: #a21caf; }
+.tile-label { position: absolute; inset: 0; z-index: 1; font-size: 20px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+.tile-safe   .tile-label { color: #15803d; text-shadow: 0 0 4px rgba(255,255,255,.8); }
+.tile-danger .tile-label { color: #b91c1c; text-shadow: 0 0 4px rgba(255,255,255,.8); }
+.tile-crit   .tile-label { color: #a21caf; text-shadow: 0 0 4px rgba(255,255,255,.8); }
 
 /* ── Critical HP state ───────────────────────────────── */
 #screen-game.critical .zone-player { background: linear-gradient(0deg, #1a0808 0%, #200e0e 100%); }
