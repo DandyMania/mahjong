@@ -6,7 +6,9 @@ const RIVALS = [
       t1:       'えっ、これわかる…？すごいじゃん…',
       t2:       'あれ、まだ諦めてないの？',
       t3:       'リーチよ！もう終わりっ！',
+      safe:     ['えっ、正解した…！？まぐれでしょ！', 'なんで当たるの…！？', 'ま、まだ諦めてないんだ…！'],
       miss:     'あははっ！ひっかかった！',
+      ult_miss: ['やったー！ガッチャ大成功っ！！', 'あははっ！最後で引っかかった！', 'ガッチャ！完璧な罠だったね！'],
       yakuBreak:'なんで…！？ちゃんと見てたの…！？',
       win:      'やったー！ガッチャ成功っ！',
       defeated: 'やっぱりサクラしとけばよかった…！',
@@ -19,7 +21,9 @@ const RIVALS = [
       t1:       '…どれが罠か、わかる？',
       t2:       'ふぅん。なかなかやるじゃない',
       t3:       'さあ、これが最後よ。もう逃げられない',
+      safe:     ['…ふぅん。まぐれかしら', '…正解ね。でも次は読めないわ', '…なかなかやるじゃない'],
       miss:     'ふっ…引っかかったわ',
+      ult_miss: ['…最後の罠にかかったわ。ふぅん', '…結局は…わたしの勝ちよ', '…これが…限界ね'],
       yakuBreak:'…っ！なんで読めるの…！？',
       win:      'ふぅん…罠にかかったわね',
       defeated: '…ふぅん。認めるわ。あなた、本物ね',
@@ -32,7 +36,9 @@ const RIVALS = [
       t1:       'あーたしの牌読みが読めるかな！？',
       t2:       'くっ…まだやるの！？おもしろいじゃん！',
       t3:       'リーチよ！受けてみてっ！！',
+      safe:     ['なんで！？当てたの！？ズルい！', 'くぅー！なんで読めるの！？', 'まぐれじゃないの！？おかしくない！？'],
       miss:     'ふへへっ！ドカン！食らえっ！',
+      ult_miss: ['ふへへっ！最後で引っかかった！ドカン！', 'やった！究極の選択も通じない！！', '最後の最後でドカン！！'],
       yakuBreak:'な、なんで！？あーたしの手牌が…！',
       win:      'ふへへへへ！！全弾命中っ！！',
       defeated: 'あなた…ただもんじゃないね…！認めるっ！',
@@ -45,7 +51,9 @@ const RIVALS = [
       t1:       '私の完璧な手牌を見なさい',
       t2:       'まだ諦めないの…？頑固ね',
       t3:       '強靭！無敵！リーチよ！！受けてみなさい！',
+      safe:     ['…まぐれよ！絶対まぐれ！', '…この私の牌を読むとは…！', '偶然ね！次は必ず当てる！'],
       miss:     '当然ね！私の読みに狂いはないわ！',
+      ult_miss: ['強靭！無敵！最強！やっぱり私が勝つ！', '最終局面でも私の勝ち！当然ね！', '…この私に挑んだ報いよ！'],
       yakuBreak:'強靭！無敵！…最強じゃなかった…！？',
       win:      '強靭！無敵！最強！当然の結果よ！',
       defeated: 'こんな…こんなはずが…！私が…！',
@@ -79,6 +87,14 @@ const RIVALS = [
         '…冥龍の一撃…受けてみせなさい…！',
         '…ここを乗り越えた者は…誰もいない…',
       ],
+      safe: [
+        '…ほぅ…読めたのね…',
+        '…まだ諦めていないの…面白い…',
+        '…なかなかやるじゃない…',
+        '…それでも…わたしには届かない…',
+        '…その程度では…まだ足りない…',
+        '…面白い…続きを見せてもらいましょう…',
+      ],
       miss: [
         '…冥府の底へ…落ちなさい…',
         '粉砕…当然の結果ね…',
@@ -87,6 +103,14 @@ const RIVALS = [
         '玉砕…哀れね…',
         '…もがけばもがくほど…深みにはまる…',
         '…消えなさい…まだ早いけれど…',
+      ],
+      ult_miss: [
+        '粉砕…玉砕…大喝采…究極でも…ふふ…',
+        '…最後の問いに…答えられなかったわね…',
+        '…これが…冥龍の力よ…もう終わり…',
+        '…惜しかったわ…でも…これが限界ね…',
+        '…究極の選択…あなたには…早すぎた…',
+        '粉砕…最後まで抗ったのね…大喝采…',
       ],
       yakuBreak: [
         '粉砕…されたのは…わたし…？',
@@ -128,7 +152,7 @@ const RUN_SKILLS = [
   { id: 'crit_triple', icon: '🀄',   name: '現物の極意',  desc: 'クリティカル（非現物安全牌）で与えるダメージ×3' },
   { id: 'heal',        icon: '❤️‍🩹',  name: '回復',        desc: 'ライフ+1回復（即時）' },
   { id: 'time_next5',  icon: '😌',   name: '余裕',        desc: '次の問題だけタイマー+5秒' },
-  { id: 'mouhai',      icon: '🦾',   name: '轟盲牌',      desc: 'このランすべて牌の文字が見えなくなるが正解で3倍スコア' },
+  { id: 'mouhai',      icon: '🦾',   name: '轟盲牌',      desc: 'ピンチ時（ライフ1）に1回発動可能。牌が全部白くなるが正解で3倍スコア！' },
   { id: 'reitan',      icon: '🧊',   name: '冷たい打ち手', desc: 'このランでコンボが0にならない' },
   { id: 'shinsoku',    icon: '⚡⚡',  name: '捨て牌三倍速', desc: '残り5秒以上で正解したらスコア+200' },
   { id: 'tsumikomi',  icon: '🃏',   name: '積み込み',    desc: '次の問題の危険牌を1枚除外する' },
@@ -157,13 +181,13 @@ const ACHIEVEMENTS = [
   {id:'first_rival', icon:'⚔️',  name:'初陣撃破',      desc:'ライバルを1体撃破'},
   {id:'full_clear',  icon:'🏆',  name:'全制覇',         desc:'全ライバルを撃破'},
   {id:'combo5',      icon:'🔥',  name:'連撃×5',         desc:'コンボ5以上を達成'},
-  {id:'combo10',     icon:'💥',  name:'大連撃×10',      desc:'コンボ10以上を達成'},
-  {id:'no_miss',     icon:'💎',  name:'完璧撃破',       desc:'ノーダメージでライバル撃破'},
+  {id:'combo10',     icon:'💥',  name:'大連撃×10',      desc:'コンボ10以上を達成',        hidden:true},
+  {id:'no_miss',     icon:'💎',  name:'完璧撃破',       desc:'ノーダメージでライバル撃破', hidden:true},
   // プレイ回数
   {id:'runs5',       icon:'🎮',  name:'5ラン',          desc:'5ラン以上プレイ'},
   {id:'veteran',     icon:'🛡️', name:'熟練者',         desc:'10ラン以上プレイ'},
-  {id:'runs25',      icon:'🏅',  name:'25ラン',         desc:'25ラン以上プレイ'},
-  {id:'runs50',      icon:'👑',  name:'50ラン',         desc:'50ラン以上プレイ'},
+  {id:'runs25',      icon:'🏅',  name:'25ラン',         desc:'25ラン以上プレイ',           hidden:true},
+  {id:'runs50',      icon:'👑',  name:'50ラン',         desc:'50ラン以上プレイ',           hidden:true},
   // 逆の実績（隠し）
   {id:'double_ron',  icon:'🎰',  name:'連続ロン',       desc:'2回連続で危険牌を切った',   hidden:true},
   {id:'triple_ron',  icon:'💀',  name:'三連ロン',       desc:'3回連続で危険牌を切った',   hidden:true},
@@ -278,7 +302,7 @@ const G = {
   rivalProbs:[], rivalProbIdx:0, currentProblem:null,
   runSkills:[],
   hasBlock:false, hasInsurance:true, comboSaveOnce:false,
-  safeOneNext:false, scoreDblOnce:false, mouhaiNext:false, rivalDmgMult:1, critMult:2,
+  safeOneNext:false, scoreDblOnce:false, mouhaiNext:false, mouhaiActive:false, mouhaiUsed:false, rivalDmgMult:1, critMult:2,
   timerBonus:0, nextTimerBonus:0, carryTime:0,
   missThisRival:false,
   consecutiveMiss:0,
@@ -300,7 +324,8 @@ function startTimer() {
   stopTimer();
   const bonus = G.timerBonus + G.nextTimerBonus;
   G.nextTimerBonus = 0;
-  const base = DEBUG_MODE ? 30 : EASY_MODE ? 15 : BASE_TIMER;
+  const stagePenalty = Math.min(G.rivalIdx, 4) * 0.5; // Stage 1=0s, 2=-0.5s, 3=-1s, 4=-1.5s, 5=-2s
+  const base = DEBUG_MODE ? 30 : EASY_MODE ? 15 : Math.max(6, BASE_TIMER - stagePenalty);
   _tv = G.carryTime > 0 ? Math.min(G.carryTime + bonus, 15) : base + bonus;
   G.carryTime = 0;
   _renderTimer();
@@ -372,7 +397,7 @@ function startGame() {
   G.score=0; G.lives=G.maxLives; G.combo=0; G.rivalIdx=0;
   if (_scoreAnim) { cancelAnimationFrame(_scoreAnim); _scoreAnim=null; } _displayedScore=0; $('score-display').textContent='0';
   G.runSkills=[]; G.hasBlock=false; G.comboSaveOnce=false;
-  G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.rivalDmgMult=1;
+  G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.mouhaiActive=false; G.mouhaiUsed=false; G.rivalDmgMult=1;
   G.tsumikomiNext=false; G.surikaeAvail=false; G.toshiNext=false; G.toshiThisProblem=false; G.nidotsumiNext=false;
   G.critMult = hasRunSkill('crit_triple') ? 3 : 2;
   G.timerBonus=0; G.nextTimerBonus=0; G.carryTime=0;
@@ -474,8 +499,12 @@ function loadNextProblem() {
   renderProblem();
   startTimer();
 
-  if(hasRunSkill('mouhai')&&!G.mouhaiNext) { G.mouhaiNext=true; }
   if ((EASY_MODE || G.hintAll) && !G.mouhaiNext) setTimeout(showHint, 400);
+  // ピンチ（ライフ1）かつ轟盲牌スキル未使用 → ダイアログ
+  if(hasRunSkill('mouhai') && !G.mouhaiUsed && G.lives<=1){
+    G.phase='mouhai'; stopTimer();
+    const p=$('mouhai-prompt'); if(p) p.classList.remove('hidden');
+  }
 }
 
 // ── Random events ─────────────────────────────────────────────────────────────
@@ -745,7 +774,7 @@ function mkTile(id,type,blind=false) {
   const suit=id[1], num=parseInt(id[0]);
   el.className=`tile tile-${type}`+(suit!=='z'?` suit-${suit}`:'')+(blind?' tile-blind':'');
   el.dataset.tile=id;
-  if(blind){const s=document.createElement('span');s.className='tc-blind';s.textContent='？';el.appendChild(s);}
+  if(blind){ /* 全部白 — 何も表示しない */ }
   else if(suit==='z'){const s=document.createElement('span');s.className=`tc-honor honor-${id}`;s.textContent=HONOR_MAP[id]||'?';el.appendChild(s);}
   else if(suit==='p'){el.innerHTML=pinzuSVG(num);}
   else if(suit==='s'){el.innerHTML=souzuSVG(num);}
@@ -818,6 +847,7 @@ function selectTile(td, el) {
       // Turn 1: advance to turn 2
       revealOneTile(td,el);
       showToast('safe',pts,p.waitShape,isClutch||isCrit,0,td.reason);
+      updateRivalFlavor('safe');
       _adv=setTimeout(advanceTurn,1200);
 
     } else if(G.eTurn===2 && !G.eRiichi) {
@@ -833,6 +863,7 @@ function selectTile(td, el) {
       // Turn 2 safe but riichi already declared → advance to turn 3
       revealOneTile(td,el);
       showToast('safe',pts,p.waitShape,isClutch||isCrit,0,td.reason);
+      updateRivalFlavor('safe');
       _adv=setTimeout(advanceTurn,1200);
 
     } else {
@@ -881,7 +912,7 @@ function selectTile(td, el) {
     if(G.consecutiveMiss>=2) unlockAchievement('double_ron');
     if(G.consecutiveMiss>=3) unlockAchievement('triple_ron');
     G.lives=Math.max(0,G.lives-dmg); hitLives();
-    updateRivalFlavor('miss');
+    updateRivalFlavor(isFinal ? 'ult_miss' : 'miss');
     console.log(`[遷移] miss: lives=${G.lives} eTurn=${G.eTurn} isFinal=${isFinal}`);
     showMoveName('danger',dmg>=2?pick(MOVES.danger2):pick(MOVES.danger));
     showToast('danger',0,p.waitShape,false,dmg);
@@ -986,7 +1017,8 @@ function revealHand(selected) {
 // ── Yaku break ────────────────────────────────────────────────────────────────
 function showYakuSplash(yaku) {
   const el=$('yaku-splash'); if(!el) return;
-  $('yaku-splash-sub').textContent=`💥 ${yaku}　崩壊！！`;
+  el.querySelector('.yaku-splash-main').textContent=yaku||'役崩し！！';
+  $('yaku-splash-sub').textContent=pick(['阻止！！', '役崩し！！', '崩壊！！', '上がり阻止！！']);
   el.classList.remove('hidden');
   el.style.animation='none'; void el.offsetWidth;
   el.style.animation='';
@@ -1087,7 +1119,7 @@ function pickSkill(skill) {
   if(skill.id==='crit_triple') G.critMult=3;
   if(skill.id==='time_boost')  G.timerBonus=3;
   if(skill.id==='time_next5')  G.nextTimerBonus=5;
-  if(skill.id==='mouhai')      G.mouhaiNext=true;
+  if(skill.id==='mouhai')      G.mouhaiActive=true;
   if(skill.id==='tsumikomi')   G.tsumikomiNext=true;
   if(skill.id==='surikae')     G.surikaeAvail=true;
   if(skill.id==='toshi')       G.toshiNext=true;
@@ -1146,10 +1178,19 @@ function showGameOver() {
   const waitEl=$('gameover-waits');
   if(waitEl && p) {
     const shape=p.waitShape||'';
-    const tiles=(p.waits||[]).map(t=>{
+    const waitTiles=(p.waits||[]).map(t=>{
       const el=mkTile(t,'result'); return el.outerHTML;
     }).join('');
-    waitEl.innerHTML=`<div class="go-wait-label">相手の待ち（${shape}）</div><div class="go-wait-tiles">${tiles}</div>`;
+    waitEl.innerHTML=`<div class="go-wait-label">相手の待ち（${shape}）</div><div class="go-wait-tiles">${waitTiles}</div>`;
+  }
+  const handEl=$('gameover-hand');
+  if(handEl && p) {
+    const discardTiles=(p.opponentDiscards||[]).map(t=>mkTile(t,'discard').outerHTML).join('');
+    const waitTiles=(p.waits||[]).map(t=>{
+      const el=mkTile(t,'result'); el.classList.add('tile-danger'); return el.outerHTML;
+    }).join('');
+    const yakuStr=p.yaku?`<div class="go-wait-label" style="margin-top:8px">役: ${p.yaku}${'★'.repeat(p.yakuValue||1)}</div>`:'';
+    handEl.innerHTML=`<div class="go-wait-label">相手の捨て牌</div><div class="go-wait-tiles">${discardTiles}</div>${yakuStr}<div class="go-wait-label" style="margin-top:8px">危険牌（当たり牌）</div><div class="go-wait-tiles">${waitTiles}</div>`;
   }
   G.pendingExpEarned=expEarned;
   showScreen('screen-gameover');
@@ -1276,15 +1317,15 @@ let _rankRaf=null;
 function startRankScroll(el) {
   if(_rankRaf){cancelAnimationFrame(_rankRaf);_rankRaf=null;}
   if(!el) return;
-  // wait a frame so layout is done and scrollHeight is accurate
   requestAnimationFrame(()=>{
     const max=Math.max(0,el.scrollHeight-el.clientHeight);
     if(max===0) return;
     let pos=max, paused=120, atTop=false, userScrollAt=0;
     el.scrollTop=pos;
-    // ユーザーが触ったら3秒間オートスクロールを止める
-    el.addEventListener('pointerdown', ()=>{ userScrollAt=performance.now(); });
-    el.addEventListener('scroll',      ()=>{ pos=el.scrollTop; userScrollAt=performance.now(); });
+    // ユーザー操作のみ検知（プログラムスクロールは除外）
+    const onUser=()=>{ userScrollAt=performance.now(); };
+    el.addEventListener('pointerdown', onUser);
+    el.addEventListener('wheel',       onUser, {passive:true});
     const tick=()=>{
       if(G.phase!=='title') return;
       if(performance.now()-userScrollAt < 3000){ _rankRaf=requestAnimationFrame(tick); return; }
@@ -1341,16 +1382,18 @@ function updateTitleUI() {
   const achEl=$('title-achievements');
   if(achEl){
     const unlocked=save.achievements||{};
-    achEl.innerHTML=ACHIEVEMENTS.map(a=>{
+    const badges=ACHIEVEMENTS.map(a=>{
       const isUnlocked=!!unlocked[a.id];
       if(!isUnlocked && a.hidden) return `<div class="ach-badge locked" title="???">🔒 ????</div>`;
       const cls=isUnlocked?'ach-badge':'ach-badge locked';
       return `<div class="${cls}" title="${a.desc}">${a.icon} ${a.name}</div>`;
     }).join('');
+    achEl.innerHTML=`<div class="ach-section-label">🏅 実績</div><div class="ach-badges-row">${badges}</div>`;
   }
 
   $('btn-easy').classList.toggle('active',EASY_MODE);
   $('btn-debug').classList.toggle('active',DEBUG_MODE);
+  const resetBtn=$('btn-reset'); if(resetBtn) resetBtn.style.display=DEBUG_MODE?'':'none';
   let badge=document.querySelector('.debug-badge');
   if(DEBUG_MODE){if(!badge){badge=document.createElement('div');badge.className='debug-badge';badge.textContent='DEBUG';document.body.appendChild(badge);}}
   else if(badge) badge.remove();
@@ -1391,7 +1434,7 @@ function retryCurrentRival() {
   G.scoreBonus=(upg.score_up||0)*50; G.critBonus=(upg.crit_up||0)*150; G.startHpRegen=!!(upg.start_hp);
   G.score=0; G.lives=G.maxLives; G.combo=0;
   G.runSkills=[]; G.hasBlock=false; G.comboSaveOnce=false;
-  G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.rivalDmgMult=1;
+  G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.mouhaiActive=false; G.mouhaiUsed=false; G.rivalDmgMult=1;
   G.critMult=2; G.timerBonus=0; G.nextTimerBonus=0; G.carryTime=0;
   G.tsumikomiNext=false; G.surikaeAvail=false; G.toshiNext=false; G.toshiThisProblem=false; G.nidotsumiNext=false;
   $('screen-game').classList.remove('critical');
@@ -1422,6 +1465,18 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-how-back').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
   $('btn-easy').addEventListener('click', ()=>{EASY_MODE=!EASY_MODE;updateTitleUI();});
   $('btn-debug').addEventListener('click',()=>{DEBUG_MODE=!DEBUG_MODE;updateTitleUI();});
+  $('btn-reset').addEventListener('click',()=>{if(confirm('セーブデータを全削除しますか？')){localStorage.removeItem(SAVE_KEY);location.reload();}});
+  $('btn-mouhai-yes').addEventListener('click',()=>{
+    $('mouhai-prompt').classList.add('hidden');
+    G.mouhaiNext=true; G.mouhaiUsed=true;
+    G.phase='playing'; startTimer();
+    renderHandForTurn();
+    showEventToast('🦾 轟盲牌発動！全て白牌になった！','safe');
+  });
+  $('btn-mouhai-no').addEventListener('click',()=>{
+    $('mouhai-prompt').classList.add('hidden');
+    G.phase='playing'; startTimer();
+  });
   $('btn-hint').addEventListener('click', showHint);
   $('btn-continue').addEventListener('click',continueGame);
   $('btn-retry').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(0);});
@@ -1446,4 +1501,17 @@ document.addEventListener('DOMContentLoaded',()=>{
     navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
   }
   updateTitleUI(); showScreen('screen-title');
+
+  // タイトル牌スラッシュエフェクト（2秒後に開始、10秒おきにループ）
+  let _slashT=null;
+  function titleSlash(){
+    if(G.phase!=='title'){_slashT=setTimeout(titleSlash,2000);return;}
+    const tile=$('title-tile'); if(!tile) return;
+    tile.classList.remove('cut'); void tile.offsetWidth;
+    tile.classList.add('cut');
+    setTimeout(()=>tile.classList.remove('cut'),500);
+    showMoveName('ultimate',pick(MOVES.ultimate));
+    _slashT=setTimeout(titleSlash,10000);
+  }
+  setTimeout(titleSlash,2000);
 });

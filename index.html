@@ -19,7 +19,7 @@
 <!-- ── Title ─────────────────────────────────────────── -->
 <div id="screen-title" class="screen">
   <div class="title-inner">
-    <div class="title-tile">斬</div>
+    <div class="title-tile-anim"><div class="title-tile" id="title-tile">斬</div></div>
     <h1>牌★斬★王</h1>
     <p class="title-yomi">PAI★ZAN★OH</p>
     <p class="subtitle">ルール無用の闇の捨て牌ローグライクバトル</p>
@@ -30,6 +30,7 @@
     <div class="title-modes">
       <button id="btn-easy"  class="mode-toggle">💡 かんたん</button>
       <button id="btn-debug" class="mode-toggle">🛠 デバッグ</button>
+      <button id="btn-reset" class="mode-toggle" style="display:none">🗑 リセット</button>
     </div>
     <button id="btn-how" class="btn-secondary">遊び方</button>
   </div>
@@ -58,6 +59,10 @@
     <div class="how-tip">
       <div class="tip-icon">💡</div>
       <div class="tip-text">捨て牌と同じ牌（現物）は絶対安全！<br>連続セーフでコンボボーナス！<br>★非現物の安全牌を読めたらクリティカル大打撃！</div>
+    </div>
+    <div class="how-tip" style="background:rgba(251,191,36,.07);border-color:rgba(251,191,36,.3);">
+      <div class="tip-icon">🏆</div>
+      <div class="tip-text" style="color:#fde68a;">【高得点のコツ】<br>①現物より非現物の安全牌を選ぶ（+200点 & クリティカル！）<br>②コンボを切らさず継続でボーナス積み増し<br>③リーチ局面（T3）でも安全牌を読み切ると一撃大ダメージ！</div>
     </div>
     <div class="how-tip" style="background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.35);">
       <div class="tip-icon">⚡</div>
@@ -193,6 +198,7 @@
     <div id="final-detail"></div>
     <div id="rival-win-quote" class="rival-win-quote"></div>
     <div id="gameover-waits" class="gameover-waits"></div>
+    <div id="gameover-hand"  class="gameover-hand"></div>
     <button id="btn-continue" class="btn-continue">💸 コンティニュー</button>
     <button id="btn-retry" class="btn-secondary">🔄 最初から！</button>
     <button id="btn-title" class="btn-secondary">タイトルへ</button>
@@ -206,6 +212,19 @@
   <div class="stage-rival-icon" id="trans-icon"></div>
   <div class="stage-rival-name" id="trans-name"></div>
   <div class="stage-rival-flavor" id="trans-flavor"></div>
+</div>
+
+<!-- ── 轟盲牌プロンプト ────────────────────────────── -->
+<div id="mouhai-prompt" class="mouhai-prompt hidden">
+  <div class="mouhai-inner">
+    <div class="mouhai-icon">🦾</div>
+    <div class="mouhai-msg">ピンチ！轟盲牌を<br>発動しますか？</div>
+    <div class="mouhai-note">★正解で3倍スコア<br>（牌が全て白くなります）</div>
+    <div class="mouhai-btns">
+      <button id="btn-mouhai-yes" class="btn-primary" style="flex:1">使う！</button>
+      <button id="btn-mouhai-no"  class="btn-secondary" style="flex:1">やめとく</button>
+    </div>
+  </div>
 </div>
 
 <!-- ── Effects ────────────────────────────────────────── -->

@@ -35,20 +35,46 @@ html, body {
   background: radial-gradient(ellipse at 50% 35%, #1a3a5c 0%, #06060f 70%);
 }
 .title-inner { text-align: center; padding: calc(28px * var(--s,1)) 24px; }
-.title-tile {
-  width: calc(90px * var(--s,1)); height: calc(116px * var(--s,1));
-  background: linear-gradient(155deg, #fffcf0 0%, #ede0c8 100%);
-  border-radius: 10px;
-  margin: 0 auto calc(20px * var(--s,1));
-  display: flex; align-items: center; justify-content: center;
-  font-size: calc(54px * var(--s,1)); font-weight: 900; color: #c41e1e;
-  font-family: 'Hiragino Mincho ProN', serif;
-  box-shadow: 0 8px 0 #9a8060, 0 10px 24px rgba(0,0,0,.5);
+.title-tile-anim {
+  display: inline-block;
+  margin: 0 auto calc(14px * var(--s,1));
   animation: tile-float 2s ease-in-out infinite;
 }
+.title-tile {
+  width: calc(68px * var(--s,1)); height: calc(88px * var(--s,1));
+  background: linear-gradient(155deg, #fffcf0 0%, #ede0c8 100%);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: calc(42px * var(--s,1)); font-weight: 900; color: #c41e1e;
+  font-family: 'Hiragino Mincho ProN', serif;
+  box-shadow: 0 6px 0 #9a8060, 0 8px 20px rgba(0,0,0,.5);
+  position: relative; overflow: hidden;
+}
+.title-tile::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -120%;
+  width: 40%; height: 200%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.7) 50%, transparent 100%);
+  transform: rotate(-20deg);
+  opacity: 0;
+  pointer-events: none;
+}
+.title-tile.cut { animation: title-cut-shake 0.45s ease-out; }
+.title-tile.cut::after { animation: slash-beam 0.35s ease-out forwards; }
 @keyframes tile-float {
   0%, 100% { transform: translateY(0) rotate(-2deg); }
   50%       { transform: translateY(-12px) rotate(2deg); }
+}
+@keyframes title-cut-shake {
+  0%   { transform: scale(1); }
+  20%  { transform: scale(1.12) rotate(5deg); box-shadow: 0 0 0 3px rgba(251,191,36,.8), 0 6px 0 #9a8060; }
+  50%  { transform: scale(1.05) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0deg); box-shadow: 0 6px 0 #9a8060, 0 8px 20px rgba(0,0,0,.5); }
+}
+@keyframes slash-beam {
+  0%   { left: -120%; opacity: 1; }
+  100% { left: 160%; opacity: 0.6; }
 }
 .title-inner h1 {
   font-size: calc(36px * var(--s,1)); font-weight: 900; color: #fff;
@@ -494,6 +520,7 @@ html, body {
 #final-detail { font-size: 16px; color: #fca5a5; }
 .rival-win-quote { font-size: 14px; color: #c084fc; font-style: italic; }
 .gameover-waits { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 12px 16px; }
+.gameover-hand  { background: rgba(52,211,153,.04); border: 1px solid rgba(52,211,153,.2); border-radius: 14px; padding: 12px 16px; margin-top: 8px; }
 .go-wait-label { font-size: 11px; color: #9d79c0; font-weight: 700; letter-spacing: .08em; margin-bottom: 8px; }
 .go-wait-tiles { display: flex; justify-content: center; gap: 6px; flex-wrap: wrap; }
 
@@ -518,10 +545,8 @@ html, body {
 .shop-buy:disabled { opacity: .35; cursor: default; }
 .shop-footer { padding: 14px 16px 32px; display: flex; flex-direction: column; gap: 0; flex-shrink: 0; }
 
-/* ── Mouhai (blind tile) ─────────────────────────────── */
-.tile-blind { background: linear-gradient(155deg, #1a1a2e 0%, #16213e 100%) !important; border-color: rgba(167,139,250,.5) !important; }
-.tc-blind { display: block; font-size: 28px; font-weight: 900; color: #a78bfa; text-align: center; line-height: 1; }
-.tile-hand.tile-blind .tc-blind { font-size: 36px; }
+/* ── Mouhai (blind tile = 全部白) ───────────────────── */
+.tile-blind { background: linear-gradient(155deg, #fffcf5 0%, #f5f0e8 100%) !important; border-color: #d0c8b0 !important; box-shadow: none !important; }
 
 /* ── Skill selection ─────────────────────────────────── */
 #screen-skill { background: #06060f; }
@@ -568,7 +593,9 @@ html, body {
 .rank-you .rank-name { color: #fbbf24; font-weight: 900; }
 .rank-you .rank-pos { color: #fbbf24; }
 /* ── Achievements ── */
-.title-achs { display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin:8px 0 4px; }
+.title-achs { margin:8px 0 4px; }
+.ach-section-label { font-size:11px; font-weight:700; color:#9d79c0; letter-spacing:.1em; text-align:center; margin-bottom:6px; }
+.ach-badges-row { display:flex; flex-wrap:wrap; gap:5px; justify-content:center; }
 .ach-badge { display:inline-flex; align-items:center; gap:3px; background:rgba(157,121,192,.15); border:1px solid #9d79c0; border-radius:20px; padding:3px 9px; font-size:11px; color:#d8b4fe; white-space:nowrap; }
 .ach-badge.locked { background:rgba(255,255,255,.03); border-color:rgba(255,255,255,.1); color:#4b5563; }
 .ach-toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(.85); background:linear-gradient(145deg,#1a0a30,#2d1458); border:2px solid #9d79c0; border-radius:18px; padding:18px 28px; text-align:center; opacity:0; pointer-events:none; z-index:9999; transition:opacity .25s, transform .25s; min-width:220px; box-shadow:0 8px 40px rgba(157,121,192,.4); }
@@ -689,8 +716,8 @@ html, body {
 
 .yaku-splash { position: fixed; inset: 0; z-index: 200; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,.65); pointer-events: none; animation: yaku-splash-in 2.8s ease-out forwards; }
 .yaku-splash.hidden { display: none; }
-.yaku-splash-main { font-size: clamp(72px, 22vw, 120px); font-weight: 900; color: #fff; text-shadow: 0 0 20px #34d399, 0 0 50px rgba(52,211,153,1), 0 0 100px rgba(52,211,153,.8), 0 0 160px rgba(52,211,153,.4); letter-spacing: .05em; animation: yaku-text-pop 2.8s ease-out forwards; }
-.yaku-splash-sub { font-size: clamp(18px, 5vw, 28px); font-weight: 700; color: #a7f3d0; margin-top: 12px; opacity: 0; animation: yaku-sub-in 2.8s ease-out forwards; }
+.yaku-splash-main { font-size: clamp(48px, 14vw, 88px); font-weight: 900; color: #fff; white-space: nowrap; text-shadow: 0 0 20px #34d399, 0 0 50px rgba(52,211,153,1), 0 0 100px rgba(52,211,153,.8), 0 0 160px rgba(52,211,153,.4); letter-spacing: .05em; animation: yaku-text-pop 2.8s ease-out forwards; }
+.yaku-splash-sub { font-size: clamp(32px, 9vw, 52px); font-weight: 900; color: #34d399; white-space: nowrap; margin-top: 8px; opacity: 0; animation: yaku-sub-in 2.8s ease-out forwards; text-shadow: 0 0 16px rgba(52,211,153,.6); }
 @keyframes yaku-splash-in { 0%{opacity:0} 10%{opacity:1} 75%{opacity:1} 100%{opacity:0} }
 @keyframes yaku-text-pop { 0%{transform:scale(0) rotate(-12deg)} 18%{transform:scale(1.15) rotate(3deg)} 30%{transform:scale(1) rotate(0)} 75%{transform:scale(1)} 100%{transform:scale(.9) translateY(-20px)} }
 @keyframes yaku-sub-in { 0%{opacity:0;transform:translateY(16px)} 35%{opacity:1;transform:translateY(0)} 75%{opacity:1} 100%{opacity:0} }
@@ -733,6 +760,15 @@ html, body {
   transition: background .15s, transform .1s;
 }
 .btn-pause:active { background: rgba(255,255,255,.22); transform: scale(.88); }
+
+/* ── 轟盲牌プロンプト ────────────────────────────────── */
+.mouhai-prompt { position: fixed; inset: 0; background: rgba(0,0,0,.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 300; }
+.mouhai-prompt.hidden { display: none; }
+.mouhai-inner { background: linear-gradient(145deg, #0a1220, #1a0a30); border: 2px solid rgba(167,139,250,.5); border-radius: 20px; padding: 28px 24px; text-align: center; max-width: 300px; width: 90%; box-shadow: 0 8px 40px rgba(0,0,0,.6); }
+.mouhai-icon { font-size: 44px; margin-bottom: 8px; }
+.mouhai-msg { font-size: 18px; font-weight: 900; color: #fff; margin-bottom: 6px; line-height: 1.4; }
+.mouhai-note { font-size: 12px; color: #9ca3af; margin-bottom: 18px; line-height: 1.6; }
+.mouhai-btns { display: flex; gap: 10px; }
 
 /* ── Pause overlay ──────────────────────────────────── */
 .pause-overlay {
