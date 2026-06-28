@@ -152,7 +152,7 @@ const RUN_SKILLS = [
   { id: 'crit_triple', icon: '🀄',   name: '現物の極意',  desc: 'クリティカル（非現物安全牌）で与えるダメージ×3' },
   { id: 'heal',        icon: '❤️‍🩹',  name: '回復',        desc: 'ライフ+1回復（即時）' },
   { id: 'time_next5',  icon: '😌',   name: '余裕',        desc: '次の問題だけタイマー+5秒' },
-  { id: 'mouhai',      icon: '🦾',   name: '轟盲牌',      desc: 'ピンチ時（ライフ1）に1回発動可能。手牌が全部「白」になって安牌に！' },
+  { id: 'mouhai',      icon: '🦾',   name: '轟盲牌',      desc: 'ライフ2消費で何度でも発動可。手牌が全部「白」になって安牌に！正解で3倍スコア' },
   { id: 'reitan',      icon: '🧊',   name: '冷たい打ち手', desc: 'このランでコンボが0にならない' },
   { id: 'shinsoku',    icon: '⚡⚡',  name: '捨て牌三倍速', desc: '残り5秒以上で正解したらスコア+200' },
   { id: 'tsumikomi',  icon: '🃏',   name: '積み込み',    desc: '次の問題の危険牌を1枚除外する' },
@@ -301,7 +301,7 @@ const G = {
   rivalProbs:[], rivalProbIdx:0, currentProblem:null,
   runSkills:[],
   hasBlock:false, hasInsurance:true, comboSaveOnce:false,
-  safeOneNext:false, scoreDblOnce:false, mouhaiNext:false, mouhaiActive:false, mouhaiUsed:false, rivalDmgMult:1, critMult:2,
+  safeOneNext:false, scoreDblOnce:false, mouhaiNext:false, mouhaiActive:false, rivalDmgMult:1, critMult:2,
   timerBonus:0, nextTimerBonus:0, carryTime:0,
   missThisRival:false,
   consecutiveMiss:0,
@@ -396,7 +396,7 @@ function startGame() {
   G.score=0; G.lives=G.maxLives; G.combo=0; G.rivalIdx=0;
   if (_scoreAnim) { cancelAnimationFrame(_scoreAnim); _scoreAnim=null; } _displayedScore=0; $('score-display').textContent='0';
   G.runSkills=[]; G.hasBlock=false; G.comboSaveOnce=false;
-  G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.mouhaiActive=false; G.mouhaiUsed=false; G.rivalDmgMult=1;
+  G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.mouhaiActive=false; G.rivalDmgMult=1;
   G.tsumikomiNext=false; G.surikaeAvail=false; G.toshiNext=false; G.toshiThisProblem=false; G.nidotsumiNext=false;
   G.critMult = hasRunSkill('crit_triple') ? 3 : 2;
   G.timerBonus=0; G.nextTimerBonus=0; G.carryTime=0;
@@ -523,7 +523,7 @@ function loadNextProblem() {
   if ((EASY_MODE || G.hintAll) && !G.mouhaiNext) setTimeout(showHint, 400);
   // 轟盲牌ボタン表示: ライフ1かつスキル未使用
   const mouhaiBtn=$('btn-mouhai');
-  if(mouhaiBtn) mouhaiBtn.classList.toggle('hidden', !(hasRunSkill('mouhai') && !G.mouhaiUsed && G.lives<=1));
+  if(mouhaiBtn) mouhaiBtn.classList.toggle('hidden', !(hasRunSkill('mouhai') && G.lives>=2 && !G.mouhaiNext));
 }
 
 // ── Random events ─────────────────────────────────────────────────────────────
@@ -1043,7 +1043,7 @@ function revealOpponentHandDisplay() {
   wrap.classList.remove('hidden');
   const shape=p.waitShape||'';
   const lbl=document.createElement('div'); lbl.className='opp-reveal-label';
-  lbl.textContent=`⚡ 相手の待ち（${shape}）`;
+  lbl.textContent=`⚡ 相手の待ち（${tileIdToJa(shape)}）`;
   wrap.appendChild(lbl);
   const tilesWrap=document.createElement('div'); tilesWrap.className='opp-reveal-tiles';
   (p.waits||[]).forEach(t=>{
@@ -1454,7 +1454,7 @@ function retryCurrentRival() {
   G.scoreBonus=(upg.score_up||0)*50; G.critBonus=(upg.crit_up||0)*150; G.startHpRegen=!!(upg.start_hp);
   G.score=0; G.lives=G.maxLives; G.combo=0;
   G.runSkills=[]; G.hasBlock=false; G.comboSaveOnce=false;
-  G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.mouhaiActive=false; G.mouhaiUsed=false; G.rivalDmgMult=1;
+  G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.mouhaiActive=false; G.rivalDmgMult=1;
   G.critMult=2; G.timerBonus=0; G.nextTimerBonus=0; G.carryTime=0;
   G.tsumikomiNext=false; G.surikaeAvail=false; G.toshiNext=false; G.toshiThisProblem=false; G.nidotsumiNext=false;
   $('screen-game').classList.remove('critical');
@@ -1490,10 +1490,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-reset').addEventListener('click',()=>{if(confirm('セーブデータを全削除しますか？')){localStorage.removeItem(SAVE_KEY);location.reload();}});
   const mouhaiActivateBtn=$('btn-mouhai');
   if(mouhaiActivateBtn) mouhaiActivateBtn.addEventListener('click',()=>{
-    G.mouhaiNext=true; G.mouhaiUsed=true;
+    G.lives -= 2;
+    G.mouhaiNext=true;
     mouhaiActivateBtn.classList.add('hidden');
+    updateHUD();
     renderHandForTurn();
-    showEventToast('🦾 盲牌発動！正解で3倍スコア','safe');
+    showEventToast('🦾 盲牌発動！ライフ2消費・正解で3倍スコア','safe');
   });
   $('btn-hint').addEventListener('click', showHint);
   $('btn-continue').addEventListener('click',continueGame);
