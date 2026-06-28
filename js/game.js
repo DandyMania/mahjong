@@ -244,7 +244,11 @@ function pinzuSVG(n) {
            `<circle cx="${cx}" cy="${cy}" r="${(pr*0.95).toFixed(1)}" fill="${centerCol}"/>`;
   }
   if(n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">${flower(30,40,14,'#1d4ed8','#dc2626','#dc2626')}</svg>`;
-  const fs=(P_POS[n]||[]).map(([cx,cy])=>flower(cx,cy,r,'#2563eb','#3b82f6','#3b82f6')).join('');
+  const fs=(P_POS[n]||[]).map(([cx,cy],i)=>{
+    const red=n===5&&i===2;
+    const c=red?'#dc2626':'#3b82f6';
+    return flower(cx,cy,r,'#2563eb',c,c);
+  }).join('');
   return `<svg viewBox="0 0 60 80" width="100%" height="100%">${fs}</svg>`;
 }
 
@@ -270,7 +274,8 @@ function souzuSVG(n) {
   for(let i=0;i<n;i++){
     const col=i%c,row=Math.floor(i/c);
     const x=sx+col*(w+gx),y=sy+row*(h+gy);
-    seg+=gourd(x+w/2,y,w,h,GR);
+    const red=n===5&&i===4; // 5索：最下段の1個（中央）が赤
+    seg+=gourd(x+w/2,y,w,h,red?'#dc2626':GR);
   }
   return `<svg viewBox="0 0 60 80" width="100%" height="100%">${seg}</svg>`;
 }
