@@ -417,7 +417,7 @@ function rollEvent() {
   } else if (r<badRate+goodRate) {
     const name=pick(NPC);
     G.safeOneNext=true;
-    showEventToast(`✨ ${name}がロン！危険牌が1枚消えるよ`,'safe');
+    showEventToast(`✨ ${name}がロン！次の問題で危険牌が1枚消えるよ`,'safe');
   }
 }
 function showEventToast(msg, mode) {
