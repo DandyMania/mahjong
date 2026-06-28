@@ -107,24 +107,38 @@ html, body {
 }
 .zone-slash {
   position: absolute;
-  top: -30%; left: -5%;
-  width: 8px; height: 200%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.9) 40%, rgba(255,240,100,1) 50%, rgba(255,255,255,.9) 60%, transparent);
-  transform: rotate(-22deg);
+  inset: 0;
   pointer-events: none;
-  transform-origin: top center;
-  animation: zone-slash-cut .36s cubic-bezier(.15,.7,.3,1) forwards;
+  clip-path: inset(0 100% 0 0);
+  animation: slash-draw .18s cubic-bezier(.4,0,.2,1) forwards, slash-fade .3s .18s ease-out forwards;
 }
-@keyframes zone-slash-cut {
-  0%   { left:-5%;  width:8px;  opacity:1; filter:brightness(1); }
-  40%  { left:50%;  width:18px; opacity:1; filter:brightness(2); }
-  70%  { left:105%; width:12px; opacity:.7; }
-  100% { left:115%; width:8px;  opacity:0; }
+.zone-slash::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    -35deg,
+    transparent calc(var(--pos, 40%) - 6px),
+    rgba(255,255,255,.25) calc(var(--pos, 40%) - 4px),
+    rgba(255,255,255,.95) calc(var(--pos, 40%) - 1px),
+    rgba(255,245,120,1) var(--pos, 40%),
+    rgba(255,255,255,.95) calc(var(--pos, 40%) + 1px),
+    rgba(255,255,255,.25) calc(var(--pos, 40%) + 4px),
+    transparent calc(var(--pos, 40%) + 7px)
+  );
+}
+@keyframes slash-draw {
+  0%   { clip-path: inset(0 100% 0 0); }
+  100% { clip-path: inset(0 0% 0 0); }
+}
+@keyframes slash-fade {
+  0%   { opacity: 1; }
+  100% { opacity: 0; }
 }
 .zone-opp.slash-flash::after {
   content:''; position:absolute; inset:0;
-  background:rgba(255,255,255,.12);
-  animation: slash-flash-fade .25s ease-out forwards;
+  background:rgba(255,255,255,.15);
+  animation: slash-flash-fade .2s ease-out forwards;
   pointer-events:none;
 }
 @keyframes slash-flash-fade {
