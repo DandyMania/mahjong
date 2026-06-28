@@ -52,7 +52,7 @@ const RIVALS = [
     },
     prob: [8,9,10,11,12,13,16,17] },
 
-  { name: '冥龍 ちはる', icon: '🐉', hp: 8,
+  { name: '冥龍 チハル', icon: '🐉', hp: 8,
     flavor: '粉砕…玉砕…お前のライフ…大喝采。',
     lines: {
       t1:       '…お前は…何者だ…',
@@ -223,6 +223,7 @@ function _renderTimer() {
 
 // ── Advance / schedule ───────────────────────────────────────────────────────
 let _adv = null;
+let _goTimer = null;
 function sched(ms) { _adv = setTimeout(advance, ms); }
 function advance() {
   if (_adv) { clearTimeout(_adv); _adv=null; }
@@ -400,15 +401,50 @@ function renderDiscards() {
   p.opponentDiscards.slice(0, limit).forEach(t=>dr.appendChild(mkTile(t,'discard')));
 }
 
-// Show hand minus tiles already used this encounter
+// Show hand minus tiles already used this encounter, capped per turn
 function renderHandForTurn() {
   const hr=$('hand-row'); hr.innerHTML='';
-  G.currentProblem.hand.forEach((td, i) => {
-    if (G.eUsed.includes(i)) return;
+  const p=G.currentProblem;
+
+  // Remaining tiles with original hand index
+  const remaining=p.hand.map((td,i)=>({td,i})).filter(x=>!G.eUsed.includes(x.i));
+
+  // Tile cap: Turn1=4, Turn2=3, Turn3=2(究極の選択)
+  const maxShow=G.eTurn>=3?2:G.eTurn===2?3:4;
+
+  let toShow;
+  if(remaining.length<=maxShow){
+    toShow=remaining;
+  } else {
+    const safe  =remaining.filter(x=> x.td.safe||x.td.lucky);
+    const danger=remaining.filter(x=>!x.td.safe&&!x.td.lucky);
+    if(G.eTurn>=3){
+      // 究極の選択: 1危険 + 1安全
+      const d=danger.length>0?danger[Math.floor(Math.random()*danger.length)]:null;
+      const s=safe.length>0  ?safe[Math.floor(Math.random()*safe.length)]    :null;
+      const pair=[d,s].filter(Boolean);
+      toShow=shuffle(pair.length===2?pair:[...remaining].slice(0,2));
+    } else {
+      // T1/T2: 危険多め+安全少し
+      const dc=Math.min(Math.ceil(maxShow*.6),danger.length);
+      const sc=Math.min(maxShow-dc,safe.length);
+      const fill=maxShow-dc-sc;
+      const pickedD=shuffle([...danger]).slice(0,dc+fill);
+      const pickedS=shuffle([...safe]).slice(0,sc);
+      toShow=shuffle([...pickedD,...pickedS]);
+    }
+  }
+
+  const isUltimate=G.eTurn>=3;
+  hr.classList.toggle('ultimate-choice',isUltimate);
+  const cl=document.querySelector('.cut-line');
+  if(cl) cl.textContent=isUltimate?'究極の選択！！':'どれ切る？';
+
+  toShow.forEach(({td,i})=>{
     const el=mkTile(td.tile,'hand',G.mouhaiNext);
-    el.dataset.handIdx = i; // needed for revealHand() to map DOM→data correctly
-    el.addEventListener('pointerdown', e=>{el.classList.add('pressed');addRipple(el,e);});
-    el.addEventListener('pointerup',   ()=>{el.classList.remove('pressed');selectTile(td,el);});
+    el.dataset.handIdx=i;
+    el.addEventListener('pointerdown',e=>{el.classList.add('pressed');addRipple(el,e);});
+    el.addEventListener('pointerup',  ()=>{el.classList.remove('pressed');selectTile(td,el);});
     el.addEventListener('pointerleave',()=>el.classList.remove('pressed'));
     hr.appendChild(el);
   });
@@ -525,6 +561,9 @@ function selectTile(td, el) {
     if(G.scoreDblOnce){pts*=2;G.scoreDblOnce=false;}
     if(hasRunSkill('shinsoku')&&_tv>=5) pts+=200;
     G.score+=pts; G.combo++;
+    // 3コンボごとにライフ1回復（フラグを立てて後でアニメーション発動）
+    const didHeal=G.combo%3===0 && G.lives<G.maxLives;
+    if(didHeal) G.lives++;
     G.carryTime=Math.min(_tv+(isCrit?4:is現物?1:0),15);
     G.eSafeCount++;
 
@@ -533,6 +572,7 @@ function selectTile(td, el) {
     const moveTxt  = isClutch?pick(MOVES.clutch):isCrit?pick(MOVES.crit):pickSafeMove(G.combo);
     showMoveName(moveMode,moveTxt);
     updateHUD();
+    if(didHeal) healLives();
 
     if(G.eTurn===1) {
       // Turn 1: advance to turn 2
@@ -824,6 +864,8 @@ function showGameOver() {
   }
   G.pendingExpEarned=expEarned;
   showScreen('screen-gameover');
+  if(_goTimer) clearTimeout(_goTimer);
+  _goTimer=setTimeout(()=>{ _goTimer=null; showScreen('screen-title'); updateTitleUI(); }, 30000);
 }
 
 function calcExp() { return Math.max(2, G.rivalIdx*3+Math.floor(G.score/50)); }
@@ -862,6 +904,7 @@ function flashGreen(){const f=$('screen-flash');f.style.background='rgba(34,197,
 function flashRed(dmg){const f=$('screen-flash');f.style.background=dmg>=2?'rgba(239,68,68,.75)':'rgba(239,68,68,.5)';f.className='screen-flash active';setTimeout(()=>f.classList.remove('active'),80);setTimeout(()=>f.classList.add('active'),180);setTimeout(()=>f.classList.remove('active'),260);if(dmg>=2){setTimeout(()=>f.classList.add('active'),380);setTimeout(()=>f.classList.remove('active'),480);}}
 function shakeScreen(){const el=$('screen-game');el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),380);}
 function hitLives(){const el=$('lives-display');el.classList.remove('lives-hit');void el.offsetWidth;el.classList.add('lives-hit');setTimeout(()=>el.classList.remove('lives-hit'),380);}
+function healLives(){const el=$('lives-display');el.classList.remove('lives-heal');void el.offsetWidth;el.classList.add('lives-heal');setTimeout(()=>el.classList.remove('lives-heal'),500);}
 function spawnPop(pts,anchor,isCrit){
   const layer=$('popup-layer'),el=document.createElement('div');
   el.className='score-pop'+(isCrit?' crit':'');
@@ -949,7 +992,7 @@ function updateTitleUI() {
   if(rankEl){
     const bs=save.bestScore||0;
     const FAKE=[
-      {name:'冥龍 ちはる 🐉',     t:3.2, b:28000},{name:'覇王 カリン 😤',  t:2.1, b:18000},
+      {name:'冥龍 チハル 🐉',     t:3.2, b:28000},{name:'覇王 カリン 😤',  t:2.1, b:18000},
       {name:'影牌師 シン 🌑',   t:1.75,b:13500},{name:'疾風 ハヤテ ⚡',  t:1.5, b:11000},
       {name:'鬼牌 ジョウ 🤨',   t:1.3, b:9000}, {name:'天空 レイ ✨',   t:1.1, b:7800},
       {name:'炎龍 カエン 🔥',   t:0.95,b:6600}, {name:'罠師 リオ 🎀',   t:0.82,b:5500},
@@ -1010,9 +1053,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-easy').addEventListener('click', ()=>{EASY_MODE=!EASY_MODE;updateTitleUI();});
   $('btn-debug').addEventListener('click',()=>{DEBUG_MODE=!DEBUG_MODE;updateTitleUI();});
   $('btn-hint').addEventListener('click', showHint);
-  $('btn-go-shop').addEventListener('click',()=>openShop(G.pendingExpEarned||0));
-  $('btn-retry').addEventListener('click',()=>openShop(0));
-  $('btn-title').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  $('btn-go-shop').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(G.pendingExpEarned||0);});
+  $('btn-retry').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(0);});
+  $('btn-title').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;showScreen('screen-title');updateTitleUI();});
   $('btn-next-run').addEventListener('click',startGame);
   $('btn-shop-title').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
   $('btn-again').addEventListener('click', ()=>openShop(G.lastExpEarned||0));
