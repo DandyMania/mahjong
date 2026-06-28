@@ -1147,12 +1147,12 @@ function continueGame() {
   clearTimeout(_goTimer); _goTimer=null;
   stopTimer();
   if(_adv){clearTimeout(_adv);_adv=null;}
-  G.score=Math.floor(G.score*0.3); // スコア70%減
+  G.score=Math.floor(G.score*0.3);
   G.lives=1; G.combo=0;
   G.phase='playing';
   showScreen('screen-game');
-  showEventToast('💸 コンティニュー！ スコア激減…','danger');
-  loadNextProblem();
+  showEventToast('💸 コンティニュー！','danger');
+  loadRival(G.rivalIdx);
 }
 function retryCurrentRival() {
   clearTimeout(_goTimer); _goTimer=null;
@@ -1197,7 +1197,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-hint').addEventListener('click', showHint);
   $('btn-continue').addEventListener('click',continueGame);
   $('btn-go-shop').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(G.pendingExpEarned||0);});
-  $('btn-revenge').addEventListener('click',retryCurrentRival);
   $('btn-retry').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(0);});
   $('btn-title').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;showScreen('screen-title');updateTitleUI();});
   $('btn-next-run').addEventListener('click',startGame);
