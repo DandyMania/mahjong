@@ -123,7 +123,7 @@ html, body {
   box-shadow: 0 0 12px 4px rgba(255,240,80,.8), 0 0 28px 8px rgba(255,200,50,.4);
   pointer-events: none;
   border-radius: 2px;
-  animation: slash-extend .24s cubic-bezier(.05,.7,.2,1) forwards, slash-fade .4s .2s ease-out forwards;
+  animation: slash-extend .20s cubic-bezier(.05,.7,.2,1) forwards, slash-fade .33s .17s ease-out forwards;
 }
 @keyframes slash-extend {
   0%   { width: 0; }
