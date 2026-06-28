@@ -539,7 +539,7 @@ function renderHandForTurn() {
   toShow.forEach(({td,i})=>{
     const el=mkTile(td.tile,'hand',G.mouhaiNext);
     el.dataset.handIdx=i;
-    if(genzaiSet.has(td.tile) && !G.mouhaiNext) el.classList.add('tile-genzai');
+    if(genzaiSet.has(td.tile) && (td.safe||td.lucky) && !G.mouhaiNext) el.classList.add('tile-genzai');
     el.addEventListener('pointerdown',e=>{el.classList.add('pressed');addRipple(el,e);});
     el.addEventListener('pointerup',  ()=>{el.classList.remove('pressed');selectTile(td,el);});
     el.addEventListener('pointerleave',()=>el.classList.remove('pressed'));
