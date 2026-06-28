@@ -164,11 +164,11 @@ const ACHIEVEMENTS = [
   {id:'veteran',     icon:'🛡️', name:'熟練者',         desc:'10ラン以上プレイ'},
   {id:'runs25',      icon:'🏅',  name:'25ラン',         desc:'25ラン以上プレイ'},
   {id:'runs50',      icon:'👑',  name:'50ラン',         desc:'50ラン以上プレイ'},
-  // 逆の実績
-  {id:'double_ron',  icon:'🎰',  name:'連続ロン',       desc:'2回連続で危険牌を切った'},
-  {id:'triple_ron',  icon:'💀',  name:'三連ロン',       desc:'3回連続で危険牌を切った'},
-  {id:'timeout3',    icon:'⏰',  name:'時間の無駄遣い', desc:'1ランで3回タイムアップ'},
-  {id:'last_stand',  icon:'😤',  name:'土壇場撃破',     desc:'ライフ1でライバルを撃破'},
+  // 逆の実績（隠し）
+  {id:'double_ron',  icon:'🎰',  name:'連続ロン',       desc:'2回連続で危険牌を切った',   hidden:true},
+  {id:'triple_ron',  icon:'💀',  name:'三連ロン',       desc:'3回連続で危険牌を切った',   hidden:true},
+  {id:'timeout3',    icon:'⏰',  name:'時間の無駄遣い', desc:'1ランで3回タイムアップ',    hidden:true},
+  {id:'last_stand',  icon:'😤',  name:'土壇場撃破',     desc:'ライフ1でライバルを撃破',   hidden:true},
 ];
 
 // ── Move names ──────────────────────────────────────────────────────────────
@@ -342,7 +342,13 @@ function advance() {
   hideToast();
   if (G.phase==='gameover'||G.phase==='victory') return;
   if (G.lives<=0) { showGameOver(); return; }
-  G.phase='playing'; loadNextProblem();
+  G.phase='playing';
+  // 「次の局へ」幕間テキスト
+  const nextHit = G.rivalProbIdx + 1;
+  const r = RIVALS[G.rivalIdx];
+  const label = `${ROUND_NAMES[G.rivalIdx] ?? '次の局'} 第${nextHit}撃`;
+  showMoveName('rival', label);
+  setTimeout(loadNextProblem, 650);
 }
 
 // ── Screens ──────────────────────────────────────────────────────────────────
@@ -1332,7 +1338,9 @@ function updateTitleUI() {
   if(achEl){
     const unlocked=save.achievements||{};
     achEl.innerHTML=ACHIEVEMENTS.map(a=>{
-      const cls=unlocked[a.id]?'ach-badge':'ach-badge locked';
+      const isUnlocked=!!unlocked[a.id];
+      if(!isUnlocked && a.hidden) return `<div class="ach-badge locked" title="???">🔒 ????</div>`;
+      const cls=isUnlocked?'ach-badge':'ach-badge locked';
       return `<div class="${cls}" title="${a.desc}">${a.icon} ${a.name}</div>`;
     }).join('');
   }
