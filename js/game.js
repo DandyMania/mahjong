@@ -1215,7 +1215,6 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-debug').addEventListener('click',()=>{DEBUG_MODE=!DEBUG_MODE;updateTitleUI();});
   $('btn-hint').addEventListener('click', showHint);
   $('btn-continue').addEventListener('click',continueGame);
-  $('btn-go-shop').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(G.pendingExpEarned||0);});
   $('btn-retry').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(0);});
   $('btn-title').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;showScreen('screen-title');updateTitleUI();});
   $('btn-next-run').addEventListener('click',()=>{
