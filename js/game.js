@@ -91,16 +91,26 @@ const RUN_SKILLS = [
 
 // ── Permanent upgrades ──────────────────────────────────────────────────────
 const UPGRADES = [
-  { id: 'hp',       icon: '❤️',  name: '体力強化',     maxLv: 2, costs: [8,20],  descs: ['+1ライフ（最大4）', '+1ライフ（最大5）'] },
-  { id: 'time',     icon: '⏱️',  name: '時間延長',     maxLv: 2, costs: [10,18], descs: ['+2秒（12秒）', '+2秒（14秒）'] },
-  { id: 'hint',     icon: '💡',  name: 'ヒント全開',   maxLv: 1, costs: [15],    descs: ['ヒントで安全牌が全部光る'] },
-  { id: 'lucky',    icon: '🍀',  name: '幸運お守り',   maxLv: 2, costs: [12,25], descs: ['ラッキーイベント確率2倍', 'ツモ被害を受けない'] },
-  { id: 'combo',    icon: '🔥',  name: 'コンボキープ', maxLv: 1, costs: [20],    descs: ['ミスでコンボが-1のみ'] },
-  { id: 'ins',      icon: '🛡️',  name: '初回ミス保険', maxLv: 1, costs: [10],    descs: ['1ランに1回、最初のミスを無効'] },
-  { id: 'score_up', icon: '💎',  name: 'スコア底上げ', maxLv: 3, costs: [8,15,25], descs: ['正解ごと+50点', '正解ごと+100点', '正解ごと+150点'] },
-  { id: 'exp_rate', icon: '📈',  name: 'EXP効率アップ', maxLv: 2, costs: [12,22], descs: ['EXP獲得量+30%', 'EXP獲得量+60%'] },
-  { id: 'crit_up',  icon: '⚔️',  name: '斬撃強化',     maxLv: 2, costs: [14,28], descs: ['現物ヒット+150点ボーナス', '現物ヒット+300点ボーナス'] },
-  { id: 'start_hp', icon: '💊',  name: '鋼の意志',     maxLv: 1, costs: [18],    descs: ['ライバル戦開始時ライフ1回復'] },
+  { id: 'hp',       icon: '❤️',  name: '体力強化',     maxLv: 2, costs: [15,45],   descs: ['+1ライフ（最大4）', '+1ライフ（最大5）'] },
+  { id: 'time',     icon: '⏱️',  name: '時間延長',     maxLv: 2, costs: [18,50],   descs: ['+2秒（12秒）', '+2秒（14秒）'] },
+  { id: 'hint',     icon: '💡',  name: 'ヒント全開',   maxLv: 1, costs: [30],      descs: ['ヒントで安全牌が全部光る'] },
+  { id: 'lucky',    icon: '🍀',  name: '幸運お守り',   maxLv: 2, costs: [22,55],   descs: ['ラッキーイベント確率2倍', 'ツモ被害を受けない'] },
+  { id: 'combo',    icon: '🔥',  name: 'コンボキープ', maxLv: 1, costs: [35],      descs: ['ミスでコンボが-1のみ'] },
+  { id: 'ins',      icon: '🛡️',  name: '初回ミス保険', maxLv: 1, costs: [18],      descs: ['1ランに1回、最初のミスを無効'] },
+  { id: 'score_up', icon: '💎',  name: 'スコア底上げ', maxLv: 3, costs: [15,40,100], descs: ['正解ごと+50点', '正解ごと+100点', '正解ごと+150点'] },
+  { id: 'exp_rate', icon: '📈',  name: 'EXP効率アップ', maxLv: 2, costs: [20,50],  descs: ['EXP獲得量+30%', 'EXP獲得量+60%'] },
+  { id: 'crit_up',  icon: '⚔️',  name: '斬撃強化',     maxLv: 2, costs: [28,70],   descs: ['クリティカル+150点ボーナス', 'クリティカル+300点ボーナス'] },
+  { id: 'start_hp', icon: '💊',  name: '鋼の意志',     maxLv: 1, costs: [35],      descs: ['ライバル戦開始時ライフ1回復'] },
+];
+
+// ── Achievements ────────────────────────────────────────────────────────────
+const ACHIEVEMENTS = [
+  {id:'first_rival', icon:'⚔️',  name:'初陣撃破',  desc:'ライバルを1体撃破'},
+  {id:'full_clear',  icon:'🏆',  name:'全制覇',    desc:'全ライバルを撃破'},
+  {id:'combo5',      icon:'🔥',  name:'連撃×5',    desc:'コンボ5以上を達成'},
+  {id:'combo10',     icon:'💥',  name:'大連撃×10', desc:'コンボ10以上を達成'},
+  {id:'no_miss',     icon:'💎',  name:'完璧撃破',  desc:'ノーダメージでライバル撃破'},
+  {id:'veteran',     icon:'🛡️', name:'熟練者',    desc:'10ラン以上プレイ'},
 ];
 
 // ── Move names ──────────────────────────────────────────────────────────────
@@ -183,8 +193,20 @@ function souzuSVG(n) {
 // ── Save ────────────────────────────────────────────────────────────────────
 const SAVE_KEY = 'mj-sweeper-v1';
 function getSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || mkSave(); } catch { return mkSave(); } }
-function mkSave() { return { exp:0, upgrades:{}, bestScore:0, runs:0 }; }
+function mkSave() { return { exp:0, upgrades:{}, bestScore:0, runs:0, bestCombo:0, achievements:{} }; }
 function writeSave(s) { try { localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch {} }
+
+function unlockAchievement(id) {
+  const save=getSave();
+  if(!save.achievements) save.achievements={};
+  if(save.achievements[id]) return;
+  save.achievements[id]=true; writeSave(save);
+  const def=ACHIEVEMENTS.find(a=>a.id===id); if(!def) return;
+  const el=document.getElementById('ach-toast'); if(!el) return;
+  el.innerHTML=`<div class="ach-toast-label">Achievement Unlocked！</div><div class="ach-toast-icon">${def.icon}</div><div class="ach-toast-name">${def.name}</div>`;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),3000);
+}
 
 // ── Mode flags ───────────────────────────────────────────────────────────────
 let DEBUG_MODE = false;
@@ -199,6 +221,8 @@ const G = {
   hasBlock:false, hasInsurance:true, comboSaveOnce:false,
   safeOneNext:false, scoreDblOnce:false, mouhaiNext:false, rivalDmgMult:1, critMult:2,
   timerBonus:0, nextTimerBonus:0, carryTime:0,
+  missThisRival:false,
+  eShownIdx:[],  // hand indices shown in the previous turn (for tile continuity)
   // 3-turn encounter state
   eTurn:1,       // current turn within encounter (1, 2, or 3)
   eSafeCount:0,  // safe picks so far this encounter
@@ -294,6 +318,7 @@ function startGame() {
 // ── Rival loading ─────────────────────────────────────────────────────────────
 function loadRival(idx) {
   G.rivalIdx=idx;
+  G.missThisRival=false;
   const r=RIVALS[idx];
   G.rivalHp    = DEBUG_MODE ? 1 : r.hp;
   G.rivalHpMax = DEBUG_MODE ? 1 : r.hp;
@@ -333,7 +358,7 @@ function loadNextProblem() {
   G.currentProblem = JSON.parse(JSON.stringify(G.rivalProbs[G.rivalProbIdx++]));
 
   // Reset encounter state for each new problem
-  G.eTurn=1; G.eSafeCount=0; G.eRiichi=false; G.eUsed=[];
+  G.eTurn=1; G.eSafeCount=0; G.eRiichi=false; G.eUsed=[]; G.eShownIdx=[];
 
   // Lucky: one dangerous tile becomes safe
   if (G.safeOneNext) {
@@ -413,7 +438,7 @@ function rollEvent() {
   if (r<badRate && !(upg.lucky>=2)) {
     const name=pick(NPC);
     if (G.hasBlock) { G.hasBlock=false; showEventToast(`🛡️ ${name}のツモ！でも鉄壁で防いだ！`,'safe'); }
-    else { G.lives=Math.max(0,G.lives-1); hitLives(); updateHUD(); showEventToast(`😱 ${name}がツモ！-1ライフ…`,'danger'); }
+    else { G.missThisRival=true; G.lives=Math.max(0,G.lives-1); hitLives(); updateHUD(); showEventToast(`😱 ${name}がツモ！-1ライフ…`,'danger'); }
   } else if (r<badRate+goodRate) {
     const name=pick(NPC);
     G.safeOneNext=true;
@@ -510,6 +535,10 @@ function renderHandForTurn() {
   let toShow;
   if(remaining.length<=maxShow){
     toShow=remaining;
+  } else if(G.eTurn===2 && G.eShownIdx.length>0){
+    // T2: keep same tiles as T1 (minus the one that was picked)
+    const prev=remaining.filter(x=>G.eShownIdx.includes(x.i));
+    toShow=prev.length>0?prev:remaining.slice(0,maxShow);
   } else {
     const genzai=remaining.filter(x=> genzaiSet.has(x.td.tile));
     const safe   =remaining.filter(x=>!genzaiSet.has(x.td.tile)&&(x.td.safe||x.td.lucky));
@@ -539,6 +568,7 @@ function renderHandForTurn() {
     }
   }
 
+  G.eShownIdx=toShow.map(x=>x.i);
   const isUltimate=G.eTurn>=3;
   hr.classList.toggle('ultimate-choice',isUltimate);
   const cl=document.querySelector('.cut-line');
@@ -699,6 +729,8 @@ function selectTile(td, el) {
     if(G.scoreDblOnce){pts*=2;G.scoreDblOnce=false;}
     if(hasRunSkill('shinsoku')&&_tv>=5) pts+=200;
     G.score+=pts; G.combo++;
+    if(G.combo>=5)  unlockAchievement('combo5');
+    if(G.combo>=10) unlockAchievement('combo10');
     // 3コンボごとにライフ1回復（フラグを立てて後でアニメーション発動）
     const didHeal=G.combo%3===0 && G.lives<G.maxLives;
     if(didHeal) G.lives++;
@@ -774,6 +806,7 @@ function selectTile(td, el) {
     else if(hasRunSkill('reitan')) G.combo=Math.max(0,G.combo-1);
     else G.combo=0;
     flashRed(dmg); shakeScreen();
+    G.missThisRival=true;
     G.lives=Math.max(0,G.lives-dmg); hitLives();
     updateRivalFlavor('miss');
     console.log(`[遷移] miss: lives=${G.lives} eTurn=${G.eTurn} isFinal=${isFinal}`);
@@ -799,6 +832,7 @@ function onTimeUp() {
   G.carryTime=0;
   if(_adv){clearTimeout(_adv);_adv=null;}
   flashRed(1); shakeScreen();
+  G.missThisRival=true;
   G.lives=Math.max(0,G.lives-1); hitLives();
   showMoveName('danger',pick(MOVES.timeout));
   showToast('timeout',0,G.currentProblem.waitShape,false,1);
@@ -919,6 +953,8 @@ function rivalDefeated() {
   G.phase='rival_defeated'; stopTimer(); hideToast();
   if(_adv){clearTimeout(_adv);_adv=null;}
   console.log(`[遷移] rivalDefeated: stage=${G.rivalIdx+1}`);
+  unlockAchievement('first_rival');
+  if(!G.missThisRival) unlockAchievement('no_miss');
   showMoveName('rival',pick(MOVES.defeated));
   updateRivalFlavor('defeated');
   setTimeout(()=>{
@@ -988,8 +1024,12 @@ function showVictory() {
   showMoveName('rival',pick(MOVES.victory));
   const save=getSave(); save.runs++;
   if(G.score>save.bestScore) save.bestScore=G.score;
+  if(!save.bestCombo) save.bestCombo=0;
+  if(G.combo>save.bestCombo) save.bestCombo=G.combo;
   const expEarned=calcExp();
   save.exp+=expEarned; writeSave(save);
+  unlockAchievement('full_clear');
+  if(save.runs>=10) unlockAchievement('veteran');
   G.lastExpEarned=expEarned;
   $('victory-score').textContent  =`スコア：${G.score.toLocaleString()} 点`;
   $('victory-detail').textContent =`全 ${RIVALS.length} ライバル撃破！ +${expEarned} EXP`;
@@ -1004,8 +1044,11 @@ function showGameOver() {
 
   const save=getSave(); save.runs++;
   if(G.score>save.bestScore) save.bestScore=G.score;
+  if(!save.bestCombo) save.bestCombo=0;
+  if(G.combo>save.bestCombo) save.bestCombo=G.combo;
   const expEarned=calcExp();
   save.exp+=expEarned; writeSave(save);
+  if(save.runs>=10) unlockAchievement('veteran');
 
   console.log(`[遷移] showGameOver: stage=${G.rivalIdx+1} score=${G.score}`);
   const r=RIVALS[G.rivalIdx], p=G.currentProblem;
@@ -1136,44 +1179,54 @@ function showHint(){
 let _rankRaf=null;
 function startRankScroll(el) {
   if(_rankRaf){cancelAnimationFrame(_rankRaf);_rankRaf=null;}
-  const wrap=el.querySelector('.rank-rows-wrap'); if(!wrap) return;
-  let pos=0, paused=0;
-  const tick=()=>{
-    if(G.phase!=='title') return;
-    const max=wrap.scrollHeight-el.clientHeight+30;
-    if(paused>0){paused--;_rankRaf=requestAnimationFrame(tick);return;}
-    pos+=0.4;
+  if(!el) return;
+  // wait a frame so layout is done and scrollHeight is accurate
+  requestAnimationFrame(()=>{
+    const max=Math.max(0,el.scrollHeight-el.clientHeight);
+    if(max===0) return;
+    let pos=max, paused=120, atTop=false;
     el.scrollTop=pos;
-    if(pos>=max){pos=0;el.scrollTop=0;paused=180;}
+    const tick=()=>{
+      if(G.phase!=='title') return;
+      if(paused>0){paused--;_rankRaf=requestAnimationFrame(tick);return;}
+      if(atTop){
+        atTop=false; pos=max; el.scrollTop=pos; paused=60;
+        _rankRaf=requestAnimationFrame(tick); return;
+      }
+      pos-=0.4;
+      el.scrollTop=pos;
+      if(pos<=0){pos=0;el.scrollTop=0;atTop=true;paused=300;}
+      _rankRaf=requestAnimationFrame(tick);
+    };
     _rankRaf=requestAnimationFrame(tick);
-  };
-  paused=120;
-  _rankRaf=requestAnimationFrame(tick);
+  });
 }
 
 // ── Title UI ──────────────────────────────────────────────────────────────────
 function updateTitleUI() {
   const save=getSave(), hs=$('title-hs');
-  if(save.bestScore>0) hs.textContent=`EXP: ${save.exp} | ランク: ${save.runs}戦`;
-  else hs.textContent='';
+  if(save.bestScore>0){
+    const bc=save.bestCombo>0?` | 最大コンボ: ${save.bestCombo}🔥`:'';
+    hs.textContent=`EXP: ${save.exp} | ランク: ${save.runs}戦${bc}`;
+  } else hs.textContent='';
 
   // タイトルランキング
   const rankEl=$('title-ranking');
   if(rankEl){
     const bs=save.bestScore||0;
     const FAKE=[
-      {name:'桐生院 チハル 🐉',     t:3.2, b:28000},{name:'覇王 ラミィ ☃️',  t:2.1, b:18000},
-      {name:'影牌師 シン 🌑',   t:1.75,b:13500},{name:'疾風 ハヤテ ⚡',  t:1.5, b:11000},
-      {name:'鬼牌 こより 🧪',   t:1.3, b:9000}, {name:'天空 レイ ✨',   t:1.1, b:7800},
-      {name:'炎龍 カエン 🔥',   t:0.95,b:6600}, {name:'高峰 ルイナ 🥀', t:0.82,b:5500},
-      {name:'氷華 ミソラ ❄️',   t:0.7, b:4800}, {name:'妖牌 ツキミ 🌙', t:0.6, b:4100},
-      {name:'鳳翔 マリン 🏴‍☠️', t:0.52,b:3600}, {name:'流星 コウ 💫',   t:0.44,b:3100},
-      {name:'鉄壁 テツオ 🛡️',  t:0.38,b:2700}, {name:'春嵐 ハルカ 🌸', t:0.32,b:2300},
-      {name:'迅雷 ライジン ⚡', t:0.27,b:2000}, {name:'銀翼 シロ 🦅',   t:0.22,b:1700},
-      {name:'霧島 キリ 🌫️',    t:0.18,b:1400}, {name:'天使 エンジェル 👼',t:0.14,b:1100},
-      {name:'新米 ルーキー 🌱', t:0.1, b:800},
+      {name:'桐生院 チハル 🐉',     score:30000},{name:'覇王 ラミィ ☃️',  score:23000},
+      {name:'影牌師 シン 🌑',       score:18500},{name:'疾風 ハヤテ ⚡',  score:15000},
+      {name:'鬼牌 こより 🧪',       score:12000},{name:'天音 レイ ✨',    score:9800},
+      {name:'炎龍 カエン 🔥',       score:8200}, {name:'高峰 ルイナ 🥀', score:6800},
+      {name:'氷華 ミソラ ❄️',       score:5500}, {name:'妖牌 ツキミ 🌙', score:4400},
+      {name:'鳳翔 マリン 🏴‍☠️',   score:3500}, {name:'流星 コウ 💫',   score:2700},
+      {name:'鉄壁 テツオ 🛡️',      score:2000}, {name:'春嵐 ハルカ 🌸', score:1500},
+      {name:'迅雷 ライジン ⚡',      score:1100}, {name:'銀翼 シロ 🦅',   score:750},
+      {name:'霧島 キリ 🌫️',        score:500},  {name:'天使 エンジェル 👼',score:300},
+      {name:'新米 ルーキー 🌱',      score:150},
     ];
-    const entries=FAKE.map(f=>({name:f.name,score:bs>0?Math.round(bs*f.t+f.b*0.1):f.b}));
+    const entries=FAKE.map(f=>({name:f.name,score:f.score}));
     if(bs>0) entries.push({name:'▶ YOU ◀',score:bs,isPlayer:true});
     entries.sort((a,b)=>b.score-a.score);
     const rows=entries.map((e,i)=>{
@@ -1182,6 +1235,16 @@ function updateTitleUI() {
     }).join('');
     rankEl.innerHTML=`<div class="rank-title">🏆 スコアランキング</div><div class="rank-rows-wrap">${rows}</div>`;
     startRankScroll(rankEl);
+  }
+
+  // 実績バッジ
+  const achEl=$('title-achievements');
+  if(achEl){
+    const unlocked=save.achievements||{};
+    achEl.innerHTML=ACHIEVEMENTS.map(a=>{
+      const cls=unlocked[a.id]?'ach-badge':'ach-badge locked';
+      return `<div class="${cls}" title="${a.desc}">${a.icon} ${a.name}</div>`;
+    }).join('');
   }
 
   $('btn-easy').classList.toggle('active',EASY_MODE);

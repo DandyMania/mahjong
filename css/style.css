@@ -56,7 +56,7 @@ html, body {
   text-shadow: 0 2px 20px rgba(0,0,0,.6);
 }
 .title-yomi { color: rgba(251,191,36,.55); font-size: calc(11px * var(--s,1)); font-weight: 700; letter-spacing: .25em; margin: calc(-6px * var(--s,1)) 0 calc(4px * var(--s,1)); }
-.subtitle { color: var(--gold); font-size: calc(16px * var(--s,1)); font-weight: 700; margin-bottom: calc(16px * var(--s,1)); letter-spacing: .06em; }
+.subtitle { color: var(--gold); font-size: calc(13px * var(--s,1)); font-weight: 700; margin-bottom: calc(16px * var(--s,1)); letter-spacing: .04em; }
 
 /* ── How to play ────────────────────────────────────── */
 #screen-how { background: #0d0d1a; }
@@ -567,6 +567,15 @@ html, body {
 .rank-you { background: rgba(251,191,36,.08); border-radius: 6px; padding: 3px 6px; margin: 0 -6px; }
 .rank-you .rank-name { color: #fbbf24; font-weight: 900; }
 .rank-you .rank-pos { color: #fbbf24; }
+/* ── Achievements ── */
+.title-achs { display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin:8px 0 4px; }
+.ach-badge { display:inline-flex; align-items:center; gap:3px; background:rgba(157,121,192,.15); border:1px solid #9d79c0; border-radius:20px; padding:3px 9px; font-size:11px; color:#d8b4fe; white-space:nowrap; }
+.ach-badge.locked { background:rgba(255,255,255,.03); border-color:rgba(255,255,255,.1); color:#4b5563; }
+.ach-toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(.85); background:linear-gradient(145deg,#1a0a30,#2d1458); border:2px solid #9d79c0; border-radius:18px; padding:18px 28px; text-align:center; opacity:0; pointer-events:none; z-index:9999; transition:opacity .25s, transform .25s; min-width:220px; box-shadow:0 8px 40px rgba(157,121,192,.4); }
+.ach-toast.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
+.ach-toast-label { font-size:10px; letter-spacing:.15em; color:#9d79c0; font-weight:700; text-transform:uppercase; margin-bottom:4px; }
+.ach-toast-icon  { font-size:32px; margin:4px 0; }
+.ach-toast-name  { font-size:16px; font-weight:900; color:#d8b4fe; margin-top:2px; }
 .player-yaku { font-size: 11px; font-weight: 700; color: #34d399; letter-spacing: .06em; padding: 4px 0 2px; }
 .debug-badge {
   position: fixed; top: 6px; right: 6px;
