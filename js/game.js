@@ -805,7 +805,7 @@ function mkTile(id,type,blind=false) {
   el.className=`tile tile-${type}`+(suit!=='z'?` suit-${suit}`:'')+(blind?' tile-blind':'');
   el.dataset.tile=id;
   if(blind){const s=document.createElement('span');s.className='tc-honor honor-5z';s.textContent='白';el.appendChild(s);}
-  else if(suit==='z'){const s=document.createElement('span');s.className=`tc-honor honor-${id}`;s.textContent=HONOR_MAP[id]||'?';el.appendChild(s);}
+  else if(suit==='z'){const txt=HONOR_MAP[id];if(txt){const s=document.createElement('span');s.className=`tc-honor honor-${id}`;s.textContent=txt;el.appendChild(s);}}
   else if(suit==='p'){el.innerHTML=pinzuSVG(num);}
   else if(suit==='s'){el.innerHTML=souzuSVG(num);}
   else{const n=document.createElement('span');n.className='tc-num';n.textContent=KANJI_NUM[num]||num;const s=document.createElement('span');s.className='tc-suit';s.textContent=SUIT_KANJI[suit];el.appendChild(n);el.appendChild(s);}
