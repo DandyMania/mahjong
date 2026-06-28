@@ -149,7 +149,7 @@ const RUN_SKILLS = [
   { id: 'safe_one',    icon: '🎯',   name: '幸運の牌',    desc: '次の問題の危険牌が1枚消える' },
   { id: 'double_dmg',  icon: '💢',   name: '破壊力',      desc: 'このライバル戦 与えるダメージ×2' },
   { id: 'score_2x',    icon: '💰',   name: '大勝負',      desc: '次の正解スコア×2' },
-  { id: 'crit_triple', icon: '🀄',   name: '現物の極意',  desc: 'クリティカル（非現物安全牌）で与えるダメージ×3' },
+  { id: 'crit_triple', icon: '🀄',   name: '現物の極意',  desc: 'クリティカル（捨て牌以外の安全牌）で与えるダメージ×3' },
   { id: 'heal',        icon: '❤️‍🩹',  name: '回復',        desc: 'ライフ+1回復（即時）' },
   { id: 'time_next5',  icon: '😌',   name: '余裕',        desc: '次の問題だけタイマー+5秒' },
   { id: 'mouhai',      icon: '🦾',   name: '轟盲牌',      desc: 'ライフ2消費で何度でも発動可。手牌が全部「白」になって安牌に！正解で3倍スコア' },
@@ -194,7 +194,7 @@ const ACHIEVEMENTS = [
   {id:'timeout3',    icon:'⏰',  name:'時間の無駄遣い', desc:'1ランで3回タイムアップ',    hidden:true},
   {id:'last_stand',  icon:'😤',  name:'土壇場撃破',     desc:'ライフ1でライバルを撃破',   hidden:true},
   // 初達成系
-  {id:'first_crit',   icon:'⭐',  name:'初クリティカル！', desc:'非現物の安全牌を選択'},
+  {id:'first_crit',   icon:'⭐',  name:'初クリティカル！', desc:'捨て牌以外の安全牌を選択'},
   {id:'chiharu_down', icon:'🐉',  name:'最終決戦の勝者',  desc:'最強のライバル・チハルを撃破'},
   {id:'mouhai_used',  icon:'🦾',  name:'盲牌師',          desc:'轟盲牌を発動した'},
   // スコア・クリット系
@@ -491,7 +491,7 @@ function loadRival(idx) {
 // ── Stage transition ──────────────────────────────────────────────────────────
 const TRANS_TIPS = [
   '現物（捨て牌と同じ牌）は絶対安全！迷ったら現物から探そう',
-  '非現物の安全牌を当てるとクリティカル！スコア2倍＆ライバルに大ダメージ',
+  '捨て牌以外の安全牌を読み切るとクリティカル！スコア2倍＆ライバルに大ダメージ',
   'コンボを切らすな！5連続正解でボーナス最大になるよ',
   'タイムオーバーはミス扱い。迷ったら現物を選ぼう',
   '捨て牌の多い牌は危険！手牌に当たり牌が残ってる可能性が高い',
@@ -1464,17 +1464,17 @@ function showToast(mode,pts,waitShape,isCrit,dmg,reason){
   if(mode==='safe'){
     t.className='game-toast '+(isCrit?'toast-crit':'toast-safe')+' show';
     const r=reason?`<span class="toast-reason">${tileIdToJa(reason)}</span>`:'';
-    t.innerHTML=isCrit?`★ 現物ヒット！ +${pts}pt<br>${r}<small>${ws}</small>`:`✅ セーフ！ +${pts}pt<br>${r}<small>${ws}</small>`;
+    t.innerHTML=isCrit?`★ 読み切り！ +${pts}pt<br>${r}<small>${ws}</small>`:`✅ セーフ！ +${pts}pt<br>${r}<small>${ws}</small>`;
   } else if(mode==='danger'){
     const p=G.currentProblem;
-    const yStr=p?.yaku?`<span class="toast-yaku">ロン！ ${p.yaku} ${'★'.repeat(p.yakuValue||1)}</span>`:'';
+    const yStr=p?.yaku?`<span class="toast-yaku">ロン（当てられた）！ ${p.yaku} ${'★'.repeat(p.yakuValue||1)}</span>`:'';
     t.className='game-toast toast-danger show';
-    t.innerHTML=`💥 振り込み！${dmg>=2?' -'+dmg+'ライフ！！':''}<br>${yStr}<small>待ち → ${ws}</small>`;
+    t.innerHTML=`💥 当たり牌を出した！${dmg>=2?' -'+dmg+'ライフ！！':''}<br>${yStr}<small>相手の当たり牌 → ${ws}</small>`;
   } else {
     const p=G.currentProblem;
-    const yStr=p?.yaku?`<span class="toast-yaku">ツモ！ ${p.yaku} ${'★'.repeat(p.yakuValue||1)}</span>`:'';
+    const yStr=p?.yaku?`<span class="toast-yaku">ツモ（時間切れ当たり）！ ${p.yaku} ${'★'.repeat(p.yakuValue||1)}</span>`:'';
     t.className='game-toast toast-danger show';
-    t.innerHTML=`⏰ タイムオーバー！<br>${yStr}<small>待ち → ${ws}</small>`;
+    t.innerHTML=`⏰ タイムオーバー！<br>${yStr}<small>相手の当たり牌 → ${ws}</small>`;
   }
   // Toast tap: skip to next turn or next encounter depending on current turn
   t.onclick=()=>{
