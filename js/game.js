@@ -1270,10 +1270,14 @@ function startRankScroll(el) {
   requestAnimationFrame(()=>{
     const max=Math.max(0,el.scrollHeight-el.clientHeight);
     if(max===0) return;
-    let pos=max, paused=120, atTop=false;
+    let pos=max, paused=120, atTop=false, userScrollAt=0;
     el.scrollTop=pos;
+    // ユーザーが触ったら3秒間オートスクロールを止める
+    el.addEventListener('pointerdown', ()=>{ userScrollAt=performance.now(); });
+    el.addEventListener('scroll',      ()=>{ pos=el.scrollTop; userScrollAt=performance.now(); });
     const tick=()=>{
       if(G.phase!=='title') return;
+      if(performance.now()-userScrollAt < 3000){ _rankRaf=requestAnimationFrame(tick); return; }
       if(paused>0){paused--;_rankRaf=requestAnimationFrame(tick);return;}
       if(atTop){
         atTop=false; pos=max; el.scrollTop=pos; paused=60;
