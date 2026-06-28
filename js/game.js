@@ -931,7 +931,10 @@ function rivalDefeated() {
 let _skillTimer=null;
 function showSkillSelection() {
   const pool=RUN_SKILLS.filter(s=>s.id!=='heal'||G.lives<G.maxLives);
-  const choices=shuffle([...pool]).slice(0,3);
+  const shuffled=shuffle([...pool]).slice(0,3);
+  // put heal first when life is critical, otherwise keep shuffle order
+  if(G.lives===1) { const hi=shuffled.findIndex(s=>s.id==='heal'); if(hi>0){[shuffled[0],shuffled[hi]]=[shuffled[hi],shuffled[0]];} }
+  const choices=shuffled;
   const container=$('skill-cards'); container.innerHTML='';
 
   let countdown=10;
@@ -941,8 +944,10 @@ function showSkillSelection() {
 
   choices.forEach((skill,i)=>{
     const card=document.createElement('div');
-    card.className='skill-card'+(i===0?' skill-recommend':'');
-    card.innerHTML=`<div class="skill-card-icon">${skill.icon}</div><div><div class="skill-card-name">${skill.name}${i===0?' <span style="font-size:11px;color:#fbbf24">★オススメ</span>':''}</div><div class="skill-card-desc">${skill.desc}</div></div>`;
+    const isAuto = i===0;
+    card.className='skill-card'+(isAuto?' skill-recommend':'');
+    const autoLabel = isAuto ? ' <span style="font-size:11px;color:#94a3b8">↩おまかせ</span>' : '';
+    card.innerHTML=`<div class="skill-card-icon">${skill.icon}</div><div><div class="skill-card-name">${skill.name}${autoLabel}</div><div class="skill-card-desc">${skill.desc}</div></div>`;
     card.addEventListener('click',()=>{clearInterval(_skillTimer);pickSkill(skill);});
     container.appendChild(card);
   });
