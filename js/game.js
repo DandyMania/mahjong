@@ -232,11 +232,13 @@ const P_R = [0,14,11,10,10,9,9,8,7,7];
 
 function pinzuSVG(n) {
   const r = P_R[n]||8;
-  const circles = (P_POS[n]||[]).map(([cx,cy])=>
-    `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.5"/>` +
-    `<circle cx="${cx}" cy="${cy}" r="${r-4}" fill="#60a5fa" opacity="0.55"/>` +
-    `<circle cx="${cx-2}" cy="${cy-2}" r="${Math.max(2,r-7)}" fill="#fff" opacity="0.45"/>`
-  ).join('');
+  const circles = (P_POS[n]||[]).map(([cx,cy])=>{
+    const ri = Math.max(2, r-4);
+    const rc = r-7;
+    return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#1a1a1a"/>` +
+           `<circle cx="${cx}" cy="${cy}" r="${ri}" fill="#eee8d5"/>` +
+           (rc >= 2 ? `<circle cx="${cx}" cy="${cy}" r="${rc}" fill="#1a1a1a"/>` : '');
+  }).join('');
   return `<svg viewBox="0 0 60 80" width="100%" height="100%">${circles}</svg>`;
 }
 
@@ -249,11 +251,10 @@ const S_LAYOUT = [
 ];
 function souzuSVG(n) {
   if (n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">
-    <rect x="27" y="12" width="6" height="50" rx="3" fill="#166534"/>
-    <rect x="21" y="25" width="18" height="6" rx="3" fill="#4ade80"/>
-    <rect x="21" y="40" width="18" height="6" rx="3" fill="#4ade80"/>
-    <ellipse cx="30" cy="9" rx="9" ry="7" fill="#f59e0b"/>
-    <circle cx="34" cy="7" r="2" fill="#92400e"/>
+    <rect x="26" y="16" width="8" height="50" rx="3" fill="#1a1a1a"/>
+    <rect x="19" y="29" width="22" height="5" rx="2" fill="#1a1a1a"/>
+    <rect x="19" y="43" width="22" height="5" rx="2" fill="#1a1a1a"/>
+    <ellipse cx="30" cy="12" rx="9" ry="6" fill="#1a1a1a"/>
   </svg>`;
   const {c,w,h,gx,gy} = S_LAYOUT[n]||{c:2,w:12,h:13,gx:5,gy:4};
   const rows = Math.ceil(n/c);
@@ -263,11 +264,9 @@ function souzuSVG(n) {
   for(let i=0;i<n;i++){
     const col=i%c, row=Math.floor(i/c);
     const x=sx+col*(w+gx), y=sy+row*(h+gy);
-    const fill = row%2===0 ? '#15803d' : '#4ade80';
-    seg += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="${fill}"/>` +
-           `<rect x="${x}" y="${y}" width="${w}" height="3" rx="1.5" fill="#052e16" opacity="0.5"/>` +
-           `<rect x="${x}" y="${y+h-3}" width="${w}" height="3" rx="1.5" fill="#052e16" opacity="0.5"/>` +
-           `<rect x="${x+2}" y="${y+3}" width="2" height="${h-6}" rx="1" fill="#bbf7d0" opacity="0.4"/>`;
+    seg += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="#1a1a1a"/>` +
+           `<rect x="${x+1}" y="${y+1}" width="${w-2}" height="2.5" rx="1" fill="#3a3a3a"/>` +
+           `<rect x="${x+1}" y="${y+h-3}" width="${w-2}" height="2" rx="1" fill="#3a3a3a"/>`;
   }
   return `<svg viewBox="0 0 60 80" width="100%" height="100%">${seg}</svg>`;
 }

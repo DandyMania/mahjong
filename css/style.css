@@ -450,16 +450,16 @@ html, body {
 .tile-result  .tc-honor{ font-size: calc(16px * var(--s,1)); }
 
 /* Suit colors — parent .suit-X, child .tc-* */
-.tile.suit-m .tc-num, .tile.suit-m .tc-suit { color: #c41e1e; }
-.tile.suit-p .tc-num, .tile.suit-p .tc-suit { color: #1844c4; }
-.tile.suit-s .tc-num, .tile.suit-s .tc-suit { color: #1a8c4c; }
+.tile.suit-m .tc-num, .tile.suit-m .tc-suit { color: #1a1a1a; }
+.tile.suit-p .tc-num, .tile.suit-p .tc-suit { color: #1a1a1a; }
+.tile.suit-s .tc-num, .tile.suit-s .tc-suit { color: #1a1a1a; }
 
 /* Honor colors */
 .honor-7z { color: #c41e1e; }   /* 中 red */
 .honor-6z { color: #1a8c4c; }   /* 発 green */
 .honor-5z { color: #555;    }   /* 白 dark */
 .honor-1z, .honor-2z,
-.honor-3z, .honor-4z { color: #1a1a6c; }   /* winds dark blue */
+.honor-3z, .honor-4z { color: #1a1a1a; }   /* winds black */
 
 /* ── Tile interaction ────────────────────────────────── */
 .tile-hand { transition: transform .1s cubic-bezier(.34,1.56,.64,1), box-shadow .1s; }
