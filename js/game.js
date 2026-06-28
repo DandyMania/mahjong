@@ -447,17 +447,20 @@ function updateRivalFlavor(key) {
   el.classList.add('flavor-anim');
 }
 function slashRival(count) {
-  const icon=$('rival-icon'); if(!icon) return;
-  const angles=[-40,-15,10,35,55];
+  const zone=document.querySelector('.zone-opp'); if(!zone) return;
   for(let i=0;i<count;i++){
     setTimeout(()=>{
       const s=document.createElement('div');
-      s.className='rival-slash';
-      const ang=angles[Math.floor(Math.random()*angles.length)]+(Math.random()*14-7);
-      s.style.setProperty('--ang', ang+'deg');
-      icon.appendChild(s);
-      setTimeout(()=>s.remove(),500);
-    }, i*120);
+      s.className='zone-slash';
+      s.style.top=(8+Math.random()*55)+'%';
+      zone.appendChild(s);
+      // インパクト時にゾーンフラッシュ
+      setTimeout(()=>{
+        zone.classList.add('slash-flash');
+        setTimeout(()=>zone.classList.remove('slash-flash'),280);
+      }, 130);
+      setTimeout(()=>s.remove(),420);
+    }, i*180);
   }
 }
 function renderRivalHp(hit, slashCount) {
