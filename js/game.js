@@ -452,7 +452,7 @@ function slashRival(count) {
     setTimeout(()=>{
       const s=document.createElement('div');
       s.className='zone-slash';
-      s.style.setProperty('--pos',(30+i*15+Math.random()*10)+'%');
+      s.style.setProperty('--y',(15+i*22+Math.random()*8)+'%');
       zone.appendChild(s);
       // インパクト時にゾーンフラッシュ
       setTimeout(()=>{
