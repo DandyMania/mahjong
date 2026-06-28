@@ -107,27 +107,27 @@ html, body {
 }
 .zone-slash {
   position: absolute;
-  left: 5%;
+  left: 3%;
   top: var(--y, 25%);
-  height: 4px;
+  height: 12px;
   width: 0;
-  transform: rotate(-18deg);
+  transform: rotate(-12deg);
   transform-origin: left center;
   background: linear-gradient(90deg,
-    rgba(255,255,255,.3) 0%,
-    white 25%,
-    rgba(255,245,100,1) 55%,
-    rgba(255,255,255,.5) 80%,
+    rgba(255,255,255,.4) 0%,
+    white 20%,
+    rgba(255,245,100,1) 50%,
+    rgba(255,255,255,.6) 78%,
     transparent 100%
   );
-  box-shadow: 0 0 12px 4px rgba(255,240,80,.8), 0 0 28px 8px rgba(255,200,50,.4);
+  box-shadow: 0 0 18px 8px rgba(255,240,80,.9), 0 0 40px 16px rgba(255,200,50,.55), 0 0 60px 20px rgba(255,220,0,.2);
   pointer-events: none;
-  border-radius: 2px;
-  animation: slash-extend .20s cubic-bezier(.05,.7,.2,1) forwards, slash-fade .33s .17s ease-out forwards;
+  border-radius: 3px;
+  animation: slash-extend .22s cubic-bezier(.02,.8,.15,1) forwards, slash-fade .38s .18s ease-out forwards;
 }
 @keyframes slash-extend {
   0%   { width: 0; }
-  100% { width: 90%; }
+  100% { width: 96%; }
 }
 @keyframes slash-fade {
   0%   { opacity: 1; }

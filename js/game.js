@@ -91,12 +91,16 @@ const RUN_SKILLS = [
 
 // ── Permanent upgrades ──────────────────────────────────────────────────────
 const UPGRADES = [
-  { id: 'hp',    icon: '❤️',  name: '体力強化',     maxLv: 2, costs: [8,20],  descs: ['+1ライフ（最大4）', '+1ライフ（最大5）'] },
-  { id: 'time',  icon: '⏱️',  name: '時間延長',     maxLv: 2, costs: [10,18], descs: ['+2秒（12秒）', '+2秒（14秒）'] },
-  { id: 'hint',  icon: '💡',  name: 'ヒント全開',   maxLv: 1, costs: [15],    descs: ['ヒントで安全牌が全部光る'] },
-  { id: 'lucky', icon: '🍀',  name: '幸運お守り',   maxLv: 2, costs: [12,25], descs: ['ラッキーイベント確率2倍', 'ツモ被害を受けない'] },
-  { id: 'combo', icon: '🔥',  name: 'コンボキープ', maxLv: 1, costs: [20],    descs: ['ミスでコンボが-1のみ'] },
-  { id: 'ins',   icon: '🛡️',  name: '初回ミス保険', maxLv: 1, costs: [10],    descs: ['1ランに1回、最初のミスを無効'] },
+  { id: 'hp',       icon: '❤️',  name: '体力強化',     maxLv: 2, costs: [8,20],  descs: ['+1ライフ（最大4）', '+1ライフ（最大5）'] },
+  { id: 'time',     icon: '⏱️',  name: '時間延長',     maxLv: 2, costs: [10,18], descs: ['+2秒（12秒）', '+2秒（14秒）'] },
+  { id: 'hint',     icon: '💡',  name: 'ヒント全開',   maxLv: 1, costs: [15],    descs: ['ヒントで安全牌が全部光る'] },
+  { id: 'lucky',    icon: '🍀',  name: '幸運お守り',   maxLv: 2, costs: [12,25], descs: ['ラッキーイベント確率2倍', 'ツモ被害を受けない'] },
+  { id: 'combo',    icon: '🔥',  name: 'コンボキープ', maxLv: 1, costs: [20],    descs: ['ミスでコンボが-1のみ'] },
+  { id: 'ins',      icon: '🛡️',  name: '初回ミス保険', maxLv: 1, costs: [10],    descs: ['1ランに1回、最初のミスを無効'] },
+  { id: 'score_up', icon: '💎',  name: 'スコア底上げ', maxLv: 3, costs: [8,15,25], descs: ['正解ごと+50点', '正解ごと+100点', '正解ごと+150点'] },
+  { id: 'exp_rate', icon: '📈',  name: 'EXP効率アップ', maxLv: 2, costs: [12,22], descs: ['EXP獲得量+30%', 'EXP獲得量+60%'] },
+  { id: 'crit_up',  icon: '⚔️',  name: '斬撃強化',     maxLv: 2, costs: [14,28], descs: ['現物ヒット+150点ボーナス', '現物ヒット+300点ボーナス'] },
+  { id: 'start_hp', icon: '💊',  name: '鋼の意志',     maxLv: 1, costs: [18],    descs: ['ライバル戦開始時ライフ1回復'] },
 ];
 
 // ── Move names ──────────────────────────────────────────────────────────────
@@ -270,6 +274,9 @@ function startGame() {
   BASE_TIMER   = 10 + (upg.time || 0) * 2;
   G.hintAll    = !!(upg.hint);
   G.hasInsurance = !!(upg.ins);
+  G.scoreBonus = (upg.score_up||0)*50;
+  G.critBonus  = (upg.crit_up||0)*150;
+  G.startHpRegen = !!(upg.start_hp);
 
   G.score=0; G.lives=G.maxLives; G.combo=0; G.rivalIdx=0;
   if (_scoreAnim) { cancelAnimationFrame(_scoreAnim); _scoreAnim=null; } _displayedScore=0; $('score-display').textContent='0';
@@ -296,6 +303,7 @@ function loadRival(idx) {
   showRivalTransition(idx, () => {
     // ステージ開始時 HP+1 回復（最初のステージ除く）
     if(idx>0 && G.lives < G.maxLives){ G.lives++; updateHUD(); showEventToast('❤️ ライフ回復！','safe'); }
+    if(idx>0 && G.startHpRegen && G.lives < G.maxLives){ G.lives++; updateHUD(); showEventToast('💊 鋼の意志でライフ回復！','safe'); }
     G.rivalProbs = shuffle(r.prob.map(id=>PROBLEMS.find(p=>p.id===id)).filter(Boolean));
     G.rivalProbIdx=0;
     renderRivalBar();
@@ -685,6 +693,8 @@ function selectTile(td, el) {
     const isClutch = _tv<=2 && G.combo>=2;
     let pts=(isCrit?200:100)+Math.min(G.combo,5)*20;
     if(isClutch) pts+=150;
+    if(isCrit) pts+=(G.critBonus||0);
+    pts+=(G.scoreBonus||0);
     if(G.mouhaiNext){G.mouhaiNext=false;pts*=3;}
     if(G.scoreDblOnce){pts*=2;G.scoreDblOnce=false;}
     if(hasRunSkill('shinsoku')&&_tv>=5) pts+=200;
@@ -1014,7 +1024,11 @@ function showGameOver() {
   _goTimer=setTimeout(()=>{ _goTimer=null; showScreen('screen-title'); updateTitleUI(); }, 30000);
 }
 
-function calcExp() { return Math.max(2, G.rivalIdx*3+Math.floor(G.score/50)); }
+function calcExp() {
+  const save=getSave();
+  const mult=1+(save.upgrades.exp_rate||0)*0.3;
+  return Math.max(2, Math.round((G.rivalIdx*3+Math.floor(G.score/50))*mult));
+}
 
 // ── Upgrade shop ──────────────────────────────────────────────────────────────
 function openShop(expEarned) {
@@ -1202,6 +1216,7 @@ function retryCurrentRival() {
   const save=getSave(), upg=save.upgrades;
   G.maxLives=3+(upg.hp||0); BASE_TIMER=10+(upg.time||0)*2;
   G.hintAll=!!(upg.hint); G.hasInsurance=!!(upg.ins);
+  G.scoreBonus=(upg.score_up||0)*50; G.critBonus=(upg.crit_up||0)*150; G.startHpRegen=!!(upg.start_hp);
   G.score=0; G.lives=G.maxLives; G.combo=0;
   G.runSkills=[]; G.hasBlock=false; G.comboSaveOnce=false;
   G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.rivalDmgMult=1;
