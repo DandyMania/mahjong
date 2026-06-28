@@ -213,7 +213,6 @@ const MOVES = {
   yakubreak:['役崩し！！','上がり阻止！！','YAKU BREAK!!','完璧な防御！！'],
 };
 
-const NPC = ['アンズ','ホンダ','バクラ','マリク','レベッカ','アテム'];
 
 // ── Tile display ────────────────────────────────────────────────────────────
 const SUIT_KANJI = { m:'萬', p:'筒', s:'索' };
@@ -509,38 +508,6 @@ function loadNextProblem() {
 
 // ── Random events ─────────────────────────────────────────────────────────────
 function rollEvent() {
-  const save=getSave(), upg=save.upgrades;
-  const diff=G.rivalIdx/(RIVALS.length-1);
-  const badRate  = EASY_MODE ? 0 : 0.06+diff*0.12;
-  const goodRate = 0.08*(upg.lucky>=1?2:1);
-  const r=Math.random();
-
-  // ごうもうぱい: ピンチ時(lives=1)に25%発動
-  // 危険牌を全部白(5z)に見せかける。ただし1枚だけニセ白(damage×2)が混じる
-  if (G.lives===1 && Math.random()<0.25) {
-    const p=G.currentProblem;
-    const dangers=p.hand.filter(td=>!td.safe&&!td.lucky);
-    if (dangers.length>=2) {
-      const fakeIdx=Math.floor(Math.random()*dangers.length);
-      dangers.forEach((td,i)=>{
-        td.tile='5z';
-        if(i===fakeIdx){ td.safe=false; td.damage=2; td.reason='ごうもうぱい失敗（ニセ白）'; }
-        else           { td.safe=true;                td.reason='ごうもうぱい成功（白化）'; }
-      });
-      showEventToast('🤍 ごうもうぱい！…でも1枚だけ染みてないかも？','safe');
-      return;
-    }
-  }
-
-  if (r<badRate && !(upg.lucky>=2)) {
-    const name=pick(NPC);
-    if (G.hasBlock) { G.hasBlock=false; showEventToast(`🛡️ ${name}のツモ！でも鉄壁で防いだ！`,'safe'); }
-    else { G.missThisRival=true; G.lives=Math.max(0,G.lives-1); hitLives(); updateHUD(); showEventToast(`😱 ${name}がツモ！-1ライフ…`,'danger'); }
-  } else if (r<badRate+goodRate) {
-    const name=pick(NPC);
-    G.safeOneNext=true;
-    showEventToast(`✨ ${name}がロン！次の問題で危険牌が1枚消えるよ`,'safe');
-  }
 }
 function showEventToast(msg, mode) {
   const t=$('game-toast');
@@ -1186,11 +1153,8 @@ function showGameOver() {
   const handEl=$('gameover-hand');
   if(handEl && p) {
     const discardTiles=(p.opponentDiscards||[]).map(t=>mkTile(t,'discard').outerHTML).join('');
-    const waitTiles=(p.waits||[]).map(t=>{
-      const el=mkTile(t,'result'); el.classList.add('tile-danger'); return el.outerHTML;
-    }).join('');
     const yakuStr=p.yaku?`<div class="go-wait-label" style="margin-top:8px">役: ${p.yaku}${'★'.repeat(p.yakuValue||1)}</div>`:'';
-    handEl.innerHTML=`<div class="go-wait-label">相手の捨て牌</div><div class="go-wait-tiles">${discardTiles}</div>${yakuStr}<div class="go-wait-label" style="margin-top:8px">危険牌（当たり牌）</div><div class="go-wait-tiles">${waitTiles}</div>`;
+    handEl.innerHTML=`<div class="go-wait-label">相手の捨て牌</div><div class="go-wait-tiles">${discardTiles}</div>${yakuStr}`;
   }
   G.pendingExpEarned=expEarned;
   showScreen('screen-gameover');
@@ -1451,8 +1415,9 @@ function goTitle() {
 
 // ── Responsive scale ─────────────────────────────────────────────────────────
 function applyScale(){
-  const w=Math.min(window.innerWidth,540); // コンテンツ幅上限に合わせる
-  const s=Math.min(Math.max(w/390,0.8),1.5);
+  const w=Math.min(window.innerWidth,540);
+  const h=window.innerHeight;
+  const s=Math.min(Math.max(Math.min(w/390,h/720),0.72),1.5);
   document.documentElement.style.setProperty('--s',s.toFixed(3));
 }
 window.addEventListener('resize',applyScale);
