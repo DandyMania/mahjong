@@ -1157,6 +1157,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-resume').addEventListener('click',resumeGame);
   $('btn-pause-title').addEventListener('click',goTitle);
 
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+    navigator.serviceWorker.addEventListener('controllerchange',()=>location.reload());
+  }
   updateTitleUI(); showScreen('screen-title');
 });
