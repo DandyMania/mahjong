@@ -283,14 +283,21 @@ html, body {
   0%, 100% { box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.4); }
   40%  { box-shadow: 0 5px 0 rgba(34,197,94,.6), 0 6px 24px rgba(34,197,94,.5), 0 0 16px rgba(34,197,94,.4); border-color: rgba(34,197,94,.7); }
 }
-/* 現物（明らかな安全牌）ぬるっとグロー */
+/* 現物（明らかな安全牌）ぬるっとグロー（タイル全体） */
 .tile-hand.tile-genzai {
-  border-color: rgba(34,197,94,.6) !important;
   animation: genzai-glow 2.2s ease-in-out infinite;
 }
 @keyframes genzai-glow {
-  0%, 100% { box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.4), 0 0 4px rgba(34,197,94,.1); }
-  50%      { box-shadow: 0 5px 0 rgba(34,197,94,.5),   0 6px 16px rgba(34,197,94,.2), 0 0 18px rgba(34,197,94,.4); }
+  0%, 100% {
+    background: linear-gradient(155deg, #fffcf0 0%, #ede8d8 100%);
+    border-color: rgba(34,197,94,.4);
+    box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.4);
+  }
+  50% {
+    background: linear-gradient(155deg, rgba(34,197,94,.18) 0%, rgba(34,197,94,.06) 100%);
+    border-color: rgba(34,197,94,.85);
+    box-shadow: 0 5px 0 rgba(34,197,94,.5), 0 6px 16px rgba(34,197,94,.2), 0 0 16px rgba(34,197,94,.4);
+  }
 }
 .hand-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
 .hand-area { display: flex; align-items: flex-start; }
