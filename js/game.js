@@ -232,14 +232,20 @@ const P_R = [0,14,11,10,10,9,9,8,7,7];
 
 function pinzuSVG(n) {
   const r = P_R[n]||8;
-  const circles = (P_POS[n]||[]).map(([cx,cy])=>{
-    const ri = Math.max(2, r-4);
-    const rc = r-7;
-    return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#1a1a1a"/>` +
-           `<circle cx="${cx}" cy="${cy}" r="${ri}" fill="#eee8d5"/>` +
-           (rc >= 2 ? `<circle cx="${cx}" cy="${cy}" r="${rc}" fill="#1a1a1a"/>` : '');
-  }).join('');
-  return `<svg viewBox="0 0 60 80" width="100%" height="100%">${circles}</svg>`;
+  function flower(cx, cy, or, ringCol, petalCol, centerCol) {
+    const pr = Math.max(1.5, or*0.32);
+    const dist = or*0.56;
+    const pts = [0,60,120,180,240,300].map(a=>{
+      const rd=a*Math.PI/180;
+      return `<circle cx="${(cx+dist*Math.sin(rd)).toFixed(1)}" cy="${(cy-dist*Math.cos(rd)).toFixed(1)}" r="${pr}" fill="${petalCol}"/>`;
+    }).join('');
+    return `<circle cx="${cx}" cy="${cy}" r="${or}" fill="none" stroke="${ringCol}" stroke-width="2"/>` +
+           pts +
+           `<circle cx="${cx}" cy="${cy}" r="${(pr*0.95).toFixed(1)}" fill="${centerCol}"/>`;
+  }
+  if(n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">${flower(30,40,14,'#1d4ed8','#dc2626','#dc2626')}</svg>`;
+  const fs=(P_POS[n]||[]).map(([cx,cy])=>flower(cx,cy,r,'#2563eb','#3b82f6','#3b82f6')).join('');
+  return `<svg viewBox="0 0 60 80" width="100%" height="100%">${fs}</svg>`;
 }
 
 const S_LAYOUT = [
@@ -250,23 +256,21 @@ const S_LAYOUT = [
   {c:2,w:13,h:14,gx:7,gy:4}, {c:3,w:13,h:18,gx:4,gy:5},
 ];
 function souzuSVG(n) {
-  if (n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">
-    <rect x="26" y="16" width="8" height="50" rx="3" fill="#1a1a1a"/>
-    <rect x="19" y="29" width="22" height="5" rx="2" fill="#1a1a1a"/>
-    <rect x="19" y="43" width="22" height="5" rx="2" fill="#1a1a1a"/>
-    <ellipse cx="30" cy="12" rx="9" ry="6" fill="#1a1a1a"/>
-  </svg>`;
-  const {c,w,h,gx,gy} = S_LAYOUT[n]||{c:2,w:12,h:13,gx:5,gy:4};
-  const rows = Math.ceil(n/c);
-  const sx = Math.round((60-(c*w+(c-1)*gx))/2);
-  const sy = Math.round((80-(rows*h+(rows-1)*gy))/2);
+  const GR='#1a8c4c';
+  function gourd(cx, y, w, h, fill) {
+    const rw=(w/2)*0.88, ym=y+h/2, nk=rw*0.28;
+    return `<path d="M ${cx},${y} C ${cx-rw},${y} ${cx-rw},${ym-nk} ${cx},${ym} C ${cx+rw},${ym+nk} ${cx+rw},${y+h} ${cx},${y+h} C ${cx-rw},${y+h} ${cx-rw},${ym+nk} ${cx},${ym} C ${cx+rw},${ym-nk} ${cx+rw},${y} ${cx},${y} Z" fill="${fill}"/>`;
+  }
+  if(n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">${gourd(30,14,18,54,GR)}</svg>`;
+  const {c,w,h,gx,gy}=S_LAYOUT[n]||{c:2,w:12,h:13,gx:5,gy:4};
+  const rows=Math.ceil(n/c);
+  const sx=Math.round((60-(c*w+(c-1)*gx))/2);
+  const sy=Math.round((80-(rows*h+(rows-1)*gy))/2);
   let seg='';
   for(let i=0;i<n;i++){
-    const col=i%c, row=Math.floor(i/c);
-    const x=sx+col*(w+gx), y=sy+row*(h+gy);
-    seg += `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2.5" fill="#1a1a1a"/>` +
-           `<rect x="${x+1}" y="${y+1}" width="${w-2}" height="2.5" rx="1" fill="#3a3a3a"/>` +
-           `<rect x="${x+1}" y="${y+h-3}" width="${w-2}" height="2" rx="1" fill="#3a3a3a"/>`;
+    const col=i%c,row=Math.floor(i/c);
+    const x=sx+col*(w+gx),y=sy+row*(h+gy);
+    seg+=gourd(x+w/2,y,w,h,GR);
   }
   return `<svg viewBox="0 0 60 80" width="100%" height="100%">${seg}</svg>`;
 }

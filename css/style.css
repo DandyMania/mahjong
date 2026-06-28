@@ -450,7 +450,8 @@ html, body {
 .tile-result  .tc-honor{ font-size: calc(16px * var(--s,1)); }
 
 /* Suit colors — parent .suit-X, child .tc-* */
-.tile.suit-m .tc-num, .tile.suit-m .tc-suit { color: #1a1a1a; }
+.tile.suit-m .tc-num  { color: #1a1a6c; }
+.tile.suit-m .tc-suit { color: #dc2626; }
 .tile.suit-p .tc-num, .tile.suit-p .tc-suit { color: #1a1a1a; }
 .tile.suit-s .tc-num, .tile.suit-s .tc-suit { color: #1a1a1a; }
 
