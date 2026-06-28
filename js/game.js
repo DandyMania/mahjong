@@ -228,6 +228,24 @@ function _renderTimer() {
 // ── Advance / schedule ───────────────────────────────────────────────────────
 let _adv = null;
 let _goTimer = null;
+let _displayedScore = 0, _scoreAnim = null;
+
+function animateScore(target) {
+  if (_scoreAnim) { cancelAnimationFrame(_scoreAnim); _scoreAnim = null; }
+  const start = _displayedScore;
+  const diff = target - start;
+  if (diff <= 0) { _displayedScore = target; $('score-display').textContent = target.toLocaleString(); return; }
+  const dur = Math.min(700, Math.max(200, diff * 1.5));
+  const t0 = performance.now();
+  (function tick(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const ease = 1 - (1 - p) * (1 - p);
+    _displayedScore = Math.round(start + diff * ease);
+    $('score-display').textContent = _displayedScore.toLocaleString();
+    if (p < 1) _scoreAnim = requestAnimationFrame(tick);
+    else { _scoreAnim = null; _displayedScore = target; }
+  })(t0);
+}
 function sched(ms) { _adv = setTimeout(advance, ms); }
 function advance() {
   if (_adv) { clearTimeout(_adv); _adv=null; }
@@ -253,6 +271,7 @@ function startGame() {
   G.hasInsurance = !!(upg.ins);
 
   G.score=0; G.lives=G.maxLives; G.combo=0; G.rivalIdx=0;
+  if (_scoreAnim) { cancelAnimationFrame(_scoreAnim); _scoreAnim=null; } _displayedScore=0; $('score-display').textContent='0';
   G.runSkills=[]; G.hasBlock=false; G.comboSaveOnce=false;
   G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.rivalDmgMult=1;
   G.tsumikomiNext=false; G.surikaeAvail=false; G.toshiNext=false; G.toshiThisProblem=false; G.nidotsumiNext=false;
@@ -497,7 +516,7 @@ function renderHandForTurn() {
   toShow.forEach(({td,i})=>{
     const el=mkTile(td.tile,'hand',G.mouhaiNext);
     el.dataset.handIdx=i;
-    if(genzaiSet.has(td.tile)) el.classList.add('tile-genzai');
+    if(genzaiSet.has(td.tile) && !G.mouhaiNext) el.classList.add('tile-genzai');
     el.addEventListener('pointerdown',e=>{el.classList.add('pressed');addRipple(el,e);});
     el.addEventListener('pointerup',  ()=>{el.classList.remove('pressed');selectTile(td,el);});
     el.addEventListener('pointerleave',()=>el.classList.remove('pressed'));
@@ -615,7 +634,7 @@ function updateHUD() {
   let h='';
   for(let i=0;i<G.maxLives;i++) h+=i<G.lives?'<span class="heart heart-alive">❤️</span>':'<span class="heart heart-dead">🖤</span>';
   $('lives-display').innerHTML=h;
-  $('score-display').textContent=G.score.toLocaleString();
+  if (G.score !== _displayedScore) animateScore(G.score);
   const cd=$('combo-display');
   if(G.combo>=2){cd.textContent=`🔥 ×${G.combo}`;cd.classList.remove('combo-hidden');cd.classList.add('combo-bump');setTimeout(()=>cd.classList.remove('combo-bump'),200);}
   else cd.classList.add('combo-hidden');
