@@ -820,7 +820,6 @@ function mkTile(id,type,blind=false) {
   el.className=`tile tile-${type}`+(suit!=='z'?` suit-${suit}`:'')+(blind?' tile-blind':'');
   el.dataset.tile=id;
   if(blind){const s=document.createElement('span');s.className='tc-honor honor-5z';s.textContent='白';el.appendChild(s);}
-  else{const obj=document.createElement('object');obj.type='image/svg+xml';obj.data=`/images/${id}.svg`;obj.style.cssText='width:100%;height:100%;pointer-events:none;display:block;';el.appendChild(obj);}
   return el;
 }
 function unblindHand(exceptEl) {
@@ -1124,10 +1123,14 @@ function revealOpponentHandDisplay(onNext) {
     tilesWrap.appendChild(el);
   });
   wrap.appendChild(tilesWrap);
+  if(p.yaku){
+    const yl=document.createElement('div'); yl.className='opp-reveal-label'; yl.style.marginTop='6px';
+    yl.textContent=`🀄 役: ${p.yaku} ${'★'.repeat(p.yakuValue||1)}`;
+    wrap.appendChild(yl);
+  }
   if(onNext){
     const hint=document.createElement('div');
     hint.className='tap-next-btn';
-    hint.style.cssText='display:block;margin:14px auto 4px;width:fit-content;';
     hint.textContent='▸ タップで次へ';
     wrap.appendChild(hint);
     let autoTimer=null;
@@ -1283,6 +1286,7 @@ function showGameOver() {
     const ww=document.createElement('div'); ww.className='go-wait-tiles';
     (p.waits||[]).forEach(t=>{ const e=mkTile(t,'result'); e.style.pointerEvents='none'; ww.appendChild(e); });
     waitEl.appendChild(ww);
+    if(p.yaku){ const yl=document.createElement('div'); yl.className='go-wait-label'; yl.style.marginTop='6px'; yl.textContent=`🀄 役: ${p.yaku} ${'★'.repeat(p.yakuValue||1)}`; waitEl.appendChild(yl); }
     if(p.explanation){ const ex=document.createElement('div'); ex.className='go-explanation'; ex.innerHTML=tileIdToJa(p.explanation).replace(/\n/g,'<br>'); waitEl.appendChild(ex); }
   }
   const handEl=$('gameover-hand');
