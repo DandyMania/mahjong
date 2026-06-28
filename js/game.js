@@ -120,11 +120,11 @@ const RIVALS = [
         '…ありえない…わたしの手が…崩された…',
       ],
       win: [
-        '粉砕…玉砕…大喝采…ふふ',
-        '…消えなさい…冥府の彼方へ…',
-        '…弱者は…去るのみ…フフフ…',
-        '大喝采…あなたの敗北に…拍手を…',
-        '…また挑んでくるがいいわ…待っているから…',
+        '…ふふ…悪くなかったわ…次はもっと磨いてきて…',
+        '…惜しかったわね…あと少しで…届いたのに…',
+        '…散り際も…美しく…それがあなたの流儀ね…',
+        '…また来なさい…成長したあなたを…待っているから…',
+        '…いい戦いだったわ…ゆっくり…休んでいきなさい…',
       ],
       defeated: [
         '…あなたこそが…真の冥龍だわ…',
@@ -163,16 +163,16 @@ const RUN_SKILLS = [
 
 // ── Permanent upgrades ──────────────────────────────────────────────────────
 const UPGRADES = [
-  { id: 'hp',       icon: '❤️',  name: '体力強化',     maxLv: 2, costs: [20,80],    descs: ['+1ライフ（最大4）', '+1ライフ（最大5）'] },
-  { id: 'time',     icon: '⏱️',  name: '時間延長',     maxLv: 2, costs: [20,80],    descs: ['+2秒（12秒）', '+2秒（14秒）'] },
-  { id: 'hint',     icon: '💡',  name: 'ヒント全開',   maxLv: 1, costs: [50],       descs: ['ヒントで安全牌が全部光る'] },
-  { id: 'lucky',    icon: '🍀',  name: '幸運お守り',   maxLv: 2, costs: [30,100],   descs: ['ラッキーイベント確率2倍', 'ツモ被害を受けない'] },
-  { id: 'combo',    icon: '🔥',  name: 'コンボキープ', maxLv: 1, costs: [70],       descs: ['ミスでコンボが-1のみ'] },
-  { id: 'ins',      icon: '🛡️',  name: '初回ミス保険', maxLv: 1, costs: [25],       descs: ['1ランに1回、最初のミスを無効'] },
-  { id: 'score_up', icon: '💎',  name: 'スコア底上げ', maxLv: 3, costs: [20,60,180], descs: ['正解ごと+50点', '正解ごと+100点', '正解ごと+150点'] },
-  { id: 'exp_rate', icon: '📈',  name: 'EXP効率アップ', maxLv: 2, costs: [35,100],  descs: ['EXP獲得量+30%', 'EXP獲得量+60%'] },
-  { id: 'crit_up',  icon: '⚔️',  name: '斬撃強化',     maxLv: 2, costs: [50,180],   descs: ['クリティカル+150点ボーナス', 'クリティカル+300点ボーナス'] },
-  { id: 'start_hp', icon: '💊',  name: '鋼の意志',     maxLv: 1, costs: [70],       descs: ['ライバル戦開始時ライフ1回復'] },
+  { id: 'hp',       icon: '❤️',  name: '体力強化',     maxLv: 2, costs: [40,300],   descs: ['+1ライフ（最大4）', '+1ライフ（最大5）'] },
+  { id: 'time',     icon: '⏱️',  name: '時間延長',     maxLv: 2, costs: [40,280],   descs: ['+2秒（12秒）', '+2秒（14秒）'] },
+  { id: 'hint',     icon: '💡',  name: 'ヒント全開',   maxLv: 1, costs: [90],       descs: ['ヒントで安全牌が全部光る'] },
+  { id: 'lucky',    icon: '🍀',  name: '幸運お守り',   maxLv: 2, costs: [40,400],   descs: ['ラッキーイベント確率2倍', 'ツモ被害を受けない'] },
+  { id: 'combo',    icon: '🔥',  name: 'コンボキープ', maxLv: 1, costs: [130],      descs: ['ミスでコンボが-1のみ'] },
+  { id: 'ins',      icon: '🛡️',  name: '初回ミス保険', maxLv: 1, costs: [70],       descs: ['1ランに1回、最初のミスを無効'] },
+  { id: 'score_up', icon: '💎',  name: 'スコア底上げ', maxLv: 3, costs: [30,220,450], descs: ['正解ごと+50点', '正解ごと+100点', '正解ごと+150点'] },
+  { id: 'exp_rate', icon: '📈',  name: 'EXP効率アップ', maxLv: 2, costs: [50,320],  descs: ['EXP獲得量+30%', 'EXP獲得量+60%'] },
+  { id: 'crit_up',  icon: '⚔️',  name: '斬撃強化',     maxLv: 2, costs: [80,500],   descs: ['クリティカル+150点ボーナス', 'クリティカル+300点ボーナス'] },
+  { id: 'start_hp', icon: '💊',  name: '鋼の意志',     maxLv: 1, costs: [160],      descs: ['ライバル戦開始時ライフ1回復'] },
 ];
 
 // ── Achievements ────────────────────────────────────────────────────────────
@@ -430,6 +430,18 @@ function loadRival(idx) {
 }
 
 // ── Stage transition ──────────────────────────────────────────────────────────
+const TRANS_TIPS = [
+  '現物（捨て牌と同じ牌）は絶対安全！迷ったら現物から探そう',
+  '非現物の安全牌を当てるとクリティカル！スコア2倍＆ライバルに大ダメージ',
+  'コンボを切らすな！5連続正解でボーナス最大になるよ',
+  'タイムオーバーはミス扱い。迷ったら現物を選ぼう',
+  '捨て牌の多い牌は危険！手牌に当たり牌が残ってる可能性が高い',
+  'ライフ1のピンチで盲牌スキルを持ってると自動発動！正解で3倍スコア',
+  'ショップで時間延長を買うと余裕が生まれるよ。序盤の優先投資に！',
+  'コンボキープスキルがあればミスしてもコンボが-1のみ。スコア狙いに必須',
+  '早押しボーナスはないけどコンボの繰越時間があるよ。早く正解すると次の問題が楽になる',
+  'リーチした相手の現物は複数あることも。落ち着いて全部の捨て牌を確認しよう',
+];
 function showRivalTransition(idx, cb) {
   hideToast();
   const r=RIVALS[idx], ov=$('stage-trans');
@@ -437,9 +449,19 @@ function showRivalTransition(idx, cb) {
   $('trans-icon').textContent   = r.icon;
   $('trans-name').textContent   = r.name;
   $('trans-flavor').textContent = `"${r.flavor}"`;
+  const tipEl=$('trans-tip');
+  if(tipEl) tipEl.textContent='💡 '+TRANS_TIPS[Math.floor(Math.random()*TRANS_TIPS.length)];
   ov.classList.remove('hidden');
   requestAnimationFrame(()=>requestAnimationFrame(()=>ov.classList.add('show')));
-  setTimeout(()=>{ ov.classList.remove('show'); setTimeout(()=>{ ov.classList.add('hidden'); cb(); }, 350); }, 2200);
+  let done=false;
+  const advance=()=>{
+    if(done) return; done=true;
+    ov.removeEventListener('click',advance);
+    ov.classList.remove('show');
+    setTimeout(()=>{ ov.classList.add('hidden'); cb(); }, 350);
+  };
+  const t=setTimeout(advance, 2200);
+  ov.addEventListener('click',()=>{ clearTimeout(t); advance(); });
 }
 
 // ── Problem loading ───────────────────────────────────────────────────────────
@@ -740,7 +762,7 @@ function mkTile(id,type,blind=false) {
   const suit=id[1], num=parseInt(id[0]);
   el.className=`tile tile-${type}`+(suit!=='z'?` suit-${suit}`:'')+(blind?' tile-blind':'');
   el.dataset.tile=id;
-  if(blind){ /* 全部白 — 何も表示しない */ }
+  if(blind){const s=document.createElement('span');s.className='tc-honor honor-5z';s.textContent='白';el.appendChild(s);}
   else if(suit==='z'){const s=document.createElement('span');s.className=`tc-honor honor-${id}`;s.textContent=HONOR_MAP[id]||'?';el.appendChild(s);}
   else if(suit==='p'){el.innerHTML=pinzuSVG(num);}
   else if(suit==='s'){el.innerHTML=souzuSVG(num);}
@@ -1156,7 +1178,8 @@ function showGameOver() {
     const waitTiles=(p.waits||[]).map(t=>{
       const el=mkTile(t,'result'); return el.outerHTML;
     }).join('');
-    waitEl.innerHTML=`<div class="go-wait-label">相手の待ち（${shape}）</div><div class="go-wait-tiles">${waitTiles}</div>`;
+    const expStr=p.explanation?`<div class="go-explanation">${p.explanation.replace(/\n/g,'<br>')}</div>`:'';
+    waitEl.innerHTML=`<div class="go-wait-label">相手の待ち（${shape}）</div><div class="go-wait-tiles">${waitTiles}</div>${expStr}`;
   }
   const handEl=$('gameover-hand');
   if(handEl && p) {
@@ -1167,7 +1190,7 @@ function showGameOver() {
   G.pendingExpEarned=expEarned;
   showScreen('screen-gameover');
   if(_goTimer) clearTimeout(_goTimer);
-  _goTimer=setTimeout(()=>{ _goTimer=null; showScreen('screen-title'); updateTitleUI(); }, 30000);
+  _goTimer=setTimeout(()=>{ _goTimer=null; G.phase='title'; showScreen('screen-title'); updateTitleUI(); }, 30000);
 }
 
 function calcExp() {
@@ -1359,20 +1382,33 @@ function updateTitleUI() {
 }
 
 // ── Achievements screen ─────────────────────────────────────────────────────────
-function showAchievements(){
+const ACH_PER_PAGE = 5;
+function showAchievements(page=0){
   const save=getSave();
   const unlocked=save.achievements||{};
   const body=$('ach-body');
-  if(body){
-    const rows=ACHIEVEMENTS.map(a=>{
-      const isUnlocked=!!unlocked[a.id];
-      if(!isUnlocked && a.hidden) return `<div class="ach-row ach-row-locked"><span class="ach-row-icon">🔒</span><div class="ach-row-info"><div class="ach-row-name">????</div><div class="ach-row-desc">???</div></div></div>`;
-      const cls=isUnlocked?'ach-row':'ach-row ach-row-locked';
-      return `<div class="${cls}"><span class="ach-row-icon">${a.icon}</span><div class="ach-row-info"><div class="ach-row-name">${a.name}</div><div class="ach-row-desc">${a.desc}</div></div>${isUnlocked?'<span class="ach-row-check">✅</span>':''}</div>`;
-    }).join('');
-    body.innerHTML=rows+`<button id="btn-ach-back" class="btn-secondary" style="margin-top:16px">戻る</button>`;
-    body.querySelector('#btn-ach-back').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
-  }
+  if(!body){showScreen('screen-ach');return;}
+  const totalPages=Math.ceil(ACHIEVEMENTS.length/ACH_PER_PAGE);
+  page=Math.max(0,Math.min(page,totalPages-1));
+  const slice=ACHIEVEMENTS.slice(page*ACH_PER_PAGE,(page+1)*ACH_PER_PAGE);
+  const rows=slice.map(a=>{
+    const isUnlocked=!!unlocked[a.id];
+    if(!isUnlocked && a.hidden) return `<div class="ach-row ach-row-locked"><span class="ach-row-icon">🔒</span><div class="ach-row-info"><div class="ach-row-name">????</div><div class="ach-row-desc">???</div></div></div>`;
+    const cls=isUnlocked?'ach-row':'ach-row ach-row-locked';
+    return `<div class="${cls}"><span class="ach-row-icon">${a.icon}</span><div class="ach-row-info"><div class="ach-row-name">${a.name}</div><div class="ach-row-desc">${a.desc}</div></div>${isUnlocked?'<span class="ach-row-check">✅</span>':''}</div>`;
+  }).join('');
+  const prevDis=page===0?'disabled':'';
+  const nextDis=page===totalPages-1?'disabled':'';
+  body.innerHTML=rows+`
+    <div class="ach-pager">
+      <button id="btn-ach-prev" class="btn-secondary ach-pager-btn" ${prevDis}>◀</button>
+      <span class="ach-pager-num">${page+1} / ${totalPages}</span>
+      <button id="btn-ach-next" class="btn-secondary ach-pager-btn" ${nextDis}>▶</button>
+    </div>
+    <button id="btn-ach-back" class="btn-secondary" style="margin-top:8px">戻る</button>`;
+  body.querySelector('#btn-ach-prev').addEventListener('click',()=>showAchievements(page-1));
+  body.querySelector('#btn-ach-next').addEventListener('click',()=>showAchievements(page+1));
+  body.querySelector('#btn-ach-back').addEventListener('click',()=>{G.phase='title';showScreen('screen-title');updateTitleUI();});
   showScreen('screen-ach');
 }
 
@@ -1440,7 +1476,7 @@ applyScale();
 document.addEventListener('DOMContentLoaded',()=>{
   $('btn-start').addEventListener('click',startGame);
   $('btn-how').addEventListener('click',  ()=>showScreen('screen-how'));
-  $('btn-how-back').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  $('btn-how-back').addEventListener('click',()=>{G.phase='title';showScreen('screen-title');updateTitleUI();});
   $('btn-ach').addEventListener('click',  ()=>showAchievements());
   $('btn-easy').addEventListener('click', ()=>{EASY_MODE=!EASY_MODE;updateTitleUI();});
   $('btn-debug').addEventListener('click',()=>{DEBUG_MODE=!DEBUG_MODE;updateTitleUI();});
@@ -1455,7 +1491,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-hint').addEventListener('click', showHint);
   $('btn-continue').addEventListener('click',continueGame);
   $('btn-retry').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(0);});
-  $('btn-title').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;showScreen('screen-title');updateTitleUI();});
+  $('btn-title').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;G.phase='title';showScreen('screen-title');updateTitleUI();});
   $('btn-next-run').addEventListener('click',()=>{
     if(G.continueMode){
       G.continueMode=false; G.phase='playing';
@@ -1464,9 +1500,9 @@ document.addEventListener('DOMContentLoaded',()=>{
       loadRival(G.rivalIdx);
     } else { startGame(); }
   });
-  $('btn-shop-title').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  $('btn-shop-title').addEventListener('click',()=>{G.phase='title';showScreen('screen-title');updateTitleUI();});
   $('btn-again').addEventListener('click', ()=>openShop(G.lastExpEarned||0));
-  $('btn-vtitle').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  $('btn-vtitle').addEventListener('click',()=>{G.phase='title';showScreen('screen-title');updateTitleUI();});
   $('btn-pause').addEventListener('click', pauseGame);
   $('btn-resume').addEventListener('click',resumeGame);
   $('btn-pause-title').addEventListener('click',goTitle);
