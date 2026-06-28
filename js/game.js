@@ -1130,6 +1130,14 @@ function goTitle() {
   G.phase='title'; showScreen('screen-title'); updateTitleUI();
 }
 
+// ── Responsive scale ─────────────────────────────────────────────────────────
+function applyScale(){
+  const s=Math.min(window.innerWidth/390,1.5);
+  document.documentElement.style.setProperty('--s',s.toFixed(3));
+}
+window.addEventListener('resize',applyScale);
+applyScale();
+
 // ── Bootstrap ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
   $('btn-start').addEventListener('click',startGame);

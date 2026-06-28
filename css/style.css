@@ -20,7 +20,13 @@ html, body {
 }
 
 /* ── Screens ────────────────────────────────────────── */
-.screen { display: none; position: fixed; inset: 0; overflow-y: auto; }
+.screen {
+  display: none; position: fixed;
+  top: 0; bottom: 0;
+  left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 540px;
+  overflow-y: auto;
+}
 .screen.active { display: flex; flex-direction: column; }
 
 /* ── Title ──────────────────────────────────────────── */
@@ -93,10 +99,10 @@ html, body {
   display: flex; align-items: center;
   gap: 10px; margin-bottom: 10px;
 }
-.rival-icon { font-size: 30px; line-height: 1; }
+.rival-icon { font-size: calc(30px * var(--s,1)); line-height: 1; }
 .rival-texts { flex: 1; }
-.rival-name   { font-size: 15px; font-weight: 900; color: #e2c8ff; }
-.rival-flavor { font-size: 11px; color: #9d79c0; font-style: italic; margin-top: 2px; }
+.rival-name   { font-size: calc(15px * var(--s,1)); font-weight: 900; color: #e2c8ff; }
+.rival-flavor { font-size: calc(11px * var(--s,1)); color: #9d79c0; font-style: italic; margin-top: 2px; }
 .rival-name-row { display: flex; align-items: baseline; gap: 6px; }
 .rival-subname { font-size: 11px; color: #c4b5fd; font-style: italic; }
 .rival-flavor.flavor-anim { animation: flavor-slide .3s ease-out; }
@@ -178,10 +184,10 @@ html, body {
 .opp-reveal-row { padding: 6px 12px 8px; background: rgba(240,171,252,.06); border-top: 1px solid rgba(240,171,252,.2); }
 .opp-reveal-label { font-size: 11px; color: #f0abfc; font-weight: 700; letter-spacing: .06em; margin-bottom: 6px; }
 .opp-reveal-tiles { display: flex; flex-direction: row; flex-wrap: wrap; gap: 4px; justify-content: flex-start; }
-.opp-reveal-tiles .tile   { width: 34px; height: 46px; }
-.opp-reveal-tiles .tc-num { font-size: 16px !important; }
-.opp-reveal-tiles .tc-suit{ font-size: 7px !important; margin-top: 1px !important; }
-.opp-reveal-tiles .tc-honor{ font-size: 13px !important; }
+.opp-reveal-tiles .tile   { width: calc(34px * var(--s,1)); height: calc(46px * var(--s,1)); }
+.opp-reveal-tiles .tc-num { font-size: calc(16px * var(--s,1)) !important; }
+.opp-reveal-tiles .tc-suit{ font-size: calc(7px * var(--s,1)) !important; margin-top: 1px !important; }
+.opp-reveal-tiles .tc-honor{ font-size: calc(13px * var(--s,1)) !important; }
 
 /* ── Battle zone (middle) ────────────────────────────── */
 .zone-battle {
@@ -232,16 +238,16 @@ html, body {
   display: flex; flex-direction: column; gap: 10px;
 }
 .player-hud { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
-#lives-display { font-size: 20px; letter-spacing: 2px; }
+#lives-display { font-size: calc(20px * var(--s,1)); letter-spacing: 2px; }
 .heart { display: inline-block; }
 .heart-alive { filter: drop-shadow(0 0 4px rgba(239,68,68,.7)); }
 .heart-dead  { filter: grayscale(1) brightness(.45); }
 #lives-display.lives-hit { animation: lives-hit .35s ease-in-out; }
 @keyframes lives-hit { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px) scale(1.1)} 75%{transform:translateX(6px)} }
-#combo-display { font-size: 14px; font-weight: 900; color: var(--riichi); text-shadow: 0 0 8px rgba(249,115,22,.8); min-width: 64px; text-align: center; transition: transform .15s; }
+#combo-display { font-size: calc(14px * var(--s,1)); font-weight: 900; color: var(--riichi); text-shadow: 0 0 8px rgba(249,115,22,.8); min-width: 64px; text-align: center; transition: transform .15s; }
 #combo-display.combo-bump { transform: scale(1.4); }
 #combo-display.combo-hidden { opacity: 0; }
-#score-display { font-size: 17px; font-weight: 700; color: var(--gold); }
+#score-display { font-size: calc(17px * var(--s,1)); font-weight: 700; color: var(--gold); }
 .cut-line-row {
   display: flex; align-items: center; justify-content: space-between; gap: 8px;
 }
@@ -276,14 +282,14 @@ html, body {
 }
 .hand-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
 .hand-area { display: flex; align-items: flex-start; }
-.tile-row { display: flex; flex-wrap: wrap; gap: 6px; }
-.hand-row { gap: 8px; align-items: flex-end; }
+.tile-row { display: flex; flex-wrap: wrap; gap: calc(6px * var(--s,1)); }
+.hand-row { gap: calc(8px * var(--s,1)); align-items: flex-end; }
 /* 究極の選択: Turn3の2択大型タイル */
-.hand-row.ultimate-choice { justify-content: center; gap: 28px; }
-.hand-row.ultimate-choice .tile { width: 60px; height: 82px; }
-.hand-row.ultimate-choice .tc-num { font-size: 28px !important; }
-.hand-row.ultimate-choice .tc-suit { font-size: 15px !important; }
-.hand-row.ultimate-choice .tc-kanji { font-size: 22px !important; }
+.hand-row.ultimate-choice { justify-content: center; gap: calc(28px * var(--s,1)); }
+.hand-row.ultimate-choice .tile { width: calc(60px * var(--s,1)); height: calc(82px * var(--s,1)); }
+.hand-row.ultimate-choice .tc-num { font-size: calc(28px * var(--s,1)) !important; }
+.hand-row.ultimate-choice .tc-suit { font-size: calc(15px * var(--s,1)) !important; }
+.hand-row.ultimate-choice .tc-kanji { font-size: calc(22px * var(--s,1)) !important; }
 /* ライフ回復アニメーション */
 #lives-display.lives-heal { animation: lives-heal .5s ease-out; }
 @keyframes lives-heal { 0%,100%{transform:scale(1)} 35%{transform:scale(1.3)} 55%{transform:scale(.95)} }
@@ -302,10 +308,10 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Sizes */
-.tile-discard { width: 40px; height: 56px; }
-.tile-hand    { width: 54px; height: 76px; cursor: pointer; touch-action: manipulation; }
-.tile-result  { width: 40px; height: 56px; }
+/* Sizes — scale with --s custom property (set via JS based on screen width) */
+.tile-discard { width: calc(40px * var(--s,1)); height: calc(56px * var(--s,1)); }
+.tile-hand    { width: calc(54px * var(--s,1)); height: calc(76px * var(--s,1)); cursor: pointer; touch-action: manipulation; }
+.tile-result  { width: calc(40px * var(--s,1)); height: calc(56px * var(--s,1)); }
 
 /* Number + suit inside tile */
 .tc-num  { display: block; line-height: 1; font-weight: 900; text-align: center; }
@@ -315,15 +321,15 @@ html, body {
 /* SVG tile content (pinzu circles, souzu bamboo) */
 .tile > svg { display: block; width: 100%; flex: 1; min-height: 0; padding: 3px; }
 
-.tile-discard .tc-num  { font-size: 20px; }
-.tile-discard .tc-suit { font-size: 9px;  margin-top: 2px; opacity: .8; }
-.tile-discard .tc-honor{ font-size: 16px; }
-.tile-hand    .tc-num  { font-size: 26px; }
-.tile-hand    .tc-suit { font-size: 11px; margin-top: 3px; opacity: .85; }
-.tile-hand    .tc-honor{ font-size: 20px; }
-.tile-result  .tc-num  { font-size: 20px; }
-.tile-result  .tc-suit { font-size: 9px;  margin-top: 2px; opacity: .8; }
-.tile-result  .tc-honor{ font-size: 16px; }
+.tile-discard .tc-num  { font-size: calc(20px * var(--s,1)); }
+.tile-discard .tc-suit { font-size: calc(9px * var(--s,1));  margin-top: 2px; opacity: .8; }
+.tile-discard .tc-honor{ font-size: calc(16px * var(--s,1)); }
+.tile-hand    .tc-num  { font-size: calc(26px * var(--s,1)); }
+.tile-hand    .tc-suit { font-size: calc(11px * var(--s,1)); margin-top: 3px; opacity: .85; }
+.tile-hand    .tc-honor{ font-size: calc(20px * var(--s,1)); }
+.tile-result  .tc-num  { font-size: calc(20px * var(--s,1)); }
+.tile-result  .tc-suit { font-size: calc(9px * var(--s,1));  margin-top: 2px; opacity: .8; }
+.tile-result  .tc-honor{ font-size: calc(16px * var(--s,1)); }
 
 /* Suit colors — parent .suit-X, child .tc-* */
 .tile.suit-m .tc-num, .tile.suit-m .tc-suit { color: #c41e1e; }
