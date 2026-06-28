@@ -1307,9 +1307,16 @@ function showGameOver() {
   revBtn.id='go-reveal-btn'; revBtn.className='go-reveal-btn';
   revBtn.textContent='手牌を見る ›';
   revBtn.onclick=()=>{
-    if(waitEl) waitEl.classList.remove('hidden');
-    if(handEl) handEl.classList.remove('hidden');
-    revBtn.remove();
+    const ov=document.createElement('div'); ov.className='go-hand-overlay';
+    const panel=document.createElement('div'); panel.className='go-hand-panel';
+    const closeBtn=document.createElement('button'); closeBtn.className='go-hand-close'; closeBtn.textContent='✕ 閉じる';
+    closeBtn.onclick=()=>ov.remove();
+    ov.onclick=(e)=>{ if(e.target===ov) ov.remove(); };
+    panel.appendChild(closeBtn);
+    if(waitEl){ const c=waitEl.cloneNode(true); c.classList.remove('hidden'); panel.appendChild(c); }
+    if(handEl){ const c=handEl.cloneNode(true); c.classList.remove('hidden'); panel.appendChild(c); }
+    ov.appendChild(panel);
+    document.body.appendChild(ov);
   };
   if(waitEl) waitEl.parentNode.insertBefore(revBtn, waitEl);
 
