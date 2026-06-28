@@ -767,32 +767,9 @@ function showYakuTarget() {
     $('yaku-name-text').textContent  = p.yaku;
     $('yaku-stars-text').textContent = '★'.repeat(p.yakuValue||1);
     el.classList.remove('hidden');
-    el.style.cursor='pointer';
   } else {
     el.classList.add('hidden');
-    el.style.cursor='';
   }
-}
-function showYakuHandPopup() {
-  const p=G.currentProblem;
-  if(!p||!p.waits||!p.waits.length) return;
-  const existing=document.getElementById('yaku-hand-overlay');
-  if(existing){existing.remove();return;}
-  const ov=document.createElement('div'); ov.id='yaku-hand-overlay'; ov.className='yaku-hand-overlay';
-  const panel=document.createElement('div'); panel.className='yaku-hand-panel';
-  const title=document.createElement('div'); title.className='yaku-hand-title';
-  title.textContent=`⚡ 危険牌 — ${p.waitShape||'待ち'}`;
-  panel.appendChild(title);
-  const tilesRow=document.createElement('div'); tilesRow.className='yaku-hand-tiles';
-  p.waits.forEach(t=>{
-    const e=mkTile(t,'result'); e.style.pointerEvents='none';
-    e.classList.add('tile-wait-mark');
-    tilesRow.appendChild(e);
-  });
-  panel.appendChild(tilesRow);
-  ov.appendChild(panel);
-  ov.onclick=()=>ov.remove();
-  document.body.appendChild(ov);
 }
 
 // Update riichi / turn indicator banner
@@ -1660,7 +1637,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     renderHandForTurn();
   });
   $('btn-hint').addEventListener('click', showHint);
-  $('yaku-target').addEventListener('click', showYakuHandPopup);
   $('btn-continue').addEventListener('click',continueGame);
   $('btn-retry').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(0);});
   $('btn-title').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;G.phase='title';showScreen('screen-title');updateTitleUI();});
