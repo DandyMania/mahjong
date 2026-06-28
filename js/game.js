@@ -1317,7 +1317,10 @@ function showGameOver() {
     ov.appendChild(panel);
     document.body.appendChild(ov);
   };
-  if(waitEl) waitEl.parentNode.insertBefore(revBtn, waitEl);
+  const goFooter=document.querySelector('.gameover-footer');
+  const contBtn=document.getElementById('btn-continue');
+  if(goFooter && contBtn) goFooter.insertBefore(revBtn, contBtn);
+  else if(waitEl) waitEl.parentNode.insertBefore(revBtn, waitEl);
 
   G.pendingExpEarned=expEarned;
   showScreen('screen-gameover');
