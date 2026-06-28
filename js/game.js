@@ -1151,7 +1151,7 @@ function showYakuBreak(yaku, value) {
   showYakuSplash(yaku);
   spawnPop(bonus,null,true);
   updateHUD();
-  setTimeout(()=>revealOpponentHandDisplay(advance), 1200);
+  if(G.rivalHp > 0) setTimeout(()=>revealOpponentHandDisplay(advance), 1200);
 }
 
 function revealOpponentHandDisplay(onNext) {
@@ -1224,7 +1224,7 @@ function rivalDefeated() {
   updateRivalFlavor('defeated');
   const goNext=()=>{
     if(G.rivalIdx>=RIVALS.length-1) showVictory();
-    else showSkillSelection();
+    else setTimeout(showSkillSelection, 700);
   };
   setTimeout(()=>revealOpponentHandDisplay(goNext), 800);
 }
