@@ -360,6 +360,11 @@ function loadNextProblem() {
   }
   // 透視フラグを立てる（renderHandForTurn で視覚化）
   if (G.toshiNext) { G.toshiNext=false; G.toshiThisProblem=true; }
+  // ピンチ時にたまに透視が自動発動（ライフ1、30%）
+  if (!G.toshiThisProblem && G.lives===1 && Math.random()<0.3) {
+    G.toshiThisProblem=true;
+    setTimeout(()=>showEventToast('👁️ 透視が発動した…！','safe'),400);
+  }
 
   if (G.phase==='playing') rollEvent();
   if (G.lives<=0) { showGameOver(); return; }
