@@ -816,14 +816,11 @@ function renderProblem() {
 // ── Tile factory ──────────────────────────────────────────────────────────────
 function mkTile(id,type,blind=false) {
   const el=document.createElement('div');
-  const suit=id[1], num=parseInt(id[0]);
+  const suit=id[1];
   el.className=`tile tile-${type}`+(suit!=='z'?` suit-${suit}`:'')+(blind?' tile-blind':'');
   el.dataset.tile=id;
   if(blind){const s=document.createElement('span');s.className='tc-honor honor-5z';s.textContent='白';el.appendChild(s);}
-  else if(suit==='z'){const txt=HONOR_MAP[id];if(txt){const s=document.createElement('span');s.className=`tc-honor honor-${id}`;s.textContent=txt;el.appendChild(s);}}
-  else if(suit==='p'){el.innerHTML=pinzuSVG(num);}
-  else if(suit==='s'){el.innerHTML=souzuSVG(num);}
-  else{const n=document.createElement('span');n.className='tc-num';n.textContent=KANJI_NUM[num]||num;const s=document.createElement('span');s.className='tc-suit';s.textContent=SUIT_KANJI[suit];el.appendChild(n);el.appendChild(s);}
+  else{const obj=document.createElement('object');obj.type='image/svg+xml';obj.data=`/images/${id}.svg`;obj.style.cssText='width:100%;height:100%;pointer-events:none;display:block;';el.appendChild(obj);}
   return el;
 }
 function unblindHand(exceptEl) {
@@ -1092,16 +1089,32 @@ function showYakuBreak(yaku, value) {
   showYakuSplash(yaku);
   spawnPop(bonus,null,true);
   updateHUD();
-  setTimeout(revealOpponentHandDisplay, 1200);
+  setTimeout(()=>revealOpponentHandDisplay(advance), 1200);
 }
 
-function revealOpponentHandDisplay() {
-  const p=G.currentProblem; if(!p) return;
-  const wrap=$('opp-reveal-row'); if(!wrap) return;
+function revealOpponentHandDisplay(onNext) {
+  if(_adv){clearTimeout(_adv);_adv=null;}
+  G.phase='hand_reveal';
+  const p=G.currentProblem; if(!p){ if(onNext) onNext(); return; }
+  const wrap=$('opp-reveal-row'); if(!wrap){ if(onNext) onNext(); return; }
   wrap.innerHTML='';
   wrap.classList.remove('hidden');
+  const waitSet=new Set(p.waits||[]);
+  if(p.opponentHand && p.opponentHand.length){
+    const handLbl=document.createElement('div'); handLbl.className='opp-reveal-label';
+    handLbl.textContent='🀄 相手の手牌';
+    wrap.appendChild(handLbl);
+    const handWrap=document.createElement('div'); handWrap.className='opp-reveal-tiles';
+    p.opponentHand.forEach(t=>{
+      const el=mkTile(t,'result');
+      el.style.pointerEvents='none';
+      if(waitSet.has(t)) el.classList.add('tile-wait-mark');
+      handWrap.appendChild(el);
+    });
+    wrap.appendChild(handWrap);
+  }
   const shape=p.waitShape||'';
-  const lbl=document.createElement('div'); lbl.className='opp-reveal-label';
+  const lbl=document.createElement('div'); lbl.className='opp-reveal-label'; lbl.style.marginTop='6px';
   lbl.textContent=`⚡ 相手の待ち（${tileIdToJa(shape)}）`;
   wrap.appendChild(lbl);
   const tilesWrap=document.createElement('div'); tilesWrap.className='opp-reveal-tiles';
@@ -1111,6 +1124,25 @@ function revealOpponentHandDisplay() {
     tilesWrap.appendChild(el);
   });
   wrap.appendChild(tilesWrap);
+  if(onNext){
+    const hint=document.createElement('div');
+    hint.className='tap-next-btn';
+    hint.style.cssText='display:block;margin:14px auto 4px;width:fit-content;';
+    hint.textContent='▸ タップで次へ';
+    wrap.appendChild(hint);
+    let autoTimer=null;
+    const go=()=>{
+      document.removeEventListener('pointerdown',go);
+      if(autoTimer){clearTimeout(autoTimer);autoTimer=null;}
+      onNext();
+    };
+    const tick=(n)=>{
+      hint.textContent=n>0?`▸ タップで次へ（${n}）`:'▸ タップで次へ';
+      if(n>0) autoTimer=setTimeout(()=>tick(n-1),1000);
+      else autoTimer=setTimeout(go,500);
+    };
+    setTimeout(()=>{ document.addEventListener('pointerdown',go); tick(10); },400);
+  }
 }
 
 // ── Rival defeated ────────────────────────────────────────────────────────────
@@ -1124,10 +1156,11 @@ function rivalDefeated() {
   if(G.rivalIdx===RIVALS.length-1) unlockAchievement('chiharu_down');
   showMoveName('rival',pick(MOVES.defeated));
   updateRivalFlavor('defeated');
-  setTimeout(()=>{
+  const goNext=()=>{
     if(G.rivalIdx>=RIVALS.length-1) showVictory();
     else showSkillSelection();
-  },2200);
+  };
+  setTimeout(()=>revealOpponentHandDisplay(goNext), 800);
 }
 
 // ── Skill selection ───────────────────────────────────────────────────────────
@@ -1237,18 +1270,29 @@ function showGameOver() {
   // 待ち牌表示
   const waitEl=$('gameover-waits');
   if(waitEl && p) {
+    waitEl.innerHTML='';
     const shape=p.waitShape||'';
-    const waitTiles=(p.waits||[]).map(t=>{
-      const el=mkTile(t,'result'); return el.outerHTML;
-    }).join('');
-    const expStr=p.explanation?`<div class="go-explanation">${tileIdToJa(p.explanation).replace(/\n/g,'<br>')}</div>`:'';
-    waitEl.innerHTML=`<div class="go-wait-label">相手の待ち（${tileIdToJa(shape)}）</div><div class="go-wait-tiles">${waitTiles}</div>${expStr}`;
+    const waitSet=new Set(p.waits||[]);
+    if(p.opponentHand && p.opponentHand.length){
+      const hl=document.createElement('div'); hl.className='go-wait-label'; hl.textContent='🀄 相手の手牌'; waitEl.appendChild(hl);
+      const hw=document.createElement('div'); hw.className='go-wait-tiles';
+      p.opponentHand.forEach(t=>{ const e=mkTile(t,'result'); e.style.pointerEvents='none'; if(waitSet.has(t)) e.classList.add('tile-wait-mark'); hw.appendChild(e); });
+      waitEl.appendChild(hw);
+    }
+    const wl=document.createElement('div'); wl.className='go-wait-label'; wl.style.marginTop='6px'; wl.textContent=`⚡ 相手の待ち（${tileIdToJa(shape)}）`; waitEl.appendChild(wl);
+    const ww=document.createElement('div'); ww.className='go-wait-tiles';
+    (p.waits||[]).forEach(t=>{ const e=mkTile(t,'result'); e.style.pointerEvents='none'; ww.appendChild(e); });
+    waitEl.appendChild(ww);
+    if(p.explanation){ const ex=document.createElement('div'); ex.className='go-explanation'; ex.innerHTML=tileIdToJa(p.explanation).replace(/\n/g,'<br>'); waitEl.appendChild(ex); }
   }
   const handEl=$('gameover-hand');
   if(handEl && p) {
-    const discardTiles=(p.opponentDiscards||[]).map(t=>mkTile(t,'discard').outerHTML).join('');
-    const yakuStr=p.yaku?`<div class="go-wait-label" style="margin-top:8px">役: ${p.yaku}${'★'.repeat(p.yakuValue||1)}</div>`:'';
-    handEl.innerHTML=`<div class="go-wait-label">相手の捨て牌</div><div class="go-wait-tiles">${discardTiles}</div>${yakuStr}`;
+    handEl.innerHTML='';
+    const dl=document.createElement('div'); dl.className='go-wait-label'; dl.textContent='相手の捨て牌'; handEl.appendChild(dl);
+    const dw=document.createElement('div'); dw.className='go-wait-tiles';
+    (p.opponentDiscards||[]).forEach(t=>{ const e=mkTile(t,'discard'); e.style.pointerEvents='none'; dw.appendChild(e); });
+    handEl.appendChild(dw);
+    if(p.yaku){ const yl=document.createElement('div'); yl.className='go-wait-label'; yl.style.marginTop='8px'; yl.textContent=`役: ${p.yaku}${'★'.repeat(p.yakuValue||1)}`; handEl.appendChild(yl); }
   }
   G.pendingExpEarned=expEarned;
   showScreen('screen-gameover');

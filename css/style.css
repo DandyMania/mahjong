@@ -284,6 +284,7 @@ html, body {
 .opp-reveal-tiles .tc-num { font-size: calc(16px * var(--s,1)) !important; }
 .opp-reveal-tiles .tc-suit{ font-size: calc(7px * var(--s,1)) !important; margin-top: 1px !important; }
 .opp-reveal-tiles .tc-honor{ font-size: calc(13px * var(--s,1)) !important; }
+.tile-wait-mark { outline: 2px solid #f97316; outline-offset: -2px; border-radius: 6px; }
 
 /* ── Battle zone (middle) ────────────────────────────── */
 .zone-battle {
@@ -380,21 +381,17 @@ html, body {
   animation: hint-glow 1.4s ease-in-out;
 }
 @keyframes hint-glow {
-  0%, 100% { box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.4); }
-  40%  { box-shadow: 0 5px 0 rgba(34,197,94,.6), 0 6px 24px rgba(34,197,94,.5), 0 0 16px rgba(34,197,94,.4); border-color: rgba(34,197,94,.7); }
+  0%, 100% { box-shadow: none; }
+  40%  { box-shadow: 0 6px 24px rgba(34,197,94,.5), 0 0 16px rgba(34,197,94,.4); }
 }
 /* 現物（明らかな安全牌）白ベース維持でグロー */
 .tile-hand.tile-genzai {
   animation: genzai-glow 2.2s ease-in-out infinite;
 }
 @keyframes genzai-glow {
-  0%, 100% {
-    border-color: rgba(200,185,158,.9);
-    box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.4);
-  }
+  0%, 100% { box-shadow: none; }
   50% {
-    border-color: rgba(34,197,94,1);
-    box-shadow: 0 5px 0 rgba(34,197,94,.7), 0 6px 22px rgba(34,197,94,.4), 0 0 28px rgba(34,197,94,.7), 0 0 48px rgba(34,197,94,.35),
+    box-shadow: 0 6px 22px rgba(34,197,94,.4), 0 0 28px rgba(34,197,94,.7), 0 0 48px rgba(34,197,94,.35),
                 inset 0 0 20px rgba(34,197,94,.28);
   }
 }
@@ -424,6 +421,12 @@ html, body {
   border: 1.5px solid rgba(200,185,158,.9);
   box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.4);
   flex-shrink: 0;
+}
+/* SVG牌モード: object要素がある場合はCSSの背景・枠・影をリセット */
+.tile:has(object) {
+  background: none;
+  border: none;
+  box-shadow: none;
 }
 
 /* Sizes — scale with --s custom property (set via JS based on screen width) */
@@ -477,8 +480,7 @@ html, body {
 
 /* Critical tile glow (before pick, for emphasis) */
 .tile-hand.is-critical {
-  box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.4), 0 0 12px rgba(217,70,239,.5);
-  border-color: rgba(217,70,239,.6);
+  box-shadow: 0 0 12px rgba(217,70,239,.5);
 }
 
 /* ── Revealed tiles ──────────────────────────────────── */
@@ -662,10 +664,19 @@ html, body {
 .stage-rival-icon   { font-size: 52px; line-height: 1; }
 .stage-rival-name   { font-size: 22px; font-weight: 900; color: #c084fc; }
 .stage-rival-flavor { font-size: 13px; color: #9d79c0; font-style: italic; }
-.trans-tip-area { position: absolute; bottom: max(32px, env(safe-area-inset-bottom)); left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 0 24px; }
+.trans-tip-area { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 0 24px; margin-top: 16px; }
 .trans-tip { font-size: 13px; color: #a78bfa; text-align: center; line-height: 1.5; }
-.trans-tap-hint { font-size: 16px; color: rgba(255,255,255,.5); letter-spacing: .12em; animation: tap-blink 1.4s ease-in-out infinite; }
-@keyframes tap-blink { 0%,100%{opacity:.3} 50%{opacity:.8} }
+.trans-tap-hint, .tap-next-btn {
+  display: inline-block; padding: 10px 32px;
+  background: rgba(255,255,255,.12); border: 1.5px solid rgba(255,255,255,.45);
+  border-radius: 28px; color: #fff; font-size: 17px; font-weight: 700;
+  letter-spacing: .08em; user-select: none; pointer-events: none;
+  animation: tap-pulse 1.4s ease-in-out infinite;
+}
+@keyframes tap-pulse {
+  0%,100% { opacity:.55; box-shadow: 0 0 0 rgba(255,255,255,0); }
+  50%      { opacity:1;   box-shadow: 0 0 18px rgba(255,255,255,.25); }
+}
 
 /* ── Effects ─────────────────────────────────────────── */
 .screen-flash { position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0; }

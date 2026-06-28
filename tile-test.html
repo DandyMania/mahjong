@@ -12,21 +12,36 @@ h3{color:#ffd700;margin:6px 0 2px;font-size:15px;}
 </style>
 </head>
 <body>
-<h2 style="margin:4px;color:#ffd700">全牌確認</h2>
-<h3>萬子</h3><div class="row" id="r-m"></div>
-<h3>筒子</h3><div class="row" id="r-p"></div>
-<h3>索子</h3><div class="row" id="r-s"></div>
+<h2 style="margin:4px;color:#ffd700">全牌確認 (SVGスプライト)</h2>
 <h3>字牌</h3><div class="row" id="r-z"></div>
-<script src="js/tiles.js?v=6"></script>
-<script src="js/problems.js?v=6"></script>
-<script src="js/game.js?v=6"></script>
+<h3>萬子</h3><div class="row" id="r-m"></div>
+<h3>索子</h3><div class="row" id="r-s"></div>
+<h3>筒子</h3><div class="row" id="r-p"></div>
 <script>
-['m','p','s'].forEach(function(suit){
-  var row = document.getElementById('r-' + suit);
-  for(var n = 1; n <= 9; n++) row.appendChild(mkTile(n + suit, 'hand'));
+var suits = [
+  {id:'r-z', tiles:['1z','2z','3z','4z','5z','6z','7z']},
+  {id:'r-m', tiles:['1m','2m','3m','4m','5m','6m','7m','8m','9m']},
+  {id:'r-s', tiles:['1s','2s','3s','4s','5s','6s','7s','8s','9s']},
+  {id:'r-p', tiles:['1p','2p','3p','4p','5p','6p','7p','8p','9p']},
+];
+suits.forEach(function(s){
+  var row = document.getElementById(s.id);
+  s.tiles.forEach(function(t){
+    var wrap = document.createElement('div');
+    wrap.style.cssText = 'display:inline-flex;flex-direction:column;align-items:center;gap:2px;';
+    var img = document.createElement('object');
+    img.type = 'image/svg+xml';
+    img.data = '/images/' + t + '.svg?' + Date.now();
+    img.style.cssText = 'width:auto;height:90px;display:block;';
+    img.title = t;
+    var lbl = document.createElement('span');
+    lbl.textContent = t;
+    lbl.style.cssText = 'font-size:11px;color:#aaa;';
+    wrap.appendChild(img);
+    wrap.appendChild(lbl);
+    row.appendChild(wrap);
+  });
 });
-var rz = document.getElementById('r-z');
-for(var n = 1; n <= 7; n++) rz.appendChild(mkTile(n + 'z', 'hand'));
 </script>
 </body>
 </html>
