@@ -424,7 +424,7 @@ html, body {
 }
 /* SVG sprite tiles — works on all browsers including mobile Safari */
 .tile:not(.tile-blind)[data-tile] {
-  background-image: url('/tile-ref.svg');
+  background-image: url('../tile-ref.svg');
   background-size: 1313.63% 624.02%;
   background-repeat: no-repeat;
   border: none;
@@ -442,28 +442,28 @@ html, body {
 .tile[data-tile="3m"] { background-position: 23.715% 38.672%; }
 .tile[data-tile="4m"] { background-position: 34.258% 38.672%; }
 .tile[data-tile="5m"] { background-position: 44.832% 38.672%; }
-.tile[data-tile="6m"] { background-position: 55.273% 38.672%; }
-.tile[data-tile="7m"] { background-position: 65.685% 38.672%; }
-.tile[data-tile="8m"] { background-position: 76.218% 38.672%; }
-.tile[data-tile="9m"] { background-position: 86.599% 38.672%; }
+.tile[data-tile="6m"] { background-position: 65.635% 38.672%; }
+.tile[data-tile="7m"] { background-position: 76.189% 38.672%; }
+.tile[data-tile="8m"] { background-position: 86.527% 38.672%; }
+.tile[data-tile="9m"] { background-position: 97.083% 38.672%; }
 .tile[data-tile="1s"] { background-position: 2.862% 62.013%; }
 .tile[data-tile="2s"] { background-position: 13.313% 62.013%; }
 .tile[data-tile="3s"] { background-position: 23.715% 62.013%; }
 .tile[data-tile="4s"] { background-position: 34.258% 62.013%; }
 .tile[data-tile="5s"] { background-position: 44.832% 62.013%; }
-.tile[data-tile="6s"] { background-position: 55.273% 62.013%; }
-.tile[data-tile="7s"] { background-position: 65.685% 62.013%; }
-.tile[data-tile="8s"] { background-position: 76.218% 62.013%; }
-.tile[data-tile="9s"] { background-position: 86.599% 62.013%; }
+.tile[data-tile="6s"] { background-position: 65.635% 62.013%; }
+.tile[data-tile="7s"] { background-position: 76.189% 62.013%; }
+.tile[data-tile="8s"] { background-position: 86.527% 62.013%; }
+.tile[data-tile="9s"] { background-position: 97.083% 62.013%; }
 .tile[data-tile="1p"] { background-position: 2.862% 85.531%; }
 .tile[data-tile="2p"] { background-position: 13.313% 85.531%; }
 .tile[data-tile="3p"] { background-position: 23.715% 85.531%; }
 .tile[data-tile="4p"] { background-position: 34.258% 85.531%; }
 .tile[data-tile="5p"] { background-position: 44.832% 85.531%; }
-.tile[data-tile="6p"] { background-position: 55.273% 85.531%; }
-.tile[data-tile="7p"] { background-position: 65.685% 85.531%; }
-.tile[data-tile="8p"] { background-position: 76.218% 85.531%; }
-.tile[data-tile="9p"] { background-position: 86.599% 85.531%; }
+.tile[data-tile="6p"] { background-position: 65.635% 85.531%; }
+.tile[data-tile="7p"] { background-position: 76.189% 85.531%; }
+.tile[data-tile="8p"] { background-position: 86.527% 85.531%; }
+.tile[data-tile="9p"] { background-position: 97.083% 85.531%; }
 
 /* Sizes — scale with --s custom property (set via JS based on screen width) */
 .tile-discard { width: calc(40px * var(--s,1)); height: calc(56px * var(--s,1)); }
