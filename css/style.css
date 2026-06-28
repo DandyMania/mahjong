@@ -138,9 +138,8 @@ html, body {
   background: linear-gradient(180deg, #130828 0%, #1a0e38 100%);
   border-bottom: 2px solid rgba(180,100,255,.2);
   padding: 10px 14px 12px;
-  flex: 1; min-height: 180px;
+  flex-shrink: 0;
   position: relative; overflow: hidden;
-  display: flex; flex-direction: column; justify-content: flex-end;
 }
 .zone-slash {
   position: absolute;
@@ -330,7 +329,7 @@ html, body {
 /* ── Player zone (bottom) ────────────────────────────── */
 .zone-player {
   background: linear-gradient(0deg, #081510 0%, #0d2018 100%);
-  flex: none;
+  flex: 1;
   padding: 10px 14px max(16px, env(safe-area-inset-bottom));
   display: flex; flex-direction: column; gap: 10px;
 }
