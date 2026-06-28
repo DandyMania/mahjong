@@ -660,7 +660,8 @@ html, body {
 }
 .ultimate-splash.hidden { display: none; }
 .ult-main {
-  font-size: clamp(72px, 22vw, 120px); font-weight: 900; color: #fff;
+  font-size: clamp(44px, 13vw, 80px); font-weight: 900; color: #fff;
+  white-space: nowrap;
   text-shadow: 0 0 20px #fbbf24, 0 0 60px rgba(251,191,36,.9), 0 0 140px rgba(251,191,36,.5), 0 0 200px rgba(251,191,36,.3);
   letter-spacing: .05em;
   animation: ult-text-pop 2.4s ease-out forwards;
