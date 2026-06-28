@@ -416,8 +416,27 @@ html, body {
 #screen-gameover { align-items: center; justify-content: center; background: radial-gradient(ellipse at 50% 30%, #3a1010 0%, #0e0606 70%); }
 .gameover-inner { text-align: center; padding: 32px 24px; display: flex; flex-direction: column; gap: 10px; }
 .gameover-inner .btn-secondary { font-size: calc(15px * var(--s,1)); padding: calc(10px * var(--s,1)); margin-top: 4px; }
-.gameover-skull { font-size: 72px; animation: skull-wobble 1.2s ease-in-out infinite; }
-@keyframes skull-wobble { 0%,100%{transform:rotate(0) scale(1)} 25%{transform:rotate(-8deg) scale(1.05)} 75%{transform:rotate(8deg) scale(1.05)} }
+.gameover-skull { display: flex; justify-content: center; align-items: center; height: 90px; }
+.fallen-tile {
+  width: 56px; height: 78px;
+  background: linear-gradient(155deg, #fffcf0 0%, #ede8d8 100%);
+  border-radius: 8px;
+  border: 2px solid rgba(200,185,158,.9);
+  box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.5);
+  display: flex; align-items: center; justify-content: center;
+  transform: rotate(90deg);
+  animation: tile-fall 0.5s cubic-bezier(.25,.46,.45,.94) both;
+}
+.fallen-tile-char {
+  font-size: 28px; font-weight: 900; color: #c41e1e;
+  font-family: 'Hiragino Mincho ProN', 'Yu Mincho', serif;
+}
+@keyframes tile-fall {
+  0%   { transform: rotate(0deg) translateY(-10px); opacity: 0; }
+  60%  { transform: rotate(100deg) translateY(4px); opacity: 1; }
+  80%  { transform: rotate(85deg); }
+  100% { transform: rotate(90deg); }
+}
 .gameover-inner h2  { font-size: 32px; font-weight: 900; }
 #final-score  { font-size: 28px; font-weight: 700; color: var(--gold); }
 #final-detail { font-size: 16px; color: #fca5a5; }
