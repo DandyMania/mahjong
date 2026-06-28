@@ -200,6 +200,7 @@ const G = {
   eSafeCount:0,  // safe picks so far this encounter
   eRiichi:false, // true if a miss/timeout happened (riichi declared)
   eUsed:[],      // hand indices already picked this encounter
+  continueMode:false, // true when continuing after game over (shop → same rival)
 };
 
 // ── Timer ───────────────────────────────────────────────────────────────────
@@ -997,6 +998,7 @@ function calcExp() { return Math.max(2, G.rivalIdx*3+Math.floor(G.score/50)); }
 function openShop(expEarned) {
   const save=getSave();
   $('shop-exp-earned').textContent=expEarned>0?`+${expEarned} EXP 獲得！`:'';
+  $('btn-next-run').textContent=G.continueMode?'⚔️ 再挑戦！':'次のランへ →';
   renderShop(save); showScreen('screen-upgrade');
 }
 function renderShop(save) {
@@ -1168,10 +1170,8 @@ function continueGame() {
   if(_adv){clearTimeout(_adv);_adv=null;}
   G.score=Math.floor(G.score*0.3);
   G.lives=1; G.combo=0;
-  G.phase='playing';
-  showScreen('screen-game');
-  showEventToast('💸 コンティニュー！','danger');
-  loadRival(G.rivalIdx);
+  G.continueMode=true;
+  openShop(G.pendingExpEarned||0);
 }
 function retryCurrentRival() {
   clearTimeout(_goTimer); _goTimer=null;
@@ -1218,7 +1218,14 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-go-shop').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(G.pendingExpEarned||0);});
   $('btn-retry').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(0);});
   $('btn-title').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;showScreen('screen-title');updateTitleUI();});
-  $('btn-next-run').addEventListener('click',startGame);
+  $('btn-next-run').addEventListener('click',()=>{
+    if(G.continueMode){
+      G.continueMode=false; G.phase='playing';
+      showScreen('screen-game');
+      showEventToast('💸 コンティニュー！','danger');
+      loadRival(G.rivalIdx);
+    } else { startGame(); }
+  });
   $('btn-shop-title').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
   $('btn-again').addEventListener('click', ()=>openShop(G.lastExpEarned||0));
   $('btn-vtitle').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
