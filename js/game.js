@@ -499,11 +499,9 @@ function loadNextProblem() {
   startTimer();
 
   if ((EASY_MODE || G.hintAll) && !G.mouhaiNext) setTimeout(showHint, 400);
-  // ピンチ（ライフ1）かつ轟盲牌スキル未使用 → ダイアログ
-  if(hasRunSkill('mouhai') && !G.mouhaiUsed && G.lives<=1){
-    G.phase='mouhai'; stopTimer();
-    const p=$('mouhai-prompt'); if(p) p.classList.remove('hidden');
-  }
+  // 轟盲牌ボタン表示: ライフ1かつスキル未使用
+  const mouhaiBtn=$('btn-mouhai');
+  if(mouhaiBtn) mouhaiBtn.classList.toggle('hidden', !(hasRunSkill('mouhai') && !G.mouhaiUsed && G.lives<=1));
 }
 
 // ── Random events ─────────────────────────────────────────────────────────────
@@ -1431,16 +1429,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-easy').addEventListener('click', ()=>{EASY_MODE=!EASY_MODE;updateTitleUI();});
   $('btn-debug').addEventListener('click',()=>{DEBUG_MODE=!DEBUG_MODE;updateTitleUI();});
   $('btn-reset').addEventListener('click',()=>{if(confirm('セーブデータを全削除しますか？')){localStorage.removeItem(SAVE_KEY);location.reload();}});
-  $('btn-mouhai-yes').addEventListener('click',()=>{
-    $('mouhai-prompt').classList.add('hidden');
+  $('btn-mouhai').addEventListener('click',()=>{
     G.mouhaiNext=true; G.mouhaiUsed=true;
-    G.phase='playing'; startTimer();
+    $('btn-mouhai').classList.add('hidden');
     renderHandForTurn();
-    showEventToast('🦾 轟盲牌発動！全て白牌になった！','safe');
-  });
-  $('btn-mouhai-no').addEventListener('click',()=>{
-    $('mouhai-prompt').classList.add('hidden');
-    G.phase='playing'; startTimer();
+    showEventToast('🦾 盲牌発動！正解で3倍スコア','safe');
   });
   $('btn-hint').addEventListener('click', showHint);
   $('btn-continue').addEventListener('click',continueGame);

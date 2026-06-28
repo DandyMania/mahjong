@@ -360,6 +360,18 @@ html, body {
   transition: background .15s, transform .1s;
 }
 .btn-hint:active { transform: scale(.92); background: rgba(251,191,36,.25); }
+.btn-mouhai {
+  flex-shrink: 0;
+  background: rgba(167,139,250,.15);
+  border: 1px solid rgba(167,139,250,.5);
+  color: #c4b5fd;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 12px; font-weight: 700;
+  cursor: pointer; touch-action: manipulation;
+  transition: background .15s, transform .1s;
+}
+.btn-mouhai:active { transform: scale(.92); background: rgba(167,139,250,.3); }
 
 /* Hint glow on matching tiles */
 .tile-hand.hint-safe {
