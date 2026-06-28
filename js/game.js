@@ -850,9 +850,9 @@ function selectTile(td, el) {
       revealOneTile(td,el);
       showToast('safe',pts,p.waitShape,isClutch||isCrit,0,td.reason);
       G.rivalHp=Math.max(0,G.rivalHp-1); renderRivalHp(true,2);
-      setTimeout(()=>showYakuBreak(p.yaku,p.yakuValue),700);
-      if(G.rivalHp<=0) setTimeout(rivalDefeated,4500);
-      else _adv=setTimeout(advance,5000);
+      setTimeout(()=>showYakuBreak(p.yaku,p.yakuValue),500);
+      if(G.rivalHp<=0) setTimeout(rivalDefeated,2500);
+      else _adv=setTimeout(advance,2800);
 
     } else if(G.eTurn===2 && G.eRiichi) {
       // Turn 2 safe but riichi already declared → advance to turn 3
@@ -1033,7 +1033,7 @@ function showYakuBreak(yaku, value) {
   showYakuSplash(yaku);
   spawnPop(bonus,null,true);
   updateHUD();
-  setTimeout(revealOpponentHandDisplay, 1800);
+  setTimeout(revealOpponentHandDisplay, 1200);
 }
 
 function revealOpponentHandDisplay() {
