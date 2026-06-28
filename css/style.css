@@ -451,7 +451,7 @@ html, body {
 
 /* Suit colors — parent .suit-X, child .tc-* */
 .tile.suit-m .tc-num  { color: #1a1a6c; }
-.tile.suit-m .tc-suit { color: #dc2626; }
+.tile.suit-m .tc-suit { color: #dc2626; font-size: calc(14px * var(--s,1)); }
 .tile.suit-p .tc-num, .tile.suit-p .tc-suit { color: #1a1a1a; }
 .tile.suit-s .tc-num, .tile.suit-s .tc-suit { color: #1a1a1a; }
 
@@ -630,6 +630,7 @@ html, body {
 .ach-row-desc { font-size:11px; color:#9d79c0; margin-top:2px; }
 .ach-row-locked .ach-row-desc { color:#374151; }
 .ach-row-check { font-size:18px; flex-shrink:0; }
+.ach-progress { text-align:center; font-size:13px; color:#a78bfa; padding:6px 0 10px; letter-spacing:.04em; }
 .ach-pager { display:flex; align-items:center; justify-content:center; gap:12px; margin-top:16px; }
 .ach-pager-btn { flex:none; width:52px; padding:8px 0; font-size:16px; }
 .ach-pager-num { font-size:13px; color:#9d79c0; min-width:48px; text-align:center; }

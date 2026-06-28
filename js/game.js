@@ -193,6 +193,14 @@ const ACHIEVEMENTS = [
   {id:'triple_ron',  icon:'💀',  name:'三連ロン',       desc:'3回連続で危険牌を切った',   hidden:true},
   {id:'timeout3',    icon:'⏰',  name:'時間の無駄遣い', desc:'1ランで3回タイムアップ',    hidden:true},
   {id:'last_stand',  icon:'😤',  name:'土壇場撃破',     desc:'ライフ1でライバルを撃破',   hidden:true},
+  // 初達成系
+  {id:'first_crit',   icon:'⭐',  name:'初クリティカル！', desc:'非現物の安全牌を選択'},
+  {id:'chiharu_down', icon:'🐉',  name:'最終決戦の勝者',  desc:'最強のライバル・チハルを撃破'},
+  {id:'mouhai_used',  icon:'🦾',  name:'盲牌師',          desc:'轟盲牌を発動した'},
+  // スコア・クリット系
+  {id:'score_1000',   icon:'💰',  name:'千点突破',         desc:'1ランでスコア1000以上'},
+  {id:'score_3000',   icon:'💎',  name:'三千点突破',       desc:'1ランでスコア3000以上', hidden:true},
+  {id:'crit5_run',    icon:'🌟',  name:'牌読みの才能',     desc:'1ランでクリティカル5回達成', hidden:true},
 ];
 
 // ── Move names ──────────────────────────────────────────────────────────────
@@ -216,15 +224,15 @@ const MOVES = {
 
 // ── Tile display ────────────────────────────────────────────────────────────
 const SUIT_KANJI = { m:'萬', p:'筒', s:'索' };
-const HONOR_MAP  = { '1z':'東','2z':'南','3z':'西','4z':'北','5z':'白','6z':'発','7z':'中' };
+const HONOR_MAP  = { '1z':'東','2z':'南','3z':'西','4z':'北','5z':'','6z':'発','7z':'中' };
 const KANJI_NUM  = ['','一','二','三','四','五','六','七','八','九'];
 
 const P_POS = [
-  [], [[30,40]], [[30,22],[30,58]], [[30,16],[19,56],[41,56]],
-  [[19,22],[41,22],[19,56],[41,56]],
-  [[19,18],[41,18],[30,40],[19,62],[41,62]],
-  [[19,17],[41,17],[19,40],[41,40],[19,63],[41,63]],
-  [[30,12],[19,32],[41,32],[19,52],[41,52],[19,70],[41,70]],
+  [], [[30,40]], [[30,22],[30,58]], [[30,18],[30,40],[30,62]],
+  [[19,22],[41,22],[19,58],[41,58]],
+  [[19,16],[41,16],[30,38],[19,60],[41,60]],
+  [[19,14],[41,14],[19,40],[41,40],[19,66],[41,66]],
+  [[30,12],[19,30],[41,30],[19,50],[41,50],[19,70],[41,70]],
   [[19,12],[41,12],[19,33],[41,33],[19,54],[41,54],[19,75],[41,75]],
   [[16,12],[30,12],[44,12],[16,40],[30,40],[44,40],[16,68],[30,68],[44,68]],
 ];
@@ -243,9 +251,9 @@ function pinzuSVG(n) {
            pts +
            `<circle cx="${cx}" cy="${cy}" r="${(pr*0.95).toFixed(1)}" fill="${centerCol}"/>`;
   }
-  if(n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">${flower(30,40,14,'#1d4ed8','#dc2626','#dc2626')}</svg>`;
+  if(n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">${flower(30,40,14,'#dc2626','#dc2626','#1a8c4c')}</svg>`;
   const fs=(P_POS[n]||[]).map(([cx,cy],i)=>{
-    const red=n===5&&i===2;
+    const red=(n===3&&i===1)||(n===5&&i===2)||(n===6&&i>=2)||(n===7&&i>=3);
     const c=red?'#dc2626':'#3b82f6';
     return flower(cx,cy,r,'#2563eb',c,c);
   }).join('');
@@ -255,9 +263,9 @@ function pinzuSVG(n) {
 const S_LAYOUT = [
   null, null,
   {c:1,w:16,h:30,gx:0,gy:8}, {c:1,w:16,h:18,gx:0,gy:5},
-  {c:2,w:14,h:28,gx:8,gy:7}, {c:2,w:13,h:23,gx:7,gy:5},
-  {c:2,w:13,h:18,gx:7,gy:5}, {c:2,w:13,h:16,gx:7,gy:4},
-  {c:2,w:13,h:14,gx:7,gy:4}, {c:3,w:13,h:18,gx:4,gy:5},
+  {c:2,w:14,h:28,gx:8,gy:7}, null,
+  {c:3,w:14,h:27,gx:4,gy:6}, {c:2,w:13,h:16,gx:7,gy:4},
+  {c:2,w:12,h:16,gx:8,gy:3}, {c:3,w:13,h:18,gx:4,gy:5},
 ];
 function souzuSVG(n) {
   const GR='#1a8c4c';
@@ -265,7 +273,35 @@ function souzuSVG(n) {
     const rw=(w/2)*0.88, ym=y+h/2, nk=rw*0.28;
     return `<path d="M ${cx},${y} C ${cx-rw},${y} ${cx-rw},${ym-nk} ${cx},${ym} C ${cx+rw},${ym+nk} ${cx+rw},${y+h} ${cx},${y+h} C ${cx-rw},${y+h} ${cx-rw},${ym+nk} ${cx},${ym} C ${cx+rw},${ym-nk} ${cx+rw},${y} ${cx},${y} Z" fill="${fill}"/>`;
   }
-  if(n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">${gourd(30,14,18,54,GR)}</svg>`;
+  const RD='#dc2626';
+  if(n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">
+    <ellipse cx="30" cy="60" rx="19" ry="14" fill="#15803d"/>
+    <ellipse cx="30" cy="60" rx="14" ry="10" fill="#22c55e"/>
+    <ellipse cx="30" cy="60" rx="8" ry="6" fill="#166534"/>
+    <circle cx="21" cy="54" r="3" fill="#1d4ed8"/><circle cx="21" cy="54" r="1.5" fill="#1a1a1a"/>
+    <circle cx="30" cy="51" r="3" fill="#1d4ed8"/><circle cx="30" cy="51" r="1.5" fill="#1a1a1a"/>
+    <circle cx="39" cy="54" r="3" fill="#1d4ed8"/><circle cx="39" cy="54" r="1.5" fill="#1a1a1a"/>
+    <ellipse cx="30" cy="44" rx="9" ry="11" fill="#166534"/>
+    <rect x="27" y="27" width="6" height="13" rx="3" fill="#166534"/>
+    <circle cx="30" cy="24" r="7" fill="#166534"/>
+    <ellipse cx="37" cy="25" rx="5" ry="2" fill="#f59e0b"/>
+    <circle cx="33" cy="21" r="1.5" fill="#fff"/>
+    <circle cx="33.5" cy="21" r="0.8" fill="#1a1a1a"/>
+    <line x1="28" y1="17" x2="25" y2="10" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="25" cy="9" r="2" fill="#4ade80"/>
+    <line x1="30" y1="17" x2="30" y2="9" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="30" cy="8" r="2" fill="#4ade80"/>
+    <line x1="32" y1="17" x2="35" y2="10" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="35" cy="9" r="2" fill="#4ade80"/>
+  </svg>`;
+  if(n===5) {
+    const w=12,h=20;
+    return `<svg viewBox="0 0 60 80" width="100%" height="100%">
+      ${gourd(21,5,w,h,GR)}${gourd(39,5,w,h,GR)}
+      ${gourd(30,30,w,h,RD)}
+      ${gourd(21,55,w,h,GR)}${gourd(39,55,w,h,GR)}
+    </svg>`;
+  }
   const {c,w,h,gx,gy}=S_LAYOUT[n]||{c:2,w:12,h:13,gx:5,gy:4};
   const rows=Math.ceil(n/c);
   const sx=Math.round((60-(c*w+(c-1)*gx))/2);
@@ -274,8 +310,7 @@ function souzuSVG(n) {
   for(let i=0;i<n;i++){
     const col=i%c,row=Math.floor(i/c);
     const x=sx+col*(w+gx),y=sy+row*(h+gy);
-    const red=n===5&&i===4; // 5索：最下段の1個（中央）が赤
-    seg+=gourd(x+w/2,y,w,h,red?'#dc2626':GR);
+    seg+=gourd(x+w/2,y,w,h,GR);
   }
   return `<svg viewBox="0 0 60 80" width="100%" height="100%">${seg}</svg>`;
 }
@@ -408,7 +443,7 @@ function startGame() {
   G.tsumikomiNext=false; G.surikaeAvail=false; G.toshiNext=false; G.toshiThisProblem=false; G.nidotsumiNext=false;
   G.critMult = hasRunSkill('crit_triple') ? 3 : 2;
   G.timerBonus=0; G.nextTimerBonus=0; G.carryTime=0;
-  G.consecutiveMiss=0; G.timeoutCount=0;
+  G.consecutiveMiss=0; G.timeoutCount=0; G.critCount=0;
 
   $('screen-game').classList.remove('critical');
   showScreen('screen-game');
@@ -833,6 +868,7 @@ function selectTile(td, el) {
     G.consecutiveMiss=0;
     if(G.combo>=5)  unlockAchievement('combo5');
     if(G.combo>=10) unlockAchievement('combo10');
+    if(isCrit){ G.critCount++; unlockAchievement('first_crit'); if(G.critCount>=5) unlockAchievement('crit5_run'); }
     // 3コンボごとにライフ1回復（フラグを立てて後でアニメーション発動）
     const didHeal=G.combo%3===0 && G.lives<G.maxLives;
     if(didHeal) G.lives++;
@@ -1070,6 +1106,7 @@ function rivalDefeated() {
   unlockAchievement('first_rival');
   if(!G.missThisRival) unlockAchievement('no_miss');
   if(G.lives===1)      unlockAchievement('last_stand');
+  if(G.rivalIdx===RIVALS.length-1) unlockAchievement('chiharu_down');
   showMoveName('rival',pick(MOVES.defeated));
   updateRivalFlavor('defeated');
   setTimeout(()=>{
@@ -1148,6 +1185,8 @@ function showVictory() {
   if(save.runs>=10) unlockAchievement('veteran');
   if(save.runs>=25) unlockAchievement('runs25');
   if(save.runs>=50) unlockAchievement('runs50');
+  if(G.score>=1000) unlockAchievement('score_1000');
+  if(G.score>=3000) unlockAchievement('score_3000');
   G.lastExpEarned=expEarned;
   $('victory-score').textContent  =`スコア：${G.score.toLocaleString()} 点`;
   $('victory-detail').textContent =`全 ${RIVALS.length} ライバル撃破！ +${expEarned} EXP`;
@@ -1170,6 +1209,8 @@ function showGameOver() {
   if(save.runs>=10) unlockAchievement('veteran');
   if(save.runs>=25) unlockAchievement('runs25');
   if(save.runs>=50) unlockAchievement('runs50');
+  if(G.score>=1000) unlockAchievement('score_1000');
+  if(G.score>=3000) unlockAchievement('score_3000');
 
   console.log(`[遷移] showGameOver: stage=${G.rivalIdx+1} score=${G.score}`);
   const r=RIVALS[G.rivalIdx], p=G.currentProblem;
@@ -1396,7 +1437,10 @@ function showAchievements(page=0){
   const unlocked=save.achievements||{};
   const body=$('ach-body');
   if(!body){showScreen('screen-ach');return;}
-  const totalPages=Math.ceil(ACHIEVEMENTS.length/ACH_PER_PAGE);
+  const total=ACHIEVEMENTS.length;
+  const gotCount=ACHIEVEMENTS.filter(a=>!!unlocked[a.id]).length;
+  const pct=Math.round(gotCount/total*100);
+  const totalPages=Math.ceil(total/ACH_PER_PAGE);
   page=Math.max(0,Math.min(page,totalPages-1));
   const slice=ACHIEVEMENTS.slice(page*ACH_PER_PAGE,(page+1)*ACH_PER_PAGE);
   const rows=slice.map(a=>{
@@ -1407,7 +1451,7 @@ function showAchievements(page=0){
   }).join('');
   const prevDis=page===0?'disabled':'';
   const nextDis=page===totalPages-1?'disabled':'';
-  body.innerHTML=rows+`
+  body.innerHTML=`<div class="ach-progress">${gotCount} / ${total} 解除（${pct}%）</div>`+rows+`
     <div class="ach-pager">
       <button id="btn-ach-prev" class="btn-secondary ach-pager-btn" ${prevDis}>◀</button>
       <span class="ach-pager-num">${page+1} / ${totalPages}</span>
@@ -1500,6 +1544,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(mouhaiActivateBtn) mouhaiActivateBtn.addEventListener('click',()=>{
     G.lives -= 2;
     G.mouhaiNext=true;
+    unlockAchievement('mouhai_used');
     mouhaiActivateBtn.classList.add('hidden');
     updateHUD();
     renderHandForTurn();
