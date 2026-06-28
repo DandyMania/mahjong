@@ -253,9 +253,10 @@ function pinzuSVG(n) {
   }
   if(n===1) return `<svg viewBox="0 0 60 80" width="100%" height="100%">${flower(30,40,14,'#dc2626','#dc2626','#1a8c4c')}</svg>`;
   const fs=(P_POS[n]||[]).map(([cx,cy],i)=>{
-    const red=(n===3&&i===1)||(n===5&&i===2)||(n===6&&i>=2)||(n===7&&i>=3);
+    const red=(n===3&&i===1)||(n===5&&i===2)||(n===6&&i>=2)||(n===7&&i>=3)||(n===9&&i===4);
     const c=red?'#dc2626':'#3b82f6';
-    return flower(cx,cy,r,'#2563eb',c,c);
+    const rc=red?'#dc2626':'#2563eb';
+    return flower(cx,cy,r,rc,c,c);
   }).join('');
   return `<svg viewBox="0 0 60 80" width="100%" height="100%">${fs}</svg>`;
 }
@@ -310,7 +311,8 @@ function souzuSVG(n) {
   for(let i=0;i<n;i++){
     const col=i%c,row=Math.floor(i/c);
     const x=sx+col*(w+gx),y=sy+row*(h+gy);
-    seg+=gourd(x+w/2,y,w,h,GR);
+    const isRed=(n===3&&i===1)||(n===7&&i===3)||(n===8&&i===3)||(n===9&&i===4);
+    seg+=gourd(x+w/2,y,w,h,isRed?RD:GR);
   }
   return `<svg viewBox="0 0 60 80" width="100%" height="100%">${seg}</svg>`;
 }

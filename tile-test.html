@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>全牌確認</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+body{background:#1a3a1a;color:white;padding:10px;margin:0;}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+h3{color:#ffd700;margin:6px 0 2px;font-size:15px;}
+.tile{width:52px!important;height:68px!important;}
+</style>
+</head>
+<body>
+<h2 style="margin:4px;color:#ffd700">全牌確認</h2>
+<h3>萬子</h3><div class="row" id="r-m"></div>
+<h3>筒子</h3><div class="row" id="r-p"></div>
+<h3>索子</h3><div class="row" id="r-s"></div>
+<h3>字牌</h3><div class="row" id="r-z"></div>
+<script src="js/tiles.js"></script>
+<script src="js/problems.js"></script>
+<script src="js/game.js"></script>
+<script>
+['m','p','s'].forEach(function(suit){
+  var row = document.getElementById('r-' + suit);
+  for(var n = 1; n <= 9; n++) row.appendChild(mkTile(n + suit, 'hand'));
+});
+var rz = document.getElementById('r-z');
+for(var n = 1; n <= 7; n++) rz.appendChild(mkTile(n + 'z', 'hand'));
+</script>
+</body>
+</html>
