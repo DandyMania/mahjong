@@ -1183,7 +1183,7 @@ function continueGame() {
   stopTimer();
   if(_adv){clearTimeout(_adv);_adv=null;}
   G.score=Math.floor(G.score*0.3);
-  G.lives=1; G.combo=0;
+  G.lives=G.maxLives; G.combo=0;
   G.continueMode=true;
   openShop(G.pendingExpEarned||0);
 }
