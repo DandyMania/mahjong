@@ -96,6 +96,7 @@ html, body {
 
 /* ── How to play ────────────────────────────────────── */
 #screen-how, #screen-ach { background: #0d0d1a; }
+#screen-ach .how-header { display: none; }
 .how-header { background: rgba(255,255,255,.06); padding: 20px; text-align: center; font-size: 20px; font-weight: 700; border-bottom: 1px solid rgba(255,255,255,.08); }
 .how-body { padding: 20px 20px 40px; display: flex; flex-direction: column; gap: 14px; }
 .how-step { display: flex; align-items: flex-start; gap: 14px; background: rgba(255,255,255,.05); border-radius: 12px; padding: 14px 16px; border: 1px solid rgba(255,255,255,.06); }
@@ -559,7 +560,7 @@ html, body {
 #victory-detail { font-size: 16px; color: #86efac; }
 
 #screen-gameover { align-items: center; background: radial-gradient(ellipse at 50% 30%, #3a1010 0%, #0e0606 70%); overflow: hidden; }
-.gameover-inner { text-align: center; padding: calc(20px * var(--s,1)) 24px calc(16px * var(--s,1)); display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; overflow-y: auto; width: 100%; box-sizing: border-box; }
+.gameover-inner { text-align: center; padding: calc(20px * var(--s,1)) 24px max(40px, env(safe-area-inset-bottom) + 24px); display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; overflow-y: auto; width: 100%; box-sizing: border-box; }
 .gameover-inner .btn-secondary { font-size: calc(14px * var(--s,1)); padding: calc(9px * var(--s,1)); margin-top: 2px; }
 #btn-continue { margin-top: auto; }
 .gameover-btn-row { display: flex; gap: 8px; }
@@ -589,7 +590,7 @@ html, body {
 #final-score  { font-size: calc(24px * var(--s,1)); font-weight: 700; color: var(--gold); }
 #final-detail { font-size: calc(14px * var(--s,1)); color: #fca5a5; }
 .rival-win-quote { font-size: 14px; color: #c084fc; font-style: italic; }
-.go-reveal-btn { background: none; border: 1px solid rgba(192,132,252,.4); color: #c084fc; font-size: 13px; padding: 8px 24px; border-radius: 20px; cursor: pointer; letter-spacing: .05em; }
+.go-reveal-btn { background: none; border: 1px solid rgba(192,132,252,.4); color: #c084fc; font-size: 13px; padding: 8px 24px; border-radius: 20px; cursor: pointer; letter-spacing: .05em; margin-top: 16px; }
 .go-hand-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 300; display: flex; align-items: flex-end; padding-bottom: env(safe-area-inset-bottom); }
 .go-hand-panel { width: 100%; max-width: 540px; margin: 0 auto; background: #130828; border-radius: 20px 20px 0 0; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 10px; max-height: 80vh; overflow-y: auto; }
 .go-hand-close { align-self: flex-end; background: none; border: 1px solid rgba(255,255,255,.2); color: #aaa; font-size: 13px; padding: 4px 12px; border-radius: 12px; cursor: pointer; }
