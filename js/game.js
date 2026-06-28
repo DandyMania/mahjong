@@ -389,6 +389,7 @@ function startTimer() {
   _timer = setInterval(() => { _tv--; _renderTimer(); if (_tv<=0) { clearInterval(_timer); _timer=null; onTimeUp(); } }, 1000);
 }
 function stopTimer() { if (_timer) { clearInterval(_timer); _timer=null; } }
+function resumeTimer() { if(_timer||G.phase!=='playing') return; _timer=setInterval(()=>{ _tv--; _renderTimer(); if(_tv<=0){clearInterval(_timer);_timer=null;onTimeUp();} },1000); }
 function _renderTimer() {
   const bar=$('timer-bar'), num=$('timer-num');
   const max = (DEBUG_MODE?30:EASY_MODE?15:BASE_TIMER)+G.timerBonus;
@@ -830,7 +831,8 @@ function showYakuDesc() {
   if(info.dangerTiles&&info.dangerTiles.length) panel.appendChild(mkRow(info.dangerLabel, info.dangerTiles, 'danger-label'));
   panel.appendChild(hint);
   ov.appendChild(panel);
-  ov.onclick=()=>ov.remove();
+  if(G.phase==='playing') stopTimer();
+  ov.onclick=()=>{ ov.remove(); resumeTimer(); };
   document.body.appendChild(ov);
 }
 
