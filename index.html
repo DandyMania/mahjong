@@ -22,6 +22,7 @@
     <h1>斬★牌★王</h1>
     <p class="subtitle">捨て牌ローグライク・バトル</p>
     <div id="title-hs" class="title-hs"></div>
+    <div id="title-ranking" class="title-ranking"></div>
     <button id="btn-start" class="btn-primary">スタート！</button>
     <div class="title-modes">
       <button id="btn-easy"  class="mode-toggle">💡 かんたん</button>
@@ -66,25 +67,36 @@
 <!-- ── Game ──────────────────────────────────────────── -->
 <div id="screen-game" class="screen">
 
+  <!-- ── トップバー ────────────────────────────────── -->
+  <div class="top-strip">
+    <div id="stage-counter" class="stage-counter">STAGE 1 / 5</div>
+    <button id="btn-pause" class="btn-pause" aria-label="ポーズ">⏸ ポーズ</button>
+  </div>
+
   <!-- ▲ 相手ゾーン ─────────────────────────────────── -->
   <div class="zone-opp">
     <div class="rival-row">
       <span id="rival-icon" class="rival-icon"></span>
       <div class="rival-texts">
-        <div id="rival-name"  class="rival-name"></div>
+        <div class="rival-name-row">
+          <span id="rival-name"  class="rival-name"></span>
+          <span id="rival-subname" class="rival-subname" style="display:none"></span>
+        </div>
         <div id="rival-flavor" class="rival-flavor"></div>
       </div>
     </div>
-    <div id="rival-hp-wrap" class="rival-hp-wrap">
-      <div class="rival-hp-track">
-        <div id="rival-hp-bar" class="rival-hp-fill"></div>
-      </div>
-      <div id="rival-hp-text" class="rival-hp-text">4 / 4</div>
+    <div id="rival-hp-wrap" class="rival-hp-hearts"></div>
+    <!-- 役ターゲット表示 -->
+    <div id="yaku-target" class="yaku-target hidden">
+      <span class="yaku-label">役 →</span>
+      <span id="yaku-name-text" class="yaku-name-text"></span>
+      <span id="yaku-stars-text" class="yaku-stars-text"></span>
     </div>
     <div class="discards-wrap">
       <div class="zone-tag">捨て牌</div>
       <div class="tile-row" id="discards-row"></div>
     </div>
+    <div id="opp-reveal-row" class="opp-reveal-row hidden"></div>
   </div>
 
   <!-- ▶ バトルライン ────────────────────────────────── -->
@@ -96,7 +108,6 @@
     <div class="battle-row">
       <div class="riichi-banner" id="riichi-banner">⚡ リーチ！</div>
       <div id="round-display" class="round-label"></div>
-      <button id="btn-pause" class="btn-pause" aria-label="ポーズ">⏸</button>
     </div>
   </div>
 
@@ -111,19 +122,23 @@
 
   <!-- ▼ 自分ゾーン ─────────────────────────────────── -->
   <div class="zone-player">
+    <div class="hand-bottom">
+      <div id="player-yaku" class="player-yaku hidden"></div>
+      <div class="cut-line-row">
+        <span class="cut-line">どれ切る？</span>
+        <button id="btn-hint" class="btn-hint">💡 現物</button>
+      </div>
+      <div class="hand-area">
+        <div class="tile-row hand-row" id="hand-row"></div>
+      </div>
+    </div>
     <div class="player-hud">
       <div id="lives-display">❤️❤️❤️</div>
       <div id="combo-display" class="combo-hidden"></div>
       <div id="score-display">0</div>
     </div>
-    <div class="cut-line-row">
-      <span class="cut-line">どれ切る？</span>
-      <button id="btn-hint" class="btn-hint">💡 現物</button>
-    </div>
-    <div class="hand-area">
-      <div class="tile-row hand-row" id="hand-row"></div>
-    </div>
   </div>
+
 
 </div>
 
@@ -171,7 +186,10 @@
     <h2>ゲームオーバー</h2>
     <div id="final-score"></div>
     <div id="final-detail"></div>
-    <button id="btn-retry" class="btn-primary">もう一度！</button>
+    <div id="rival-win-quote" class="rival-win-quote"></div>
+    <div id="gameover-waits" class="gameover-waits"></div>
+    <button id="btn-go-shop" class="btn-primary">ショップへ →</button>
+    <button id="btn-retry" class="btn-secondary">もう一度！</button>
     <button id="btn-title" class="btn-secondary">タイトルへ</button>
   </div>
 </div>
@@ -190,6 +208,10 @@
 <div id="popup-layer"  class="popup-layer"></div>
 <div id="move-name"    class="move-name"><div id="move-name-text" class="move-name-text"></div></div>
 <div id="game-toast"   class="game-toast"></div>
+<div id="yaku-splash"  class="yaku-splash hidden">
+  <div class="yaku-splash-main">阻止！！</div>
+  <div id="yaku-splash-sub" class="yaku-splash-sub"></div>
+</div>
 
 <script src="js/tiles.js"></script>
 <script src="js/problems.js"></script>

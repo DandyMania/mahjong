@@ -1,13 +1,75 @@
 // ── Rivals ─────────────────────────────────────────────────────────────────
 const RIVALS = [
-  { name: '天野 マリン',  icon: '👧', hp:  5, flavor: 'これ…ガッチャじゃないの？',               prob: [1,2,3,4,5,16] },
-  { name: '罠師 リオ',   icon: '🎀', hp:  7, flavor: '危険牌は…こっそり隠してあるの。ふぅん',   prob: [2,3,4,5,6,7,16] },
-  { name: '鬼牌 ジョウ', icon: '🤨', hp:  9, flavor: '打牌ファイヤーだ！受けてみろ！',           prob: [5,6,7,8,9,10,17] },
-  { name: '覇王 カリン', icon: '😤', hp: 11, flavor: '強靭！無敵！最強！私の牌読み！',           prob: [7,8,9,10,11,12,13,17,18] },
-  { name: '冥龍 カイト', icon: '🐉', hp: 14, flavor: '粉砕…玉砕…お前のライフ…大喝采。',         prob: [9,10,11,12,13,14,15,17,18] },
+  { name: '天野 マリン', icon: '👧', hp: 3,
+    flavor: 'これ…ガッチャじゃないの？',
+    lines: {
+      t1:       'えっ、これわかる…？すごいじゃん…',
+      t2:       'あれ、まだ諦めてないの？',
+      t3:       'リーチよ！もう終わりっ！',
+      miss:     'あははっ！ひっかかった！',
+      yakuBreak:'なんで…！？ちゃんと見てたの…！？',
+      win:      'やったー！ガッチャ成功っ！',
+      defeated: 'やっぱりサクラしとけばよかった…！',
+    },
+    prob: [1,2,3,4,5] },
+
+  { name: '罠師 リオ', icon: '🎀', hp: 4,
+    flavor: '危険牌は…こっそり隠してあるの。ふぅん',
+    lines: {
+      t1:       '…どれが罠か、わかる？',
+      t2:       'ふぅん。なかなかやるじゃない',
+      t3:       'さあ、これが最後よ。もう逃げられない',
+      miss:     'ふっ…引っかかったわ',
+      yakuBreak:'…っ！なんで読めるの…！？',
+      win:      'ふぅん…罠にかかったわね',
+      defeated: '…ふぅん。認めるわ。あなた、本物ね',
+    },
+    prob: [2,3,4,5,6,7] },
+
+  { name: '鬼牌 ジョウ', icon: '🤨', hp: 5,
+    flavor: '打牌ファイヤーだ！受けてみろ！',
+    lines: {
+      t1:       'オレの牌読みが読めるか！？',
+      t2:       'くっ…まだやるか！面白え！',
+      t3:       'リーチだァ！受けてみろォ！！',
+      miss:     'ぬははは！ドカン！食らいやがれ！',
+      yakuBreak:'な、なんだとォ…！オレの手牌が…！',
+      win:      'ぬははははは！！全弾命中！！',
+      defeated: 'お前…ただもんじゃねえ…！認める！',
+    },
+    prob: [5,6,7,8,9,10,16] },
+
+  { name: '覇王 カリン', icon: '😤', hp: 6,
+    flavor: '強靭！無敵！最強！私の牌読み！',
+    lines: {
+      t1:       '私の完璧な手牌を見なさい',
+      t2:       'まだ諦めないの…？頑固ね',
+      t3:       '強靭！無敵！リーチよ！！受けてみなさい！',
+      miss:     '当然ね！私の読みに狂いはないわ！',
+      yakuBreak:'強靭！無敵！…最強じゃなかった…！？',
+      win:      '強靭！無敵！最強！当然の結果よ！',
+      defeated: 'こんな…こんなはずが…！私が…！',
+    },
+    prob: [8,9,10,11,12,13,16,17] },
+
+  { name: '冥龍 ちはる', icon: '🐉', hp: 8,
+    flavor: '粉砕…玉砕…お前のライフ…大喝采。',
+    lines: {
+      t1:       '…お前は…何者だ…',
+      t2:       '粉砕…玉砕…されるのは、お前だ…',
+      t3:       'リーチ…大喝采の時が…来た…！',
+      miss:     '…冥府の底へ…落ちろ…',
+      yakuBreak:'粉砕…されたのは…わたし…？',
+      win:      '粉砕…玉砕…大喝采…ふふ',
+      defeated: '…お前こそが…真の冥龍だ…',
+    },
+    prob: [9,10,11,12,13,14,15,17,18] },
 ];
 
-// ── Run skills (temp, expire each run) ─────────────────────────────────────
+// ── Round names ─────────────────────────────────────────────────────────────
+const ROUND_NAMES = ['東一局', '東二局', '東三局', '東四局', 'オーラス'];
+
+// ── Run skills ──────────────────────────────────────────────────────────────
 const RUN_SKILLS = [
   { id: 'iron_wall',   icon: '🛡️',  name: '鉄壁',        desc: '次のダメージを1回無効にする' },
   { id: 'time_boost',  icon: '⚡',   name: '速攻',        desc: 'このライバル戦 タイマー+3秒' },
@@ -18,13 +80,12 @@ const RUN_SKILLS = [
   { id: 'crit_triple', icon: '🀄',   name: '現物の極意',  desc: '現物ヒットで与えるダメージ×3' },
   { id: 'heal',        icon: '❤️‍🩹',  name: '回復',        desc: 'ライフ+1回復（即時）' },
   { id: 'time_next5',  icon: '😌',   name: '余裕',        desc: '次の問題だけタイマー+5秒' },
-  // 麻雀漫画スキル
   { id: 'mouhai',      icon: '🦾',   name: '轟盲牌',      desc: '次の問題、牌の文字が見えなくなるが正解で3倍スコア' },
   { id: 'reitan',      icon: '🧊',   name: '冷たい打ち手', desc: 'このランでコンボが0にならない' },
   { id: 'shinsoku',    icon: '⚡⚡',  name: '捨て牌三倍速', desc: '残り5秒以上で正解したらスコア+200' },
 ];
 
-// ── Permanent upgrades (saved to localStorage) ─────────────────────────────
+// ── Permanent upgrades ──────────────────────────────────────────────────────
 const UPGRADES = [
   { id: 'hp',    icon: '❤️',  name: '体力強化',     maxLv: 2, costs: [8,20],  descs: ['+1ライフ（最大4）', '+1ライフ（最大5）'] },
   { id: 'time',  icon: '⏱️',  name: '時間延長',     maxLv: 2, costs: [10,18], descs: ['+2秒（12秒）', '+2秒（14秒）'] },
@@ -34,7 +95,7 @@ const UPGRADES = [
   { id: 'ins',   icon: '🛡️',  name: '初回ミス保険', maxLv: 1, costs: [10],    descs: ['1ランに1回、最初のミスを無効'] },
 ];
 
-// ── Move names ─────────────────────────────────────────────────────────────
+// ── Move names ──────────────────────────────────────────────────────────────
 const MOVES = {
   clutch:   ['土壇場逆転！！','ギリギリ大打撃！！','CLUTCH HIT!!','崖っぷちの一手！！'],
   safe:     ['現物切り！','安全牌確保！','読み勝ち！','守備完璧！','PERFECT GUARD'],
@@ -48,9 +109,9 @@ const MOVES = {
   timeout:  ['タイムオーバー！！','TIME LIMIT!!'],
   defeated: ['ライバル撃破！！','RIVAL DEFEATED!!'],
   victory:  ['完全制覇！！','ALL CLEAR!!'],
+  yakubreak:['役崩し！！','上がり阻止！！','YAKU BREAK!!','完璧な防御！！'],
 };
 
-// ── Random event chars ──────────────────────────────────────────────────────
 const NPC = ['アンズ','ホンダ','バクラ','マリク','レベッカ','アテム'];
 
 // ── Tile display ────────────────────────────────────────────────────────────
@@ -58,7 +119,6 @@ const SUIT_KANJI = { m:'萬', p:'筒', s:'索' };
 const HONOR_MAP  = { '1z':'東','2z':'南','3z':'西','4z':'北','5z':'白','6z':'発','7z':'中' };
 const KANJI_NUM  = ['','一','二','三','四','五','六','七','八','九'];
 
-// SVG tile content (viewBox 60×80)
 const P_POS = [
   [], [[30,40]], [[30,22],[30,58]], [[30,16],[19,56],[41,56]],
   [[19,22],[41,22],[19,56],[41,56]],
@@ -97,8 +157,8 @@ function souzuSVG(n) {
   </svg>`;
   const {c,w,h,gx,gy} = S_LAYOUT[n]||{c:2,w:12,h:13,gx:5,gy:4};
   const rows = Math.ceil(n/c);
-  const sx = Math.round((60 - (c*w+(c-1)*gx))/2);
-  const sy = Math.round((80 - (rows*h+(rows-1)*gy))/2);
+  const sx = Math.round((60-(c*w+(c-1)*gx))/2);
+  const sy = Math.round((80-(rows*h+(rows-1)*gy))/2);
   let seg='';
   for(let i=0;i<n;i++){
     const col=i%c, row=Math.floor(i/c);
@@ -114,10 +174,7 @@ function souzuSVG(n) {
 
 // ── Save ────────────────────────────────────────────────────────────────────
 const SAVE_KEY = 'mj-sweeper-v1';
-function getSave() {
-  try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || mkSave(); }
-  catch { return mkSave(); }
-}
+function getSave() { try { return JSON.parse(localStorage.getItem(SAVE_KEY)) || mkSave(); } catch { return mkSave(); } }
 function mkSave() { return { exp:0, upgrades:{}, bestScore:0, runs:0 }; }
 function writeSave(s) { try { localStorage.setItem(SAVE_KEY, JSON.stringify(s)); } catch {} }
 
@@ -130,13 +187,15 @@ const G = {
   score:0, lives:3, maxLives:3, combo:0, phase:'title',
   rivalIdx:0, rivalHp:0, rivalHpMax:0,
   rivalProbs:[], rivalProbIdx:0, currentProblem:null,
-  runSkills:[], // active run skills
-  // one-shot flags
+  runSkills:[],
   hasBlock:false, hasInsurance:true, comboSaveOnce:false,
   safeOneNext:false, scoreDblOnce:false, mouhaiNext:false, rivalDmgMult:1, critMult:2,
-  timerBonus:0, nextTimerBonus:0,
-  // combo time carry-over
-  carryTime:0,
+  timerBonus:0, nextTimerBonus:0, carryTime:0,
+  // 3-turn encounter state
+  eTurn:1,       // current turn within encounter (1, 2, or 3)
+  eSafeCount:0,  // safe picks so far this encounter
+  eRiichi:false, // true if a miss/timeout happened (riichi declared)
+  eUsed:[],      // hand indices already picked this encounter
 };
 
 // ── Timer ───────────────────────────────────────────────────────────────────
@@ -148,9 +207,8 @@ function startTimer() {
   const bonus = G.timerBonus + G.nextTimerBonus;
   G.nextTimerBonus = 0;
   const base = DEBUG_MODE ? 30 : EASY_MODE ? 15 : BASE_TIMER;
-  // Carry time from previous problem's combo (焦れば焦るほど時間がなくなる)
   _tv = G.carryTime > 0 ? Math.min(G.carryTime + bonus, 15) : base + bonus;
-  G.carryTime = 0; // consume carry
+  G.carryTime = 0;
   _renderTimer();
   _timer = setInterval(() => { _tv--; _renderTimer(); if (_tv<=0) { clearInterval(_timer); _timer=null; onTimeUp(); } }, 1000);
 }
@@ -163,29 +221,27 @@ function _renderTimer() {
   num.textContent=_tv; num.className='timer-num'+(_tv<=3?' red':'');
 }
 
-// ── Advance timer ────────────────────────────────────────────────────────────
+// ── Advance / schedule ───────────────────────────────────────────────────────
 let _adv = null;
 function sched(ms) { _adv = setTimeout(advance, ms); }
 function advance() {
   if (_adv) { clearTimeout(_adv); _adv=null; }
   hideToast();
+  if (G.phase==='gameover'||G.phase==='victory') return;
   if (G.lives<=0) { showGameOver(); return; }
   G.phase='playing'; loadNextProblem();
 }
 
-// ── Screens ─────────────────────────────────────────────────────────────────
+// ── Screens ──────────────────────────────────────────────────────────────────
 const $=id=>document.getElementById(id);
 function showScreen(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); }
 
-// ── Bootstrap game start ─────────────────────────────────────────────────────
+// ── Game start ───────────────────────────────────────────────────────────────
 function startGame() {
   stopTimer();
   if (_adv) { clearTimeout(_adv); _adv=null; }
 
-  const save = getSave();
-  const upg  = save.upgrades;
-
-  // Apply permanent upgrades
+  const save = getSave(), upg = save.upgrades;
   G.maxLives   = 3 + (upg.hp  || 0);
   BASE_TIMER   = 10 + (upg.time || 0) * 2;
   G.hintAll    = !!(upg.hint);
@@ -208,11 +264,12 @@ function loadRival(idx) {
   const r=RIVALS[idx];
   G.rivalHp    = DEBUG_MODE ? 1 : r.hp;
   G.rivalHpMax = DEBUG_MODE ? 1 : r.hp;
-  // Reset time boost on new rival
   G.timerBonus = hasRunSkill('time_boost') ? 3 : 0;
   G.rivalDmgMult = hasRunSkill('double_dmg') ? 2 : 1;
 
   showRivalTransition(idx, () => {
+    // ステージ開始時 HP+1 回復（最初のステージ除く）
+    if(idx>0 && G.lives < G.maxLives){ G.lives++; updateHUD(); showEventToast('❤️ ライフ回復！','safe'); }
     G.rivalProbs = shuffle(r.prob.map(id=>PROBLEMS.find(p=>p.id===id)).filter(Boolean));
     G.rivalProbIdx=0;
     renderRivalBar();
@@ -223,129 +280,195 @@ function loadRival(idx) {
 
 // ── Stage transition ──────────────────────────────────────────────────────────
 function showRivalTransition(idx, cb) {
-  const r=RIVALS[idx];
-  const ov=$('stage-trans');
-  $('trans-stage').textContent  = `STAGE ${idx+1} / ${RIVALS.length}`;
+  const r=RIVALS[idx], ov=$('stage-trans');
+  $('trans-stage').textContent  = ROUND_NAMES[idx] ?? `東${idx+1}局`;
   $('trans-icon').textContent   = r.icon;
   $('trans-name').textContent   = r.name;
   $('trans-flavor').textContent = `"${r.flavor}"`;
   ov.classList.remove('hidden');
   requestAnimationFrame(()=>requestAnimationFrame(()=>ov.classList.add('show')));
-  setTimeout(()=>{
-    ov.classList.remove('show');
-    setTimeout(()=>{ ov.classList.add('hidden'); cb(); }, 350);
-  }, 2200);
+  setTimeout(()=>{ ov.classList.remove('show'); setTimeout(()=>{ ov.classList.add('hidden'); cb(); }, 350); }, 2200);
 }
 
 // ── Problem loading ───────────────────────────────────────────────────────────
 function loadNextProblem() {
+  hideToast();
+  const revRow=$('opp-reveal-row'); if(revRow) revRow.classList.add('hidden');
   if (G.rivalProbIdx>=G.rivalProbs.length) { G.rivalProbs=shuffle([...G.rivalProbs]); G.rivalProbIdx=0; }
-  // Clone problem so we can mutate it for lucky effects
   G.currentProblem = JSON.parse(JSON.stringify(G.rivalProbs[G.rivalProbIdx++]));
 
-  // Lucky effect: one dangerous tile becomes safe
+  // Reset encounter state for each new problem
+  G.eTurn=1; G.eSafeCount=0; G.eRiichi=false; G.eUsed=[];
+
+  // Lucky: one dangerous tile becomes safe
   if (G.safeOneNext) {
     G.safeOneNext=false;
     const dangerous=G.currentProblem.hand.filter(td=>!td.safe);
-    if (dangerous.length>0) { const t=pick(dangerous); t.safe=true; t.lucky=true; }
+    if(dangerous.length>0) { const t=pick(dangerous); t.safe=true; t.lucky=true; }
   }
 
-  // Danger scaler: フィラー安全牌（「今回は安全」）を難易度に応じて危険牌化
-  // 現物・筋読み等の戦略的安全牌は維持。最低2枚の安全牌を保証
+  // Danger scaler: ensure min 3 safe tiles for 3-turn encounters
   if (!EASY_MODE && !DEBUG_MODE) {
-    const MAX_FILLER = [1, 1, 0, 0, 0][G.rivalIdx] ?? 0;
+    const MAX_FILLER = [4, 2, 1, 0, 0][G.rivalIdx] ?? 0;
     const prob = G.currentProblem;
     const filler = prob.hand.filter(td => td.safe && !td.lucky && (td.reason||'').includes('今回は安全'));
     const otherSafe = prob.hand.filter(td => td.safe && !td.lucky && !(td.reason||'').includes('今回は安全')).length;
-    const keep = Math.max(MAX_FILLER, 2 - otherSafe);
+    const keep = Math.max(MAX_FILLER, 3 - otherSafe);
     shuffle(filler).slice(keep).forEach(td => { td.safe = false; td.damage = 1; });
   }
 
-  // Random event (before rendering)
   if (G.phase==='playing') rollEvent();
-
   if (G.lives<=0) { showGameOver(); return; }
 
   updateHUD();
   renderProblem();
   startTimer();
 
-  // Mouhai: hide tile text next problem (set before renderProblem)
   if(hasRunSkill('mouhai')&&!G.mouhaiNext) { G.mouhaiNext=true; }
-
-  // Auto-hint for easy mode or hint upgrade
   if (EASY_MODE || G.hintAll) setTimeout(showHint, 400);
 }
 
 // ── Random events ─────────────────────────────────────────────────────────────
 function rollEvent() {
-  const save=getSave();
-  const upg=save.upgrades;
+  const save=getSave(), upg=save.upgrades;
   const diff=G.rivalIdx/(RIVALS.length-1);
   const badRate  = EASY_MODE ? 0 : 0.06+diff*0.12;
   const goodRate = 0.08*(upg.lucky>=1?2:1);
   const r=Math.random();
-
   if (r<badRate && !(upg.lucky>=2)) {
-    // Bad: ツモ
     const name=pick(NPC);
-    if (G.hasBlock) {
-      G.hasBlock=false;
-      showEventToast(`🛡️ ${name}のツモ！でも鉄壁で防いだ！`, 'safe');
-    } else {
-      G.lives=Math.max(0,G.lives-1);
-      hitLives(); updateHUD();
-      showEventToast(`😱 ${name}がツモ！-1ライフ…`, 'danger');
-    }
+    if (G.hasBlock) { G.hasBlock=false; showEventToast(`🛡️ ${name}のツモ！でも鉄壁で防いだ！`,'safe'); }
+    else { G.lives=Math.max(0,G.lives-1); hitLives(); updateHUD(); showEventToast(`😱 ${name}がツモ！-1ライフ…`,'danger'); }
   } else if (r<badRate+goodRate) {
-    // Good: 他家ロン → 危険牌が1枚消える
     const name=pick(NPC);
     G.safeOneNext=true;
-    showEventToast(`✨ ${name}がロン！危険牌が1枚消えるよ`, 'safe');
+    showEventToast(`✨ ${name}がロン！危険牌が1枚消えるよ`,'safe');
   }
 }
-
 function showEventToast(msg, mode) {
   const t=$('game-toast');
   t.className='game-toast '+(mode==='safe'?'toast-safe':'toast-danger')+' show';
-  t.textContent=msg;
-  t.onclick=null;
+  t.textContent=msg; t.onclick=null;
   setTimeout(()=>{ if(t.classList.contains('show')) t.className='game-toast'; }, 2200);
 }
 
 // ── Rival HP bar ─────────────────────────────────────────────────────────────
 function renderRivalBar() {
   const r=RIVALS[G.rivalIdx];
-  $('rival-icon').textContent   = r.icon;
-  $('rival-name').textContent   = r.name;
-  $('rival-flavor').textContent = r.flavor;
+  $('rival-icon').textContent    = r.icon;
+  $('rival-name').textContent    = r.name;
+  const subnameEl = $('rival-subname');
+  if (subnameEl) subnameEl.style.display = 'none';
+  $('rival-flavor').textContent  = r.flavor;
+  const stageEl = $('stage-counter');
+  if (stageEl) {
+    const round = ROUND_NAMES[G.rivalIdx] ?? `東${G.rivalIdx+1}局`;
+    const rem   = RIVALS.length - G.rivalIdx - 1;
+    const remTxt = rem===0 ? 'ラスト！' : `あと${rem}人`;
+    stageEl.innerHTML = `${round} <span class="stage-rem">${remTxt}</span>`;
+  }
   renderRivalHp();
 }
+function updateRivalFlavor(key) {
+  const r=RIVALS[G.rivalIdx];
+  const line = r.lines?.[key] ?? r.flavor;
+  const el=$('rival-flavor');
+  if (!el) return;
+  el.classList.remove('flavor-anim');
+  void el.offsetWidth; // reflow to restart animation
+  el.textContent = line;
+  el.classList.add('flavor-anim');
+}
 function renderRivalHp(hit) {
-  const pct=Math.max(0,G.rivalHp/G.rivalHpMax*100);
-  const bar=$('rival-hp-bar'), wrap=$('rival-hp-wrap');
-  bar.style.width=pct+'%';
-  bar.className='rival-hp-fill'+(G.rivalHp<=Math.ceil(G.rivalHpMax/3)?' hp-low':'');
-  $('rival-hp-text').textContent=`${G.rivalHp} / ${G.rivalHpMax}`;
-  if (hit) { wrap.classList.remove('hp-hit'); void wrap.offsetWidth; wrap.classList.add('hp-hit'); setTimeout(()=>wrap.classList.remove('hp-hit'),380); }
+  const wrap=$('rival-hp-wrap'); if(!wrap) return;
+  const isLow=G.rivalHp<=Math.ceil(G.rivalHpMax/3);
+  let h='';
+  for(let i=0;i<G.rivalHpMax;i++){
+    if(i<G.rivalHp) h+=`<span class="heart rival-heart${isLow?' rival-heart-low':''}">💜</span>`;
+    else             h+=`<span class="heart rival-heart-dead">🖤</span>`;
+  }
+  wrap.innerHTML=h;
+  if(hit){ wrap.classList.remove('hp-hit'); void wrap.offsetWidth; wrap.classList.add('hp-hit'); setTimeout(()=>wrap.classList.remove('hp-hit'),380); }
 }
 
-// ── Problem rendering ─────────────────────────────────────────────────────────
-function renderProblem() {
-  const p=G.currentProblem, r=RIVALS[G.rivalIdx];
-  $('round-display').textContent=`第 ${r.hp-G.rivalHp+1} / ${r.hp} 撃`;
-  const dr=$('discards-row'); dr.innerHTML='';
-  p.opponentDiscards.forEach(t=>dr.appendChild(mkTile(t,'discard')));
+// ── Problem rendering helpers ─────────────────────────────────────────────────
+
+// Show partial discards based on current turn
+function renderDiscards() {
+  const p=G.currentProblem, dr=$('discards-row'); dr.innerHTML='';
+  const limit = G.eTurn===1 ? 2 : G.eTurn===2 ? 4 : p.opponentDiscards.length;
+  p.opponentDiscards.slice(0, limit).forEach(t=>dr.appendChild(mkTile(t,'discard')));
+}
+
+// Show hand minus tiles already used this encounter
+function renderHandForTurn() {
   const hr=$('hand-row'); hr.innerHTML='';
-  p.hand.forEach(td=>{
+  G.currentProblem.hand.forEach((td, i) => {
+    if (G.eUsed.includes(i)) return;
     const el=mkTile(td.tile,'hand',G.mouhaiNext);
-    el.addEventListener('pointerdown',e=>{el.classList.add('pressed');addRipple(el,e);});
-    el.addEventListener('pointerup',  ()=>{el.classList.remove('pressed');selectTile(td,el);});
+    el.dataset.handIdx = i; // needed for revealHand() to map DOM→data correctly
+    el.addEventListener('pointerdown', e=>{el.classList.add('pressed');addRipple(el,e);});
+    el.addEventListener('pointerup',   ()=>{el.classList.remove('pressed');selectTile(td,el);});
     el.addEventListener('pointerleave',()=>el.classList.remove('pressed'));
     hr.appendChild(el);
   });
-  if(G.mouhaiNext) showEventToast('🦾 盲牌発動！正解で3倍スコア', 'safe');
 }
+
+// Show yaku target banner (from turn 1)
+function showYakuTarget() {
+  const p=G.currentProblem, el=$('yaku-target');
+  if (!el) return;
+  if (p && p.yaku) {
+    $('yaku-name-text').textContent  = p.yaku;
+    $('yaku-stars-text').textContent = '★'.repeat(p.yakuValue||1);
+    el.classList.remove('hidden');
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
+// Update riichi / turn indicator banner
+function updateRiichiBanner() {
+  const b=$('riichi-banner');
+  if (G.eRiichi) {
+    b.textContent  = G.eTurn===3 ? '⚡ リーチ！ラストチャンス！' : `⚡ リーチ！[${G.eTurn}/3]`;
+    b.className    = 'riichi-banner';
+  } else if (G.eTurn===2 && G.eSafeCount===1) {
+    b.textContent  = '🛡️ 阻止チャンス！あと1手！';
+    b.className    = 'riichi-banner no-riichi';
+  } else {
+    b.textContent  = `📖 手作り中… [${G.eTurn}/3]`;
+    b.className    = 'riichi-banner pre-riichi';
+  }
+}
+
+// ── Problem rendering (main) ──────────────────────────────────────────────────
+function renderProblem() {
+  const r=RIVALS[G.rivalIdx];
+  $('round-display').textContent = `第 ${r.hp-G.rivalHp+1} / ${r.hp} 撃`;
+  renderDiscards();
+  renderHandForTurn();
+  showYakuTarget();
+  updateRiichiBanner();
+  // フレーバーテキストをターン/リーチ状態に合わせて更新
+  if (G.eRiichi)       updateRivalFlavor('t3');
+  else if (G.eTurn===2) updateRivalFlavor('t2');
+  else                  updateRivalFlavor('t1');
+  // 自分の役バナー
+  const pyEl=$('player-yaku');
+  if(pyEl){
+    const p=G.currentProblem;
+    if(p&&p.playerYaku){
+      const stars='★'.repeat(p.playerYakuValue||1);
+      pyEl.textContent=`自分の役 → ${p.playerYaku} ${stars}`;
+      pyEl.classList.remove('hidden');
+    } else { pyEl.classList.add('hidden'); }
+  }
+  if(G.mouhaiNext) showEventToast('🦾 盲牌発動！正解で3倍スコア','safe');
+  console.log(`[遷移] renderProblem: stage=${G.rivalIdx+1} rivalHp=${G.rivalHp} eTurn=${G.eTurn} eRiichi=${G.eRiichi}`);
+}
+
+// ── Tile factory ──────────────────────────────────────────────────────────────
 function mkTile(id,type,blind=false) {
   const el=document.createElement('div');
   const suit=id[1], num=parseInt(id[0]);
@@ -379,118 +502,248 @@ function updateHUD() {
 }
 
 // ── Tile interaction ──────────────────────────────────────────────────────────
-function selectTile(td,el) {
+function selectTile(td, el) {
   if(G.phase!=='playing') return;
   G.phase='result'; stopTimer();
   if(_adv){clearTimeout(_adv);_adv=null;}
-  const p=G.currentProblem;
 
-  if(td.safe||td.lucky) {
-    const is現物 = p.opponentDiscards.includes(td.tile);
-    // クリティカル = 現物じゃない安全牌を当てた（うまい手の読み！）
+  const p=G.currentProblem;
+  const tileIdx=p.hand.indexOf(td);
+  if(tileIdx>=0) G.eUsed.push(tileIdx);
+  const isFinal = G.eTurn>=3;
+
+  if(td.safe || td.lucky) {
+    // ── Safe pick ─────────────────────────────────────────────────────────
+    // Determine "visible" discards for is現物 check (player can only see partial discards)
+    const visLimit = G.eTurn===1?2:G.eTurn===2?4:p.opponentDiscards.length;
+    const is現物 = p.opponentDiscards.slice(0,visLimit).includes(td.tile);
     const isCrit = !is現物;
-    // 土壇場コンボ: 残り1〜2秒 かつ コンボ2以上 → +150pt + ボーナスダメージ + 専用演出
-    const isClutch = _tv <= 2 && G.combo >= 2;
-    const hpDmg = (isCrit ? G.critMult : G.rivalDmgMult) + (isClutch ? 1 : 0);
+    const isClutch = _tv<=2 && G.combo>=2;
     let pts=(isCrit?200:100)+Math.min(G.combo,5)*20;
     if(isClutch) pts+=150;
     if(G.mouhaiNext){G.mouhaiNext=false;pts*=3;}
     if(G.scoreDblOnce){pts*=2;G.scoreDblOnce=false;}
     if(hasRunSkill('shinsoku')&&_tv>=5) pts+=200;
     G.score+=pts; G.combo++;
-    // コンボ時間持ち越し：うまい読み→大きく、現物→小さく
-    const comboTimeBonus = isCrit ? 4 : is現物 ? 1 : 0;
-    G.carryTime = Math.min(_tv + comboTimeBonus, 15);
+    G.carryTime=Math.min(_tv+(isCrit?4:is現物?1:0),15);
+    G.eSafeCount++;
 
     flashGreen(); spawnPop(pts,el,isClutch||isCrit);
-    const moveMode = isClutch ? 'clutch' : isCrit ? 'critical' : 'safe';
-    const moveTxt  = isClutch ? pick(MOVES.clutch) : isCrit ? pick(MOVES.crit) : pickSafeMove(G.combo);
-    revealHand(td); showMoveName(moveMode, moveTxt);
-    showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
-    G.rivalHp=Math.max(0,G.rivalHp-hpDmg); renderRivalHp(true); updateHUD();
-    if(G.rivalHp<=0) setTimeout(rivalDefeated,600);
-    else sched(1000);
+    const moveMode = isClutch?'clutch':isCrit?'critical':'safe';
+    const moveTxt  = isClutch?pick(MOVES.clutch):isCrit?pick(MOVES.crit):pickSafeMove(G.combo);
+    showMoveName(moveMode,moveTxt);
+    updateHUD();
+
+    if(G.eTurn===1) {
+      // Turn 1: advance to turn 2
+      revealOneTile(td,el);
+      showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
+      _adv=setTimeout(advanceTurn,1200);
+
+    } else if(G.eTurn===2 && !G.eRiichi) {
+      // Turn 2 perfect (both safe, no riichi) → YAKU BREAK! Encounter ends
+      revealOneTile(td,el);
+      showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
+      G.rivalHp=Math.max(0,G.rivalHp-1); renderRivalHp(true);
+      setTimeout(()=>showYakuBreak(p.yaku,p.yakuValue),700);
+      if(G.rivalHp<=0) setTimeout(rivalDefeated,4500);
+      else _adv=setTimeout(advance,5000);
+
+    } else if(G.eTurn===2 && G.eRiichi) {
+      // Turn 2 safe but riichi already declared → advance to turn 3
+      revealOneTile(td,el);
+      showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
+      _adv=setTimeout(advanceTurn,1200);
+
+    } else {
+      // Turn 3 (final, riichi mode) safe → normal HP hit
+      const hpDmg=(isCrit?G.critMult:G.rivalDmgMult)+(isClutch?1:0);
+      revealHand(td);
+      showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
+      G.rivalHp=Math.max(0,G.rivalHp-hpDmg); renderRivalHp(true);
+      if(G.rivalHp<=0) setTimeout(rivalDefeated,600);
+      else sched(1000);
+    }
+
   } else {
+    // ── Dangerous pick ────────────────────────────────────────────────────
     const dmg=td.damage??1;
-    // Insurance / block checks
+
+    // Defensive skills (don't trigger riichi)
     if(G.hasInsurance){
       G.hasInsurance=false;
       showMoveName('safe','初回ミス保険発動！');
       showToast('safe',0,p.waitShape,false,0);
-      revealHand(td); sched(1800); return;
+      revealOneTile(td,el);
+      if(isFinal){revealHand(td);sched(1800);}else{_adv=setTimeout(advanceTurn,1800);}
+      return;
     }
     if(G.hasBlock){
       G.hasBlock=false;
       showMoveName('safe','鉄壁で防いだ！');
       showToast('safe',0,p.waitShape,false,0);
-      revealHand(td); sched(1800); return;
+      revealOneTile(td,el);
+      if(isFinal){revealHand(td);sched(1800);}else{_adv=setTimeout(advanceTurn,1800);}
+      return;
     }
-    G.carryTime = 0; // miss = 時間持ち越しリセット（焦れば焦るほど時間がなくなる）
+
+    // Actual damage
+    G.eRiichi=true;
+    G.carryTime=0;
     if(G.comboSaveOnce){G.comboSaveOnce=false;G.combo=Math.max(0,G.combo-1);}
     else if(hasRunSkill('reitan')) G.combo=Math.max(0,G.combo-1);
     else G.combo=0;
     flashRed(dmg); shakeScreen();
     G.lives=Math.max(0,G.lives-dmg); hitLives();
-    revealHand(td); showMoveName('danger',dmg>=2?pick(MOVES.danger2):pick(MOVES.danger));
-    showToast('danger',0,p.waitShape,false,dmg); updateHUD();
-    sched(G.lives<=0?2200:2000);
+    updateRivalFlavor('miss');
+    console.log(`[遷移] miss: lives=${G.lives} eTurn=${G.eTurn} isFinal=${isFinal}`);
+    showMoveName('danger',dmg>=2?pick(MOVES.danger2):pick(MOVES.danger));
+    showToast('danger',0,p.waitShape,false,dmg);
+    updateHUD();
+
+    if(isFinal){
+      revealHand(td);
+      sched(G.lives<=0?2200:2000);
+    } else {
+      revealOneTile(td,el);
+      _adv=setTimeout(advanceTurn,G.lives<=0?2200:2000);
+    }
   }
 }
 
 function onTimeUp() {
   if(G.phase!=='playing') return;
   G.phase='result';
+  G.eRiichi=true;
   if(hasRunSkill('reitan')) G.combo=Math.max(0,G.combo-1); else G.combo=0;
   G.carryTime=0;
   if(_adv){clearTimeout(_adv);_adv=null;}
-  flashRed(1); shakeScreen(); revealHand(null);
+  flashRed(1); shakeScreen();
   G.lives=Math.max(0,G.lives-1); hitLives();
   showMoveName('danger',pick(MOVES.timeout));
-  showToast('timeout',0,G.currentProblem.waitShape,false,1); updateHUD();
-  sched(G.lives<=0?2200:2000);
+  showToast('timeout',0,G.currentProblem.waitShape,false,1);
+  updateHUD();
+  const isFinal=G.eTurn>=3;
+  if(isFinal){revealHand(null);sched(G.lives<=0?2200:2000);}
+  else{_adv=setTimeout(advanceTurn,G.lives<=0?2200:2000);}
 }
 
+// ── Advance to next turn within the same encounter ────────────────────────────
+function advanceTurn() {
+  if(_adv){clearTimeout(_adv);_adv=null;}
+  if(G.lives<=0){showGameOver();return;}
+  hideToast();
+  G.eTurn++;
+  G.phase='playing';
+  renderDiscards();
+  renderHandForTurn();
+  showYakuTarget();
+  updateRiichiBanner();
+  $('round-display').textContent=`第 ${RIVALS[G.rivalIdx].hp-G.rivalHp+1} / ${RIVALS[G.rivalIdx].hp} 撃`;
+  startTimer();
+}
+
+// ── Tile reveal helpers ───────────────────────────────────────────────────────
+
+// Reveal only the selected tile (used for turns 1–2)
+function revealOneTile(td, el) {
+  const isCritVisual=td.safe&&!G.currentProblem.opponentDiscards.includes(td.tile);
+  el.style.pointerEvents='none';
+  if(td.lucky||isCritVisual) el.classList.add('tile-crit');
+  else if(td.safe) el.classList.add('tile-safe');
+  else el.classList.add('tile-danger');
+  el.classList.add(isCritVisual||td.lucky?'tile-picked-crit':td.safe?'tile-picked-safe':'tile-picked-danger');
+  const lbl=document.createElement('span');lbl.className='tile-label';
+  lbl.textContent=td.lucky?'✨':isCritVisual?'★':td.safe?'✓':(td.damage??1)>=2?'✗✗':'✗';
+  el.appendChild(lbl);
+}
+
+// Reveal all remaining tiles (used for turn 3 / encounter end)
 function revealHand(selected) {
   const p=G.currentProblem;
-  $('hand-row').querySelectorAll('.tile').forEach((el,i)=>{
-    const td=p.hand[i]; if(!td) return;
+  $('hand-row').querySelectorAll('.tile').forEach(el=>{
+    const i=parseInt(el.dataset.handIdx);
+    const td=p.hand[i];
+    if(!td) return;
     el.style.pointerEvents='none';
-    // crit visual = 非現物安全牌（スキル読みが必要）= selectTile の isCrit と一致
     const isCritVisual=td.safe&&!p.opponentDiscards.includes(td.tile);
-    if(td.lucky)           el.classList.add('tile-crit');
-    else if(isCritVisual)  el.classList.add('tile-crit');
-    else if(td.safe)       el.classList.add('tile-safe');
-    else                   el.classList.add('tile-danger');
-    if(selected&&td.tile===selected.tile) el.classList.add(isCritVisual||td.lucky?'tile-picked-crit':td.safe?'tile-picked-safe':'tile-picked-danger');
-    const lbl=document.createElement('span');
-    lbl.className='tile-label';
+    if(td.lucky)          el.classList.add('tile-crit');
+    else if(isCritVisual) el.classList.add('tile-crit');
+    else if(td.safe)      el.classList.add('tile-safe');
+    else                  el.classList.add('tile-danger');
+    if(selected && p.hand.indexOf(selected)===i)
+      el.classList.add(isCritVisual||td.lucky?'tile-picked-crit':td.safe?'tile-picked-safe':'tile-picked-danger');
+    const lbl=document.createElement('span');lbl.className='tile-label';
     lbl.textContent=td.lucky?'✨':isCritVisual?'★':td.safe?'✓':(td.damage??1)>=2?'✗✗':'✗';
     el.appendChild(lbl);
   });
 }
 
+// ── Yaku break ────────────────────────────────────────────────────────────────
+function showYakuSplash(yaku) {
+  const el=$('yaku-splash'); if(!el) return;
+  $('yaku-splash-sub').textContent=`💥 ${yaku}　崩壊！！`;
+  el.classList.remove('hidden');
+  el.style.animation='none'; void el.offsetWidth;
+  el.style.animation='';
+  el.querySelector('.yaku-splash-main').style.animation='none'; void el.offsetWidth;
+  el.querySelector('.yaku-splash-main').style.animation='';
+  setTimeout(()=>el.classList.add('hidden'), 2800);
+}
+
+function showYakuBreak(yaku, value) {
+  if(!yaku) return;
+  console.log(`[遷移] showYakuBreak: yaku=${yaku} value=${value}`);
+  G.phase='result'; stopTimer(); hideToast();
+  const bonus=(value||1)*300;
+  G.score+=bonus;
+  updateRivalFlavor('yakuBreak');
+  showYakuSplash(yaku);
+  spawnPop(bonus,null,true);
+  updateHUD();
+  setTimeout(revealOpponentHandDisplay, 1800);
+}
+
+function revealOpponentHandDisplay() {
+  const p=G.currentProblem; if(!p) return;
+  const wrap=$('opp-reveal-row'); if(!wrap) return;
+  wrap.innerHTML='';
+  wrap.classList.remove('hidden');
+  const shape=p.waitShape||'';
+  const lbl=document.createElement('div'); lbl.className='opp-reveal-label';
+  lbl.textContent=`⚡ 相手の待ち（${shape}）`;
+  wrap.appendChild(lbl);
+  const tilesWrap=document.createElement('div'); tilesWrap.className='opp-reveal-tiles';
+  (p.waits||[]).forEach(t=>{
+    const el=mkTile(t,'result');
+    el.style.pointerEvents='none';
+    tilesWrap.appendChild(el);
+  });
+  wrap.appendChild(tilesWrap);
+}
+
 // ── Rival defeated ────────────────────────────────────────────────────────────
 function rivalDefeated() {
-  G.phase = 'rival_defeated';
-  stopTimer(); hideToast();
+  G.phase='rival_defeated'; stopTimer(); hideToast();
+  if(_adv){clearTimeout(_adv);_adv=null;}
+  console.log(`[遷移] rivalDefeated: stage=${G.rivalIdx+1}`);
   showMoveName('rival',pick(MOVES.defeated));
+  updateRivalFlavor('defeated');
   setTimeout(()=>{
     if(G.rivalIdx>=RIVALS.length-1) showVictory();
     else showSkillSelection();
-  }, 1200);
+  },2200);
 }
 
 // ── Skill selection ───────────────────────────────────────────────────────────
-let _skillTimer = null;
+let _skillTimer=null;
 function showSkillSelection() {
   const pool=RUN_SKILLS.filter(s=>s.id!=='heal'||G.lives<G.maxLives);
   const choices=shuffle([...pool]).slice(0,3);
-  const container=$('skill-cards');
-  container.innerHTML='';
+  const container=$('skill-cards'); container.innerHTML='';
 
-  // Auto-proceed countdown
-  let countdown = 10;
-  const countEl = document.createElement('div');
+  let countdown=10;
+  const countEl=document.createElement('div');
   countEl.style.cssText='text-align:center;color:#6b7280;font-size:12px;padding:8px 0;';
   countEl.textContent=`${countdown}秒後に自動でおまかせ選択…`;
 
@@ -498,22 +751,21 @@ function showSkillSelection() {
     const card=document.createElement('div');
     card.className='skill-card'+(i===0?' skill-recommend':'');
     card.innerHTML=`<div class="skill-card-icon">${skill.icon}</div><div><div class="skill-card-name">${skill.name}${i===0?' <span style="font-size:11px;color:#fbbf24">★オススメ</span>':''}</div><div class="skill-card-desc">${skill.desc}</div></div>`;
-    card.addEventListener('click',()=>{ clearInterval(_skillTimer); pickSkill(skill); });
+    card.addEventListener('click',()=>{clearInterval(_skillTimer);pickSkill(skill);});
     container.appendChild(card);
   });
   container.appendChild(countEl);
   showScreen('screen-skill');
 
-  _skillTimer = setInterval(()=>{
+  _skillTimer=setInterval(()=>{
     countdown--;
     countEl.textContent=`${countdown}秒後に自動でおまかせ選択…`;
-    if(countdown<=0){ clearInterval(_skillTimer); pickSkill(choices[0]); }
+    if(countdown<=0){clearInterval(_skillTimer);pickSkill(choices[0]);}
   },1000);
 }
 
 function pickSkill(skill) {
   G.runSkills.push(skill);
-  // Apply instant effects
   if(skill.id==='heal')        G.lives=Math.min(G.lives+1,G.maxLives);
   if(skill.id==='iron_wall')   G.hasBlock=true;
   if(skill.id==='combo_save')  G.comboSaveOnce=true;
@@ -524,7 +776,6 @@ function pickSkill(skill) {
   if(skill.id==='time_boost')  G.timerBonus=3;
   if(skill.id==='time_next5')  G.nextTimerBonus=5;
   if(skill.id==='mouhai')      G.mouhaiNext=true;
-
   showScreen('screen-game');
   loadRival(G.rivalIdx+1);
 }
@@ -532,80 +783,78 @@ function hasRunSkill(id){ return G.runSkills.some(s=>s.id===id); }
 
 // ── Victory ───────────────────────────────────────────────────────────────────
 function showVictory() {
-  G.phase = 'victory'; stopTimer(); hideToast();
+  G.phase='victory'; stopTimer(); hideToast();
   showMoveName('rival',pick(MOVES.victory));
   const save=getSave(); save.runs++;
   if(G.score>save.bestScore) save.bestScore=G.score;
   const expEarned=calcExp();
-  save.exp+=expEarned;
-  writeSave(save);
-  G.lastExpEarned=expEarned; // btn-again で shop に渡す用
-  $('victory-score').textContent  = `スコア：${G.score.toLocaleString()} 点`;
-  $('victory-detail').textContent = `全 ${RIVALS.length} ライバル撃破！ +${expEarned} EXP`;
+  save.exp+=expEarned; writeSave(save);
+  G.lastExpEarned=expEarned;
+  $('victory-score').textContent  =`スコア：${G.score.toLocaleString()} 点`;
+  $('victory-detail').textContent =`全 ${RIVALS.length} ライバル撃破！ +${expEarned} EXP`;
   setTimeout(()=>showScreen('screen-victory'),1200);
 }
 
-// ── Game over → shop ──────────────────────────────────────────────────────────
+// ── Game over ─────────────────────────────────────────────────────────────────
 function showGameOver() {
+  G.phase='gameover'; // prevent stale callbacks from firing
+  stopTimer(); hideToast();
+  if(_adv){clearTimeout(_adv);_adv=null;}
+
   const save=getSave(); save.runs++;
   if(G.score>save.bestScore) save.bestScore=G.score;
   const expEarned=calcExp();
-  save.exp+=expEarned;
-  writeSave(save);
+  save.exp+=expEarned; writeSave(save);
 
-  $('final-score').textContent  = `${G.score.toLocaleString()} 点`;
-  $('final-detail').textContent = `${RIVALS[G.rivalIdx].name} で撃沈…`;
+  console.log(`[遷移] showGameOver: stage=${G.rivalIdx+1} score=${G.score}`);
+  const r=RIVALS[G.rivalIdx], p=G.currentProblem;
+  $('final-score').textContent  =`${G.score.toLocaleString()} 点`;
+  $('final-detail').textContent =`${r.name} に敗北…`;
+  // 勝利セリフ
+  const quoteEl=$('rival-win-quote');
+  if(quoteEl) quoteEl.innerHTML=`${r.icon} <em>「${r.lines?.win ?? r.flavor}」</em>`;
+  // 待ち牌表示
+  const waitEl=$('gameover-waits');
+  if(waitEl && p) {
+    const shape=p.waitShape||'';
+    const tiles=(p.waits||[]).map(t=>{
+      const el=mkTile(t,'result'); return el.outerHTML;
+    }).join('');
+    waitEl.innerHTML=`<div class="go-wait-label">相手の待ち（${shape}）</div><div class="go-wait-tiles">${tiles}</div>`;
+  }
+  G.pendingExpEarned=expEarned;
   showScreen('screen-gameover');
-  // Small delay then show shop
-  setTimeout(()=>openShop(expEarned), 2200);
 }
 
-function calcExp() {
-  return Math.max(2, G.rivalIdx*3+Math.floor(G.score/50));
-}
+function calcExp() { return Math.max(2, G.rivalIdx*3+Math.floor(G.score/50)); }
 
 // ── Upgrade shop ──────────────────────────────────────────────────────────────
 function openShop(expEarned) {
   const save=getSave();
-  $('shop-exp-earned').textContent = expEarned>0?`+${expEarned} EXP 獲得！`:'';
-  renderShop(save);
-  showScreen('screen-upgrade');
+  $('shop-exp-earned').textContent=expEarned>0?`+${expEarned} EXP 獲得！`:'';
+  renderShop(save); showScreen('screen-upgrade');
 }
-
 function renderShop(save) {
-  $('shop-exp').textContent = save.exp;
+  $('shop-exp').textContent=save.exp;
   const list=$('shop-list'); list.innerHTML='';
   UPGRADES.forEach(upg=>{
-    const curLv=save.upgrades[upg.id]||0;
-    const isMax=curLv>=upg.maxLv;
-    const cost=upg.costs[curLv];
-    const canBuy=!isMax&&save.exp>=cost;
+    const curLv=save.upgrades[upg.id]||0, isMax=curLv>=upg.maxLv;
+    const cost=upg.costs[curLv], canBuy=!isMax&&save.exp>=cost;
     const item=document.createElement('div');
     item.className='shop-item'+(isMax?' maxed':'');
-    item.innerHTML=`
-      <div class="shop-icon">${upg.icon}</div>
-      <div class="shop-info">
-        <div class="shop-name">${upg.name}</div>
-        <div class="shop-desc">${isMax?'最大レベル！':upg.descs[curLv]}</div>
-        <div class="shop-level">Lv ${curLv} / ${upg.maxLv}</div>
-      </div>
-      <button class="shop-buy" ${isMax||!canBuy?'disabled':''}>${isMax?'MAX':cost+' EXP'}</button>`;
+    item.innerHTML=`<div class="shop-icon">${upg.icon}</div><div class="shop-info"><div class="shop-name">${upg.name}</div><div class="shop-desc">${isMax?'最大レベル！':upg.descs[curLv]}</div><div class="shop-level">Lv ${curLv} / ${upg.maxLv}</div></div><button class="shop-buy" ${isMax||!canBuy?'disabled':''}>${isMax?'MAX':cost+' EXP'}</button>`;
     if(!isMax&&canBuy) item.querySelector('.shop-buy').addEventListener('click',()=>buyUpgrade(upg.id));
     list.appendChild(item);
   });
 }
-
 function buyUpgrade(id) {
-  const save=getSave();
-  const upg=UPGRADES.find(u=>u.id===id);
+  const save=getSave(), upg=UPGRADES.find(u=>u.id===id);
   const curLv=save.upgrades[id]||0;
   if(curLv>=upg.maxLv) return;
   const cost=upg.costs[curLv];
   if(save.exp<cost) return;
-  save.exp-=cost;
-  save.upgrades[id]=(curLv+1);
-  writeSave(save);
-  renderShop(save);
+  save.exp-=cost; save.upgrades[id]=(curLv+1);
+  writeSave(save); renderShop(save);
 }
 
 // ── Effects ────────────────────────────────────────────────────────────────────
@@ -618,10 +867,14 @@ function spawnPop(pts,anchor,isCrit){
   el.className='score-pop'+(isCrit?' crit':'');
   el.textContent=(isCrit?'★ ':'')+'+'+pts;
   if(anchor){const r=anchor.getBoundingClientRect();el.style.left=(r.left+r.width/2-24)+'px';el.style.top=(r.top-8)+'px';}
-  else{el.style.left='50%';el.style.top='40%';el.style.transform='translateX(-50%)';}
+  else{el.style.left='50%';el.style.top='22%';el.style.transform='translateX(-50%)';}
   layer.appendChild(el);setTimeout(()=>el.remove(),1050);
 }
-function showMoveName(mode,text){const w=$('move-name'),t=$('move-name-text');w.className=`move-name move-${mode} show`;t.textContent=text;setTimeout(()=>{w.className='move-name';},1000);}
+function showMoveName(mode,text){
+  const w=$('move-name'),t=$('move-name-text');
+  w.className=`move-name move-${mode} show`;t.textContent=text;
+  setTimeout(()=>{w.className='move-name';},1000);
+}
 function pickSafeMove(combo){if(combo>=5)return pick(MOVES.safe_c5);if(combo>=4)return pick(MOVES.safe_c4);if(combo>=3)return pick(MOVES.safe_c3);if(combo>=2)return pick(MOVES.safe_c2);return pick(MOVES.safe);}
 
 function showToast(mode,pts,waitShape,isCrit,dmg){
@@ -636,34 +889,90 @@ function showToast(mode,pts,waitShape,isCrit,dmg){
     t.className='game-toast toast-danger show';
     t.innerHTML=`⏰ タイムオーバー！<br><small>待ち → ${waitShape}</small>`;
   }
-  t.onclick=()=>{clearTimeout(_adv);_adv=null;advance();};
+  // Toast tap: skip to next turn or next encounter depending on current turn
+  t.onclick=()=>{
+    clearTimeout(_adv);_adv=null;
+    if(G.eTurn<3&&G.phase==='result') advanceTurn(); else advance();
+  };
 }
 function hideToast(){const t=$('game-toast');t.className='game-toast';t.onclick=null;}
 
 // ── Hint ──────────────────────────────────────────────────────────────────────
 function showHint(){
   if(G.phase!=='playing') return;
-  const discards=new Set(G.currentProblem.opponentDiscards);
+  // Only visible discards count as known genzai (partial info per turn)
+  const visLimit=G.eTurn===1?2:G.eTurn===2?4:G.currentProblem.opponentDiscards.length;
+  const discards=new Set(G.currentProblem.opponentDiscards.slice(0,visLimit));
   let found=false;
-  $('hand-row').querySelectorAll('.tile-hand').forEach((el,i)=>{
+  $('hand-row').querySelectorAll('.tile-hand').forEach(el=>{
+    const i=parseInt(el.dataset.handIdx);
     const td=G.currentProblem.hand[i];
-    const isTarget = G.hintAll||EASY_MODE ? (td&&td.safe) : (td&&discards.has(td.tile));
+    const isTarget=G.hintAll||EASY_MODE?(td&&td.safe):(td&&discards.has(td.tile));
     if(isTarget){el.classList.remove('hint-safe');void el.offsetWidth;el.classList.add('hint-safe');setTimeout(()=>el.classList.remove('hint-safe'),1500);found=true;}
   });
   if(!found&&!G.hintAll&&!EASY_MODE){
-    $('hand-row').querySelectorAll('.tile-hand').forEach((el,i)=>{const td=G.currentProblem.hand[i];if(td&&td.safe){el.classList.remove('hint-safe');void el.offsetWidth;el.classList.add('hint-safe');setTimeout(()=>el.classList.remove('hint-safe'),1500);}});
+    $('hand-row').querySelectorAll('.tile-hand').forEach(el=>{
+      const i=parseInt(el.dataset.handIdx);
+      const td=G.currentProblem.hand[i];
+      if(td&&td.safe){el.classList.remove('hint-safe');void el.offsetWidth;el.classList.add('hint-safe');setTimeout(()=>el.classList.remove('hint-safe'),1500);}
+    });
   }
+}
+
+// ── Ranking scroll ────────────────────────────────────────────────────────────
+let _rankRaf=null;
+function startRankScroll(el) {
+  if(_rankRaf){cancelAnimationFrame(_rankRaf);_rankRaf=null;}
+  const wrap=el.querySelector('.rank-rows-wrap'); if(!wrap) return;
+  let pos=0, paused=0;
+  const tick=()=>{
+    if(G.phase!=='title') return;
+    const max=wrap.scrollHeight-el.clientHeight+30;
+    if(paused>0){paused--;_rankRaf=requestAnimationFrame(tick);return;}
+    pos+=0.4;
+    el.scrollTop=pos;
+    if(pos>=max){pos=0;el.scrollTop=0;paused=180;}
+    _rankRaf=requestAnimationFrame(tick);
+  };
+  paused=120;
+  _rankRaf=requestAnimationFrame(tick);
 }
 
 // ── Title UI ──────────────────────────────────────────────────────────────────
 function updateTitleUI() {
-  const save=getSave();
-  const hs=$('title-hs');
-  if(save.bestScore>0) hs.textContent=`ベストスコア: ${save.bestScore.toLocaleString()} 点 | EXP: ${save.exp}`;
+  const save=getSave(), hs=$('title-hs');
+  if(save.bestScore>0) hs.textContent=`EXP: ${save.exp} | ランク: ${save.runs}戦`;
   else hs.textContent='';
-  $('btn-easy').classList.toggle('active', EASY_MODE);
-  $('btn-debug').classList.toggle('active', DEBUG_MODE);
-  // Debug badge
+
+  // タイトルランキング
+  const rankEl=$('title-ranking');
+  if(rankEl){
+    const bs=save.bestScore||0;
+    const FAKE=[
+      {name:'冥龍 ちはる 🐉',     t:3.2, b:28000},{name:'覇王 カリン 😤',  t:2.1, b:18000},
+      {name:'影牌師 シン 🌑',   t:1.75,b:13500},{name:'疾風 ハヤテ ⚡',  t:1.5, b:11000},
+      {name:'鬼牌 ジョウ 🤨',   t:1.3, b:9000}, {name:'天空 レイ ✨',   t:1.1, b:7800},
+      {name:'炎龍 カエン 🔥',   t:0.95,b:6600}, {name:'罠師 リオ 🎀',   t:0.82,b:5500},
+      {name:'氷華 ミソラ ❄️',   t:0.7, b:4800}, {name:'妖牌 ツキミ 🌙', t:0.6, b:4100},
+      {name:'天野 マリン 👧',   t:0.52,b:3600}, {name:'流星 コウ 💫',   t:0.44,b:3100},
+      {name:'鉄壁 テツオ 🛡️',  t:0.38,b:2700}, {name:'春嵐 ハルカ 🌸', t:0.32,b:2300},
+      {name:'迅雷 ライジン ⚡', t:0.27,b:2000}, {name:'銀翼 シロ 🦅',   t:0.22,b:1700},
+      {name:'霧島 キリ 🌫️',    t:0.18,b:1400}, {name:'天使 エンジェル 👼',t:0.14,b:1100},
+      {name:'新米 ルーキー 🌱', t:0.1, b:800},
+    ];
+    const entries=FAKE.map(f=>({name:f.name,score:bs>0?Math.round(bs*f.t+f.b*0.1):f.b}));
+    if(bs>0) entries.push({name:'▶ YOU ◀',score:bs,isPlayer:true});
+    entries.sort((a,b)=>b.score-a.score);
+    const rows=entries.map((e,i)=>{
+      const cls=e.isPlayer?'rank-row rank-you':'rank-row';
+      return `<div class="${cls}"><span class="rank-pos">${i+1}</span><span class="rank-name">${e.name}</span><span class="rank-score">${e.score.toLocaleString()}点</span></div>`;
+    }).join('');
+    rankEl.innerHTML=`<div class="rank-title">🏆 スコアランキング</div><div class="rank-rows-wrap">${rows}</div>`;
+    startRankScroll(rankEl);
+  }
+
+  $('btn-easy').classList.toggle('active',EASY_MODE);
+  $('btn-debug').classList.toggle('active',DEBUG_MODE);
   let badge=document.querySelector('.debug-badge');
   if(DEBUG_MODE){if(!badge){badge=document.createElement('div');badge.className='debug-badge';badge.textContent='DEBUG';document.body.appendChild(badge);}}
   else if(badge) badge.remove();
@@ -673,52 +982,45 @@ function updateTitleUI() {
 function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 
-// ── Bootstrap ──────────────────────────────────────────────────────────────────
 // ── Pause / resume / go-title ─────────────────────────────────────────────────
 function pauseGame() {
-  if (G.phase !== 'playing') return;
-  G.phase = 'paused';
-  stopTimer();
+  if(G.phase!=='playing') return;
+  G.phase='paused'; stopTimer();
   $('pause-overlay').classList.remove('hidden');
 }
 function resumeGame() {
-  if (G.phase !== 'paused') return;
+  if(G.phase!=='paused') return;
   $('pause-overlay').classList.add('hidden');
-  G.phase = 'playing';
-  _renderTimer();
-  _timer = setInterval(() => {
-    _tv--; _renderTimer();
-    if (_tv <= 0) { clearInterval(_timer); _timer = null; onTimeUp(); }
-  }, 1000);
+  G.phase='playing'; _renderTimer();
+  _timer=setInterval(()=>{_tv--;_renderTimer();if(_tv<=0){clearInterval(_timer);_timer=null;onTimeUp();}},1000);
 }
 function goTitle() {
   stopTimer();
-  if (_adv) { clearTimeout(_adv); _adv = null; }
-  if (_skillTimer) { clearInterval(_skillTimer); _skillTimer = null; }
+  if(_adv){clearTimeout(_adv);_adv=null;}
+  if(_skillTimer){clearInterval(_skillTimer);_skillTimer=null;}
   $('pause-overlay').classList.add('hidden');
-  G.phase = 'title';
-  showScreen('screen-title');
-  updateTitleUI();
+  G.phase='title'; showScreen('screen-title'); updateTitleUI();
 }
 
+// ── Bootstrap ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
-  $('btn-start').addEventListener('click', startGame);
-  $('btn-how').addEventListener('click',   ()=>showScreen('screen-how'));
-  $('btn-how-back').addEventListener('click', ()=>{ showScreen('screen-title'); updateTitleUI(); });
-  $('btn-easy').addEventListener('click',  ()=>{ EASY_MODE=!EASY_MODE; updateTitleUI(); });
-  $('btn-debug').addEventListener('click', ()=>{ DEBUG_MODE=!DEBUG_MODE; updateTitleUI(); });
-  $('btn-hint').addEventListener('click',  showHint);
-  $('btn-retry').addEventListener('click', ()=>openShop(0));
-  $('btn-title').addEventListener('click', ()=>{ showScreen('screen-title'); updateTitleUI(); });
-  $('btn-next-run').addEventListener('click', startGame);
-  $('btn-shop-title').addEventListener('click', ()=>{ showScreen('screen-title'); updateTitleUI(); });
-  $('btn-again').addEventListener('click',  ()=>openShop(G.lastExpEarned||0));
-  $('btn-vtitle').addEventListener('click', ()=>{ showScreen('screen-title'); updateTitleUI(); });
-  $('btn-pause').addEventListener('click',  pauseGame);
-  $('btn-resume').addEventListener('click', resumeGame);
-  $('btn-pause-title').addEventListener('click', goTitle);
+  $('btn-start').addEventListener('click',startGame);
+  $('btn-how').addEventListener('click',  ()=>showScreen('screen-how'));
+  $('btn-how-back').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  $('btn-easy').addEventListener('click', ()=>{EASY_MODE=!EASY_MODE;updateTitleUI();});
+  $('btn-debug').addEventListener('click',()=>{DEBUG_MODE=!DEBUG_MODE;updateTitleUI();});
+  $('btn-hint').addEventListener('click', showHint);
+  $('btn-go-shop').addEventListener('click',()=>openShop(G.pendingExpEarned||0));
+  $('btn-retry').addEventListener('click',()=>openShop(0));
+  $('btn-title').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  $('btn-next-run').addEventListener('click',startGame);
+  $('btn-shop-title').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  $('btn-again').addEventListener('click', ()=>openShop(G.lastExpEarned||0));
+  $('btn-vtitle').addEventListener('click',()=>{showScreen('screen-title');updateTitleUI();});
+  $('btn-pause').addEventListener('click', pauseGame);
+  $('btn-resume').addEventListener('click',resumeGame);
+  $('btn-pause-title').addEventListener('click',goTitle);
 
   if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
-  updateTitleUI();
-  showScreen('screen-title');
+  updateTitleUI(); showScreen('screen-title');
 });
