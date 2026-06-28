@@ -77,6 +77,14 @@ html, body {
 }
 .btn-primary { background: var(--gold); color: #1a1a1a; box-shadow: 0 4px 20px rgba(251,191,36,.4); }
 .btn-secondary { background: transparent; color: #6ee7b7; border: 2px solid #6ee7b7; margin-top: 12px; }
+.btn-continue {
+  display: block; width: 100%; max-width: calc(300px * var(--s,1)); margin: 0 auto calc(10px * var(--s,1));
+  border-radius: 50px; padding: calc(14px * var(--s,1));
+  font-size: calc(16px * var(--s,1)); font-weight: 700; cursor: pointer; letter-spacing: .04em;
+  background: rgba(249,115,22,.12); border: 2px solid rgba(249,115,22,.55); color: #fb923c;
+  transition: transform .08s, background .15s; touch-action: manipulation;
+}
+.btn-continue:active { transform: scale(.93); background: rgba(249,115,22,.25); }
 .btn-primary:active  { transform: scale(.93); }
 .btn-secondary:active { transform: scale(.93); }
 

@@ -1143,6 +1143,33 @@ function resumeGame() {
   G.phase='playing'; _renderTimer();
   _timer=setInterval(()=>{_tv--;_renderTimer();if(_tv<=0){clearInterval(_timer);_timer=null;onTimeUp();}},1000);
 }
+function continueGame() {
+  clearTimeout(_goTimer); _goTimer=null;
+  stopTimer();
+  if(_adv){clearTimeout(_adv);_adv=null;}
+  G.score=Math.floor(G.score*0.3); // スコア70%減
+  G.lives=1; G.combo=0;
+  G.phase='playing';
+  showScreen('screen-game');
+  showEventToast('💸 コンティニュー！ スコア激減…','danger');
+  loadNextProblem();
+}
+function retryCurrentRival() {
+  clearTimeout(_goTimer); _goTimer=null;
+  stopTimer();
+  if(_adv){clearTimeout(_adv);_adv=null;}
+  const save=getSave(), upg=save.upgrades;
+  G.maxLives=3+(upg.hp||0); BASE_TIMER=10+(upg.time||0)*2;
+  G.hintAll=!!(upg.hint); G.hasInsurance=!!(upg.ins);
+  G.score=0; G.lives=G.maxLives; G.combo=0;
+  G.runSkills=[]; G.hasBlock=false; G.comboSaveOnce=false;
+  G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.rivalDmgMult=1;
+  G.critMult=2; G.timerBonus=0; G.nextTimerBonus=0; G.carryTime=0;
+  G.tsumikomiNext=false; G.surikaeAvail=false; G.toshiNext=false; G.toshiThisProblem=false; G.nidotsumiNext=false;
+  $('screen-game').classList.remove('critical');
+  showScreen('screen-game');
+  loadRival(G.rivalIdx); // 同じライバルから再挑戦
+}
 function goTitle() {
   stopTimer();
   if(_adv){clearTimeout(_adv);_adv=null;}
@@ -1168,7 +1195,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-easy').addEventListener('click', ()=>{EASY_MODE=!EASY_MODE;updateTitleUI();});
   $('btn-debug').addEventListener('click',()=>{DEBUG_MODE=!DEBUG_MODE;updateTitleUI();});
   $('btn-hint').addEventListener('click', showHint);
+  $('btn-continue').addEventListener('click',continueGame);
   $('btn-go-shop').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(G.pendingExpEarned||0);});
+  $('btn-revenge').addEventListener('click',retryCurrentRival);
   $('btn-retry').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(0);});
   $('btn-title').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;showScreen('screen-title');updateTitleUI();});
   $('btn-next-run').addEventListener('click',startGame);
