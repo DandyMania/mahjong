@@ -269,6 +269,11 @@ html, body {
   0%, 100% { box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.4); }
   40%  { box-shadow: 0 5px 0 rgba(34,197,94,.6), 0 6px 24px rgba(34,197,94,.5), 0 0 16px rgba(34,197,94,.4); border-color: rgba(34,197,94,.7); }
 }
+/* 現物（明らかな安全牌）常時強調 */
+.tile-hand.tile-genzai {
+  border-color: rgba(34,197,94,.55) !important;
+  box-shadow: 0 5px 0 rgba(34,197,94,.45), 0 6px 14px rgba(0,0,0,.4), 0 0 10px rgba(34,197,94,.25) !important;
+}
 .hand-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
 .hand-area { display: flex; align-items: flex-start; }
 .tile-row { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -565,6 +570,18 @@ html, body {
   display: flex; align-items: center; justify-content: center;
   z-index: 200;
 }
+/* ── イカサマスキル ─────────────────────────────────── */
+.btn-surikae {
+  display: block; margin: 6px auto 0;
+  background: rgba(167,139,250,.15); border: 1.5px solid rgba(167,139,250,.45);
+  color: #c4b5fd; border-radius: 16px; padding: 5px 18px;
+  font-size: 12px; font-weight: 700; cursor: pointer; letter-spacing: .05em;
+  transition: background .15s, transform .1s;
+}
+.btn-surikae:active { background: rgba(167,139,250,.35); transform: scale(.88); }
+.tile-hand.toshi-safe   { background: rgba(34,197,94,.38) !important; box-shadow: 0 0 14px rgba(34,197,94,.7) !important; transition: background .1s, box-shadow .1s; }
+.tile-hand.toshi-danger { background: rgba(239,68,68,.38) !important; box-shadow: 0 0 14px rgba(239,68,68,.7) !important; transition: background .1s, box-shadow .1s; }
+
 .pause-overlay.hidden { display: none; }
 .pause-panel {
   display: flex; flex-direction: column; align-items: center; gap: 16px;

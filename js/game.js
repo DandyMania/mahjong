@@ -83,6 +83,10 @@ const RUN_SKILLS = [
   { id: 'mouhai',      icon: '🦾',   name: '轟盲牌',      desc: '次の問題、牌の文字が見えなくなるが正解で3倍スコア' },
   { id: 'reitan',      icon: '🧊',   name: '冷たい打ち手', desc: 'このランでコンボが0にならない' },
   { id: 'shinsoku',    icon: '⚡⚡',  name: '捨て牌三倍速', desc: '残り5秒以上で正解したらスコア+200' },
+  { id: 'tsumikomi',  icon: '🃏',   name: '積み込み',    desc: '次の問題の危険牌を1枚除外する' },
+  { id: 'surikae',    icon: '🔄',   name: 'すり替え',    desc: 'このバトル中1回、手牌を再抽選できる' },
+  { id: 'toshi',      icon: '👁️',   name: '透視',        desc: '次の問題で一瞬だけ安全/危険が透けて見える' },
+  { id: 'nidotsumi',  icon: '🀫',   name: '二度積み',    desc: '次の問題で安全牌が1枚複製される' },
 ];
 
 // ── Permanent upgrades ──────────────────────────────────────────────────────
@@ -235,7 +239,7 @@ function advance() {
 
 // ── Screens ──────────────────────────────────────────────────────────────────
 const $=id=>document.getElementById(id);
-function showScreen(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); }
+function showScreen(id) { hideToast(); document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(id).classList.add('active'); }
 
 // ── Game start ───────────────────────────────────────────────────────────────
 function startGame() {
@@ -251,6 +255,7 @@ function startGame() {
   G.score=0; G.lives=G.maxLives; G.combo=0; G.rivalIdx=0;
   G.runSkills=[]; G.hasBlock=false; G.comboSaveOnce=false;
   G.safeOneNext=false; G.scoreDblOnce=false; G.mouhaiNext=false; G.rivalDmgMult=1;
+  G.tsumikomiNext=false; G.surikaeAvail=false; G.toshiNext=false; G.toshiThisProblem=false; G.nidotsumiNext=false;
   G.critMult = hasRunSkill('crit_triple') ? 3 : 2;
   G.timerBonus=0; G.nextTimerBonus=0; G.carryTime=0;
 
@@ -281,6 +286,7 @@ function loadRival(idx) {
 
 // ── Stage transition ──────────────────────────────────────────────────────────
 function showRivalTransition(idx, cb) {
+  hideToast();
   const r=RIVALS[idx], ov=$('stage-trans');
   $('trans-stage').textContent  = ROUND_NAMES[idx] ?? `東${idx+1}局`;
   $('trans-icon').textContent   = r.icon;
@@ -312,11 +318,28 @@ function loadNextProblem() {
   if (!EASY_MODE && !DEBUG_MODE) {
     const MAX_FILLER = [4, 2, 1, 0, 0][G.rivalIdx] ?? 0;
     const prob = G.currentProblem;
-    const filler = prob.hand.filter(td => td.safe && !td.lucky && (td.reason||'').includes('今回は安全'));
+    const filler = prob.hand.filter(td => td.safe && !td.lucky && (td.reason||'').includes('今回は安全') && !td.tile.endsWith('z'));
     const otherSafe = prob.hand.filter(td => td.safe && !td.lucky && !(td.reason||'').includes('今回は安全')).length;
     const keep = Math.max(MAX_FILLER, 3 - otherSafe);
     shuffle(filler).slice(keep).forEach(td => { td.safe = false; td.damage = 1; });
   }
+
+  // 積み込み: 危険牌を1枚安全化
+  if (G.tsumikomiNext) {
+    G.tsumikomiNext=false;
+    const dangers=G.currentProblem.hand.filter(td=>!td.safe&&!td.lucky);
+    if(dangers.length>0){const t=pick(dangers);t.safe=true;t.lucky=true;t.reason='積み込み';}
+    showEventToast('🃏 積み込み発動！危険牌を1枚除外した！','safe');
+  }
+  // 二度積み: 安全牌を1枚複製
+  if (G.nidotsumiNext) {
+    G.nidotsumiNext=false;
+    const safes=G.currentProblem.hand.filter(td=>td.safe||td.lucky);
+    if(safes.length>0){const t=pick(safes);G.currentProblem.hand.push({...t,reason:'二度積み（複製）'});}
+    showEventToast('🀫 二度積み発動！安全牌が1枚複製された！','safe');
+  }
+  // 透視フラグを立てる（renderHandForTurn で視覚化）
+  if (G.toshiNext) { G.toshiNext=false; G.toshiThisProblem=true; }
 
   if (G.phase==='playing') rollEvent();
   if (G.lives<=0) { showGameOver(); return; }
@@ -430,26 +453,34 @@ function renderHandForTurn() {
   // Tile cap: Turn1=4, Turn2=3, Turn3=2(究極の選択)
   const maxShow=G.eTurn>=3?2:G.eTurn===2?3:4;
 
+  // 現物チェック（表示ターン数に応じた見える捨て牌）
+  const visLimit=G.eTurn===1?2:G.eTurn===2?4:p.opponentDiscards.length;
+  const genzaiSet=new Set(p.opponentDiscards.slice(0,visLimit));
+
   let toShow;
   if(remaining.length<=maxShow){
     toShow=remaining;
   } else {
-    const safe  =remaining.filter(x=> x.td.safe||x.td.lucky);
-    const danger=remaining.filter(x=>!x.td.safe&&!x.td.lucky);
+    const genzai=remaining.filter(x=> genzaiSet.has(x.td.tile));
+    const safe   =remaining.filter(x=>!genzaiSet.has(x.td.tile)&&(x.td.safe||x.td.lucky));
+    const danger =remaining.filter(x=>!x.td.safe&&!x.td.lucky);
     if(G.eTurn>=3){
-      // 究極の選択: 1危険 + 1安全
+      // 究極の選択: 1危険 + 1安全（捨て牌=現物は除外。安全牌の中から選ぶ）
       const d=danger.length>0?danger[Math.floor(Math.random()*danger.length)]:null;
-      const s=safe.length>0  ?safe[Math.floor(Math.random()*safe.length)]    :null;
-      const pair=[d,s].filter(Boolean);
+      const picked_s=safe.length>0?safe[Math.floor(Math.random()*safe.length)]:(genzai.length>0?genzai[Math.floor(Math.random()*genzai.length)]:null);
+      const pair=[d,picked_s].filter(Boolean);
       toShow=shuffle(pair.length===2?pair:[...remaining].slice(0,2));
     } else {
-      // T1/T2: 危険多め+安全少し
-      const dc=Math.min(Math.ceil(maxShow*.6),danger.length);
-      const sc=Math.min(maxShow-dc,safe.length);
-      const fill=maxShow-dc-sc;
+      // T1/T2: 現物を必ず1枚含める + 残りを危険多めで埋める
+      const maxGenzai=Math.min(genzai.length, Math.floor(maxShow/2));
+      const pickedG=shuffle([...genzai]).slice(0,maxGenzai);
+      const slots=maxShow-pickedG.length;
+      const dc=Math.min(Math.ceil(slots*.7),danger.length);
+      const sc=Math.min(slots-dc,safe.length);
+      const fill=slots-dc-sc;
       const pickedD=shuffle([...danger]).slice(0,dc+fill);
       const pickedS=shuffle([...safe]).slice(0,sc);
-      toShow=shuffle([...pickedD,...pickedS]);
+      toShow=shuffle([...pickedG,...pickedD,...pickedS]);
     }
   }
 
@@ -461,11 +492,43 @@ function renderHandForTurn() {
   toShow.forEach(({td,i})=>{
     const el=mkTile(td.tile,'hand',G.mouhaiNext);
     el.dataset.handIdx=i;
+    if(genzaiSet.has(td.tile)) el.classList.add('tile-genzai');
     el.addEventListener('pointerdown',e=>{el.classList.add('pressed');addRipple(el,e);});
     el.addEventListener('pointerup',  ()=>{el.classList.remove('pressed');selectTile(td,el);});
     el.addEventListener('pointerleave',()=>el.classList.remove('pressed'));
     hr.appendChild(el);
   });
+
+  // 透視: 0.3秒後に一瞬だけ安全/危険色を表示 (0.6秒で消える)
+  if (G.toshiThisProblem) {
+    G.toshiThisProblem=false;
+    setTimeout(()=>{
+      const tiles=[...hr.querySelectorAll('.tile-hand')];
+      tiles.forEach(el=>{
+        const idx=parseInt(el.dataset.handIdx);
+        const td=p.hand[idx];
+        el.classList.add((td&&(td.safe||td.lucky))?'toshi-safe':'toshi-danger');
+      });
+      setTimeout(()=>tiles.forEach(el=>el.classList.remove('toshi-safe','toshi-danger')),600);
+    },300);
+  }
+
+  // すり替えボタン（持っている間は毎ターン表示）
+  const ha=document.querySelector('.hand-area');
+  if(ha){
+    ha.querySelector('.btn-surikae')?.remove();
+    if(G.surikaeAvail){
+      const sb=document.createElement('button');
+      sb.className='btn-surikae';
+      sb.textContent='🔄 すり替え';
+      sb.addEventListener('click',()=>{
+        G.surikaeAvail=false;
+        sb.remove();
+        renderHandForTurn();
+      });
+      ha.appendChild(sb);
+    }
+  }
 }
 
 // Show yaku target banner (from turn 1)
@@ -834,6 +897,10 @@ function pickSkill(skill) {
   if(skill.id==='time_boost')  G.timerBonus=3;
   if(skill.id==='time_next5')  G.nextTimerBonus=5;
   if(skill.id==='mouhai')      G.mouhaiNext=true;
+  if(skill.id==='tsumikomi')   G.tsumikomiNext=true;
+  if(skill.id==='surikae')     G.surikaeAvail=true;
+  if(skill.id==='toshi')       G.toshiNext=true;
+  if(skill.id==='nidotsumi')   G.nidotsumiNext=true;
   showScreen('screen-game');
   loadRival(G.rivalIdx+1);
 }
