@@ -1,4 +1,4 @@
-const CACHE = 'mahjong-sweeper-v68';
+const CACHE = 'mahjong-sweeper-v69';
 // self.location = https://host/path/sw.js → base = /path/
 const BASE = self.location.pathname.replace(/sw\.js$/, '');
 const ASSETS = [BASE, BASE + 'index.html', BASE + 'manifest.json',

@@ -747,6 +747,14 @@ function mkTile(id,type,blind=false) {
   else{const n=document.createElement('span');n.className='tc-num';n.textContent=KANJI_NUM[num]||num;const s=document.createElement('span');s.className='tc-suit';s.textContent=SUIT_KANJI[suit];el.appendChild(n);el.appendChild(s);}
   return el;
 }
+function unblindHand(exceptEl) {
+  document.querySelectorAll('#hand-row .tile-blind').forEach(blindEl => {
+    if(blindEl===exceptEl) return;
+    const revealed=mkTile(blindEl.dataset.tile,'hand',false);
+    revealed.style.pointerEvents='none';
+    blindEl.replaceWith(revealed);
+  });
+}
 function addRipple(el,e) {
   const r=el.getBoundingClientRect(),rip=document.createElement('span');
   rip.className='ripple';const sz=Math.max(r.width,r.height);
@@ -789,7 +797,7 @@ function selectTile(td, el) {
     if(isClutch) pts+=150;
     if(isCrit) pts+=(G.critBonus||0);
     pts+=(G.scoreBonus||0);
-    if(G.mouhaiNext){G.mouhaiNext=false;pts*=3;}
+    if(G.mouhaiNext){G.mouhaiNext=false;pts*=3;unblindHand(el);}
     if(G.scoreDblOnce){pts*=2;G.scoreDblOnce=false;}
     if(hasRunSkill('shinsoku')&&_tv>=5) pts+=200;
     G.score+=pts; G.combo++;
@@ -846,6 +854,7 @@ function selectTile(td, el) {
 
   } else {
     // ── Dangerous pick ────────────────────────────────────────────────────
+    if(G.mouhaiNext){G.mouhaiNext=false;unblindHand(el);}
     const dmg=td.damage??1;
 
     // Defensive skills (don't trigger riichi)
