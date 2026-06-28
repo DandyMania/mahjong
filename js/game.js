@@ -759,6 +759,33 @@ function renderHandForTurn() {
   }
 }
 
+const YAKU_DESC = {
+  '断么九':   { read:'タンヤオ',          desc:'2〜8の数牌だけで作る役。\n字牌・1・9は使わないので安全！',
+                safeLabel:'✅ これは安全',  safeTiles:['1m','9m','1z','4z','7z'],
+                dangerLabel:'⚠️ 注意',     dangerTiles:['3m','6p','8s'] },
+  '平和':     { read:'ピンフ',            desc:'数牌の連続3枚（順子）を4組揃える役。\n字牌は基本使わない。',
+                safeLabel:'✅ 字牌は比較的安全', safeTiles:['1z','2z','3z','5z'],
+                dangerLabel:'⚠️ 連続する数牌に注意', dangerTiles:['4m','5p','6s'] },
+  '七対子':   { read:'チートイツ',        desc:'7種類の対子（同じ牌×2）で作る役。\n待ちが読みにくく要注意！',
+                safeLabel:'💡 捨て牌の現物が最も安全', safeTiles:[],
+                dangerLabel:'⚠️ どんな牌でも当たる可能性', dangerTiles:[] },
+  '一気通貫': { read:'イッキツウカン',    desc:'同じ種類の牌で1〜9を全部揃える役。\nその色の連続した牌が危険！',
+                safeLabel:'✅ 字牌は安全',  safeTiles:['1z','3z','5z','7z'],
+                dangerLabel:'⚠️ 同色の数牌', dangerTiles:['2m','5m','8m'] },
+  '三色同順': { read:'サンショクドウジュン', desc:'萬子・筒子・索子で同じ数字の連続3枚を揃える役。\n3色全てに危険牌がある！',
+                safeLabel:'✅ 字牌は安全',  safeTiles:['1z','4z','6z'],
+                dangerLabel:'⚠️ 3色の同じ数字', dangerTiles:['4m','4p','4s'] },
+  '混一色':   { read:'ホンイツ',          desc:'1種類の数牌＋字牌だけで作る役。\nその色の牌はほぼ全部危険！',
+                safeLabel:'✅ 他の色の数牌は安全', safeTiles:['3p','7s'],
+                dangerLabel:'⚠️ 同色の牌＋字牌', dangerTiles:['2m','6m','1z'] },
+  '清一色':   { read:'チンイツ',          desc:'1種類の数牌だけで作る役。\nその色の牌が全部危険！',
+                safeLabel:'✅ 他の2色は安全', safeTiles:['5p','8s'],
+                dangerLabel:'⚠️ その色の全ての牌', dangerTiles:['1m','5m','9m'] },
+  '国士無双': { read:'コクシムソウ',      desc:'1・9・字牌を13種類集める特殊な役。\n字牌や1・9が全部危険！',
+                safeLabel:'✅ 中間の数字は安全', safeTiles:['3m','5p','7s'],
+                dangerLabel:'⚠️ 1・9・字牌が全部危険', dangerTiles:['1m','9p','3z'] },
+};
+
 // Show yaku target banner (from turn 1)
 function showYakuTarget() {
   const p=G.currentProblem, el=$('yaku-target');
@@ -767,9 +794,44 @@ function showYakuTarget() {
     $('yaku-name-text').textContent  = p.yaku;
     $('yaku-stars-text').textContent = '★'.repeat(p.yakuValue||1);
     el.classList.remove('hidden');
+    el.style.cursor = YAKU_DESC[p.yaku] ? 'pointer' : '';
   } else {
     el.classList.add('hidden');
+    el.style.cursor = '';
   }
+}
+function showYakuDesc() {
+  const p=G.currentProblem;
+  if(!p||!p.yaku) return;
+  const info=YAKU_DESC[p.yaku]; if(!info) return;
+  const existing=document.getElementById('yaku-desc-popup');
+  if(existing){existing.remove();return;}
+  const ov=document.createElement('div'); ov.id='yaku-desc-popup'; ov.className='yaku-desc-overlay';
+  const panel=document.createElement('div'); panel.className='yaku-desc-panel';
+  const mkRow=(label,tiles,cls)=>{
+    const row=document.createElement('div'); row.className='yaku-desc-row';
+    const lbl=document.createElement('div'); lbl.className='yaku-desc-row-label '+cls; lbl.textContent=label;
+    row.appendChild(lbl);
+    if(tiles&&tiles.length){
+      const tr=document.createElement('div'); tr.className='yaku-desc-tiles';
+      tiles.forEach(t=>{const e=mkTile(t,'result');e.style.pointerEvents='none';tr.appendChild(e);});
+      row.appendChild(tr);
+    }
+    return row;
+  };
+  const name=document.createElement('div'); name.className='yaku-desc-name';
+  name.innerHTML=`${p.yaku} <span class="yaku-desc-read">（${info.read}）</span>`;
+  const body=document.createElement('div'); body.className='yaku-desc-body';
+  body.innerHTML=info.desc.replace(/\n/g,'<br>');
+  const hint=document.createElement('div'); hint.className='yaku-desc-hint'; hint.textContent='タップで閉じる';
+  panel.appendChild(name);
+  panel.appendChild(body);
+  if(info.safeTiles&&info.safeTiles.length)   panel.appendChild(mkRow(info.safeLabel,   info.safeTiles,   'safe-label'));
+  if(info.dangerTiles&&info.dangerTiles.length) panel.appendChild(mkRow(info.dangerLabel, info.dangerTiles, 'danger-label'));
+  panel.appendChild(hint);
+  ov.appendChild(panel);
+  ov.onclick=()=>ov.remove();
+  document.body.appendChild(ov);
 }
 
 // Update riichi / turn indicator banner
@@ -1637,6 +1699,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     renderHandForTurn();
   });
   $('btn-hint').addEventListener('click', showHint);
+  $('yaku-target').addEventListener('click', showYakuDesc);
   $('btn-continue').addEventListener('click',continueGame);
   $('btn-retry').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;openShop(0);});
   $('btn-title').addEventListener('click',()=>{clearTimeout(_goTimer);_goTimer=null;G.phase='title';showScreen('screen-title');updateTitleUI();});

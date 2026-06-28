@@ -591,6 +591,17 @@ html, body {
 #final-detail { font-size: calc(14px * var(--s,1)); color: #fca5a5; }
 .rival-win-quote { font-size: 14px; color: #c084fc; font-style: italic; }
 .go-reveal-btn { background: none; border: 1px solid rgba(192,132,252,.4); color: #c084fc; font-size: 13px; padding: 8px 24px; border-radius: 20px; cursor: pointer; letter-spacing: .05em; width: 100%; box-sizing: border-box; }
+.yaku-desc-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 200; display: flex; align-items: center; justify-content: center; }
+.yaku-desc-panel { background: #0d0820; border: 1px solid rgba(167,139,250,.4); border-radius: 16px; padding: 20px 24px; max-width: 300px; width: 88%; display: flex; flex-direction: column; gap: 8px; }
+.yaku-desc-name { font-size: 18px; font-weight: 900; color: #c4b5fd; }
+.yaku-desc-read { font-size: 13px; font-weight: 400; color: #a78bfa; }
+.yaku-desc-body { font-size: 14px; color: #e2e8f0; line-height: 1.6; }
+.yaku-desc-hint { font-size: 11px; color: #6b7280; text-align: center; margin-top: 4px; }
+.yaku-desc-row { display: flex; flex-direction: column; gap: 4px; }
+.yaku-desc-row-label { font-size: 12px; font-weight: 700; }
+.yaku-desc-row-label.safe-label   { color: #86efac; }
+.yaku-desc-row-label.danger-label { color: #fca5a5; }
+.yaku-desc-tiles { display: flex; flex-wrap: wrap; gap: 3px; }
 .go-hand-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 300; display: flex; align-items: flex-end; padding-bottom: env(safe-area-inset-bottom); }
 .go-hand-panel { width: 100%; max-width: 540px; margin: 0 auto; background: #130828; border-radius: 20px 20px 0 0; padding: 16px 16px 24px; display: flex; flex-direction: column; gap: 10px; max-height: 80vh; overflow-y: auto; }
 .go-hand-close { align-self: flex-end; background: none; border: 1px solid rgba(255,255,255,.2); color: #aaa; font-size: 13px; padding: 4px 12px; border-radius: 12px; cursor: pointer; }
