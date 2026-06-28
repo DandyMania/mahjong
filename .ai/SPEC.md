@@ -1,6 +1,6 @@
 # 斬★牌★王 — 仕様書
 
-> 最終更新: 2026-06-28
+> 最終更新: 2026-06-28（safeType 分類・toast reason 表示・mouhai 永続化確認）
 
 ## ゲームコンセプト
 
@@ -125,7 +125,7 @@ screen-title
 | crit_triple | 現物の極意 | クリティカルで与えるダメージ×3 | ✅ |
 | heal | 回復 | ライフ+1（即時） | ✅ |
 | time_next5 | 余裕 | 次の問題だけタイマー+5秒 | ✅ |
-| mouhai | 轟盲牌 | 毎問題、手牌の文字が「？」に。正解で3倍スコア | ✅ |
+| mouhai | 轟盲牌 | このランすべての問題で手牌が「？」に。正解ごとに3倍スコア | ✅ |
 | reitan | 冷たい打ち手 | ミス/タイムアップでコンボ-1のみ（0にならない） | ✅ |
 | shinsoku | 捨て牌三倍速 | 残り5秒以上で正解したらスコア+200 | ✅ |
 
@@ -138,18 +138,20 @@ screen-title
 
 ```js
 {
-  id: number,              // 1-15
+  id: number,              // 1-18
   difficulty: 'beginner' | 'medium' | 'advanced',
   opponentDiscards: ['Nm'], // N=数字, m/p/s/z
   hand: [
-    { tile: 'Nm', safe: boolean, reason: string, damage?: number, lucky?: boolean }
+    { tile: 'Nm', safe: boolean, safeType?: SafeType, reason: string, damage?: number, lucky?: boolean }
   ],
   waits: ['Nm'],
   waitShape: string,       // トースト表示用
   explanation: string
 }
+// SafeType: 'genzai' | 'suji' | 'jihai' | 'tanpai' | 'unknown'
 ```
 
+- `safeType`: 安全な理由の分類。正解時のトーストに `reason` テキストとして表示される
 - `damage`: 省略時 1。2以上でダブルダメージ演出
 - `lucky`: `rollEvent` や `safeOneNext` で動的に付与される
 
