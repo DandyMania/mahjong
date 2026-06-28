@@ -441,7 +441,21 @@ function updateRivalFlavor(key) {
   el.textContent = line;
   el.classList.add('flavor-anim');
 }
-function renderRivalHp(hit) {
+function slashRival(count) {
+  const icon=$('rival-icon'); if(!icon) return;
+  const angles=[-40,-15,10,35,55];
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      const s=document.createElement('div');
+      s.className='rival-slash';
+      const ang=angles[Math.floor(Math.random()*angles.length)]+(Math.random()*14-7);
+      s.style.setProperty('--ang', ang+'deg');
+      icon.appendChild(s);
+      setTimeout(()=>s.remove(),500);
+    }, i*120);
+  }
+}
+function renderRivalHp(hit, slashCount) {
   const wrap=$('rival-hp-wrap'); if(!wrap) return;
   const isLow=G.rivalHp<=Math.ceil(G.rivalHpMax/3);
   let h='';
@@ -450,7 +464,7 @@ function renderRivalHp(hit) {
     else             h+=`<span class="heart rival-heart-dead">🖤</span>`;
   }
   wrap.innerHTML=h;
-  if(hit){ wrap.classList.remove('hp-hit'); void wrap.offsetWidth; wrap.classList.add('hp-hit'); setTimeout(()=>wrap.classList.remove('hp-hit'),380); }
+  if(hit){ wrap.classList.remove('hp-hit'); void wrap.offsetWidth; wrap.classList.add('hp-hit'); setTimeout(()=>wrap.classList.remove('hp-hit'),380); slashRival(slashCount||1); }
 }
 
 // ── Problem rendering helpers ─────────────────────────────────────────────────
@@ -690,7 +704,7 @@ function selectTile(td, el) {
       // Turn 2 perfect (both safe, no riichi) → YAKU BREAK! Encounter ends
       revealOneTile(td,el);
       showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
-      G.rivalHp=Math.max(0,G.rivalHp-1); renderRivalHp(true);
+      G.rivalHp=Math.max(0,G.rivalHp-1); renderRivalHp(true,2);
       setTimeout(()=>showYakuBreak(p.yaku,p.yakuValue),700);
       if(G.rivalHp<=0) setTimeout(rivalDefeated,4500);
       else _adv=setTimeout(advance,5000);
@@ -708,7 +722,7 @@ function selectTile(td, el) {
       showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
       flashGold();
       setTimeout(showUltimateSplash,80);
-      G.rivalHp=Math.max(0,G.rivalHp-hpDmg); renderRivalHp(true);
+      G.rivalHp=Math.max(0,G.rivalHp-hpDmg); renderRivalHp(true, Math.min(hpDmg+1,3));
       if(G.rivalHp<=0) setTimeout(rivalDefeated,2200);
       else sched(2600);
     }

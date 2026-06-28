@@ -55,7 +55,8 @@ html, body {
   line-height: 1.2; margin-bottom: 8px;
   text-shadow: 0 2px 20px rgba(0,0,0,.6);
 }
-.subtitle { color: var(--gold); font-size: calc(16px * var(--s,1)); font-weight: 700; margin-bottom: calc(32px * var(--s,1)); letter-spacing: .06em; }
+.title-yomi { color: rgba(251,191,36,.55); font-size: calc(11px * var(--s,1)); font-weight: 700; letter-spacing: .25em; margin: calc(-6px * var(--s,1)) 0 calc(4px * var(--s,1)); }
+.subtitle { color: var(--gold); font-size: calc(16px * var(--s,1)); font-weight: 700; margin-bottom: calc(16px * var(--s,1)); letter-spacing: .06em; }
 
 /* ── How to play ────────────────────────────────────── */
 #screen-how { background: #0d0d1a; }
@@ -107,7 +108,20 @@ html, body {
   display: flex; align-items: center;
   gap: 10px; margin-bottom: 10px;
 }
-.rival-icon { font-size: calc(30px * var(--s,1)); line-height: 1; }
+.rival-icon { font-size: calc(30px * var(--s,1)); line-height: 1; position: relative; display: inline-block; }
+.rival-slash {
+  position: absolute; top: 50%; left: 50%;
+  width: 70px; height: 3px; border-radius: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.95) 40%, rgba(255,230,80,.9) 60%, transparent 100%);
+  transform-origin: center;
+  pointer-events: none;
+  animation: slash-appear .45s ease-out forwards;
+}
+@keyframes slash-appear {
+  0%   { opacity:0; transform:translate(-50%,-50%) rotate(var(--ang)) scaleX(0.1); }
+  15%  { opacity:1; transform:translate(-50%,-50%) rotate(var(--ang)) scaleX(1); }
+  100% { opacity:0; transform:translate(-50%,-50%) rotate(var(--ang)) scaleX(1.15); }
+}
 .rival-texts { flex: 1; }
 .rival-name   { font-size: calc(15px * var(--s,1)); font-weight: 900; color: #e2c8ff; }
 .rival-flavor { font-size: calc(11px * var(--s,1)); color: #9d79c0; font-style: italic; margin-top: 2px; }
