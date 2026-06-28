@@ -105,6 +105,7 @@ html, body {
 .how-tip { display: flex; gap: 12px; background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.35); border-radius: 12px; padding: 14px 16px; }
 .tip-icon { font-size: 22px; flex-shrink: 0; }
 .tip-text { color: #fde68a; font-size: 14px; line-height: 1.6; }
+.how-section-title { text-align: center; font-size: 13px; font-weight: 700; color: rgba(255,255,255,.35); letter-spacing: .12em; text-transform: uppercase; margin: 4px 0 -2px; }
 
 /* ── Buttons ────────────────────────────────────────── */
 .btn-primary, .btn-secondary {
