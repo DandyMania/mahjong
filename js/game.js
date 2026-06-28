@@ -809,7 +809,6 @@ function renderProblem() {
       pyEl.classList.remove('hidden');
     } else { pyEl.classList.add('hidden'); }
   }
-  if(G.mouhaiNext) showEventToast('🦾 盲牌発動！正解で3倍スコア','safe');
   console.log(`[遷移] renderProblem: stage=${G.rivalIdx+1} rivalHp=${G.rivalHp} eTurn=${G.eTurn} eRiichi=${G.eRiichi}`);
 }
 
@@ -1633,7 +1632,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     mouhaiActivateBtn.classList.add('hidden');
     updateHUD();
     renderHandForTurn();
-    showEventToast('🦾 盲牌発動！ライフ2消費・正解で3倍スコア','safe');
   });
   $('btn-hint').addEventListener('click', showHint);
   $('btn-continue').addEventListener('click',continueGame);
