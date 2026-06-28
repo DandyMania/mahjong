@@ -105,12 +105,22 @@ const UPGRADES = [
 
 // ── Achievements ────────────────────────────────────────────────────────────
 const ACHIEVEMENTS = [
-  {id:'first_rival', icon:'⚔️',  name:'初陣撃破',  desc:'ライバルを1体撃破'},
-  {id:'full_clear',  icon:'🏆',  name:'全制覇',    desc:'全ライバルを撃破'},
-  {id:'combo5',      icon:'🔥',  name:'連撃×5',    desc:'コンボ5以上を達成'},
-  {id:'combo10',     icon:'💥',  name:'大連撃×10', desc:'コンボ10以上を達成'},
-  {id:'no_miss',     icon:'💎',  name:'完璧撃破',  desc:'ノーダメージでライバル撃破'},
-  {id:'veteran',     icon:'🛡️', name:'熟練者',    desc:'10ラン以上プレイ'},
+  // 正の実績
+  {id:'first_rival', icon:'⚔️',  name:'初陣撃破',      desc:'ライバルを1体撃破'},
+  {id:'full_clear',  icon:'🏆',  name:'全制覇',         desc:'全ライバルを撃破'},
+  {id:'combo5',      icon:'🔥',  name:'連撃×5',         desc:'コンボ5以上を達成'},
+  {id:'combo10',     icon:'💥',  name:'大連撃×10',      desc:'コンボ10以上を達成'},
+  {id:'no_miss',     icon:'💎',  name:'完璧撃破',       desc:'ノーダメージでライバル撃破'},
+  // プレイ回数
+  {id:'runs5',       icon:'🎮',  name:'5ラン',          desc:'5ラン以上プレイ'},
+  {id:'veteran',     icon:'🛡️', name:'熟練者',         desc:'10ラン以上プレイ'},
+  {id:'runs25',      icon:'🏅',  name:'25ラン',         desc:'25ラン以上プレイ'},
+  {id:'runs50',      icon:'👑',  name:'50ラン',         desc:'50ラン以上プレイ'},
+  // 逆の実績
+  {id:'double_ron',  icon:'🎰',  name:'連続ロン',       desc:'2回連続で危険牌を切った'},
+  {id:'triple_ron',  icon:'💀',  name:'三連ロン',       desc:'3回連続で危険牌を切った'},
+  {id:'timeout3',    icon:'⏰',  name:'時間の無駄遣い', desc:'1ランで3回タイムアップ'},
+  {id:'last_stand',  icon:'😤',  name:'土壇場撃破',     desc:'ライフ1でライバルを撃破'},
 ];
 
 // ── Move names ──────────────────────────────────────────────────────────────
@@ -121,6 +131,7 @@ const MOVES = {
   safe_c3:  ['トリプルガード！！', '轟盲牌！！'],
   safe_c4:  ['鉄壁の防御！！', '悪魔の振り子！！', '捨て牌三倍速！！'],
   safe_c5:  ['INVINCIBLE!!', '神域の読み！！', '完全記憶術！！'],
+  ultimate: ['一閃！！','断空剣！！','滅牌斬！！','覇龍一刀！！','双閃！！','天魔斬！！','無双打！！','魔閃！！','斬牌覇道！！','烈光斬！！','必殺一択！！','闇の一手！！'],
   crit:     ['現物ヒット！！','大打撃！！','CRITICAL HIT!!','牌の支配者！！'],
   danger:   ['ロン！！','振り込み確定！！','DEAL IN!!'],
   danger2:  ['ダブルダメージ！！','大振り込み！！','HEAVY DAMAGE!!'],
@@ -222,6 +233,8 @@ const G = {
   safeOneNext:false, scoreDblOnce:false, mouhaiNext:false, rivalDmgMult:1, critMult:2,
   timerBonus:0, nextTimerBonus:0, carryTime:0,
   missThisRival:false,
+  consecutiveMiss:0,
+  timeoutCount:0,
   eShownIdx:[],  // hand indices shown in the previous turn (for tile continuity)
   // 3-turn encounter state
   eTurn:1,       // current turn within encounter (1, 2, or 3)
@@ -309,6 +322,7 @@ function startGame() {
   G.tsumikomiNext=false; G.surikaeAvail=false; G.toshiNext=false; G.toshiThisProblem=false; G.nidotsumiNext=false;
   G.critMult = hasRunSkill('crit_triple') ? 3 : 2;
   G.timerBonus=0; G.nextTimerBonus=0; G.carryTime=0;
+  G.consecutiveMiss=0; G.timeoutCount=0;
 
   $('screen-game').classList.remove('critical');
   showScreen('screen-game');
@@ -729,6 +743,7 @@ function selectTile(td, el) {
     if(G.scoreDblOnce){pts*=2;G.scoreDblOnce=false;}
     if(hasRunSkill('shinsoku')&&_tv>=5) pts+=200;
     G.score+=pts; G.combo++;
+    G.consecutiveMiss=0;
     if(G.combo>=5)  unlockAchievement('combo5');
     if(G.combo>=10) unlockAchievement('combo10');
     // 3コンボごとにライフ1回復（フラグを立てて後でアニメーション発動）
@@ -807,6 +822,9 @@ function selectTile(td, el) {
     else G.combo=0;
     flashRed(dmg); shakeScreen();
     G.missThisRival=true;
+    G.consecutiveMiss++;
+    if(G.consecutiveMiss>=2) unlockAchievement('double_ron');
+    if(G.consecutiveMiss>=3) unlockAchievement('triple_ron');
     G.lives=Math.max(0,G.lives-dmg); hitLives();
     updateRivalFlavor('miss');
     console.log(`[遷移] miss: lives=${G.lives} eTurn=${G.eTurn} isFinal=${isFinal}`);
@@ -833,6 +851,11 @@ function onTimeUp() {
   if(_adv){clearTimeout(_adv);_adv=null;}
   flashRed(1); shakeScreen();
   G.missThisRival=true;
+  G.consecutiveMiss++;
+  G.timeoutCount++;
+  if(G.consecutiveMiss>=2) unlockAchievement('double_ron');
+  if(G.consecutiveMiss>=3) unlockAchievement('triple_ron');
+  if(G.timeoutCount>=3)    unlockAchievement('timeout3');
   G.lives=Math.max(0,G.lives-1); hitLives();
   showMoveName('danger',pick(MOVES.timeout));
   showToast('timeout',0,G.currentProblem.waitShape,false,1);
@@ -955,6 +978,7 @@ function rivalDefeated() {
   console.log(`[遷移] rivalDefeated: stage=${G.rivalIdx+1}`);
   unlockAchievement('first_rival');
   if(!G.missThisRival) unlockAchievement('no_miss');
+  if(G.lives===1)      unlockAchievement('last_stand');
   showMoveName('rival',pick(MOVES.defeated));
   updateRivalFlavor('defeated');
   setTimeout(()=>{
@@ -1029,7 +1053,10 @@ function showVictory() {
   const expEarned=calcExp();
   save.exp+=expEarned; writeSave(save);
   unlockAchievement('full_clear');
+  if(save.runs>=5)  unlockAchievement('runs5');
   if(save.runs>=10) unlockAchievement('veteran');
+  if(save.runs>=25) unlockAchievement('runs25');
+  if(save.runs>=50) unlockAchievement('runs50');
   G.lastExpEarned=expEarned;
   $('victory-score').textContent  =`スコア：${G.score.toLocaleString()} 点`;
   $('victory-detail').textContent =`全 ${RIVALS.length} ライバル撃破！ +${expEarned} EXP`;
@@ -1048,7 +1075,10 @@ function showGameOver() {
   if(G.combo>save.bestCombo) save.bestCombo=G.combo;
   const expEarned=calcExp();
   save.exp+=expEarned; writeSave(save);
+  if(save.runs>=5)  unlockAchievement('runs5');
   if(save.runs>=10) unlockAchievement('veteran');
+  if(save.runs>=25) unlockAchievement('runs25');
+  if(save.runs>=50) unlockAchievement('runs50');
 
   console.log(`[遷移] showGameOver: stage=${G.rivalIdx+1} score=${G.score}`);
   const r=RIVALS[G.rivalIdx], p=G.currentProblem;
@@ -1111,7 +1141,14 @@ function buyUpgrade(id) {
 // ── Effects ────────────────────────────────────────────────────────────────────
 function flashGreen(){const f=$('screen-flash');f.style.background='rgba(34,197,94,.3)';f.classList.add('active');setTimeout(()=>{f.classList.add('fade');f.classList.remove('active');setTimeout(()=>f.classList.remove('fade'),260);},80);}
 function flashGold(){const f=$('screen-flash');f.style.background='rgba(255,255,255,.92)';f.classList.add('active');setTimeout(()=>{f.classList.remove('active');f.style.background='rgba(251,191,36,.6)';f.classList.add('active');setTimeout(()=>f.classList.remove('active'),220);},60);}
-function showUltimateSplash(){const el=$('ultimate-splash');if(!el)return;el.classList.remove('hidden');['','ult-main','ult-sub'].forEach(sel=>{const t=sel?el.querySelector('.'+sel):el;if(t){t.style.animation='none';void t.offsetWidth;t.style.animation='';}});setTimeout(()=>el.classList.add('hidden'),2400);}
+function showUltimateSplash(){
+  const el=$('ultimate-splash');if(!el)return;
+  const main=el.querySelector('.ult-main');
+  if(main) main.textContent=pick(MOVES.ultimate);
+  el.classList.remove('hidden');
+  ['','ult-main','ult-sub'].forEach(sel=>{const t=sel?el.querySelector('.'+sel):el;if(t){t.style.animation='none';void t.offsetWidth;t.style.animation='';}});
+  setTimeout(()=>el.classList.add('hidden'),2400);
+}
 function flashRed(dmg){const f=$('screen-flash');f.style.background=dmg>=2?'rgba(239,68,68,.75)':'rgba(239,68,68,.5)';f.className='screen-flash active';setTimeout(()=>f.classList.remove('active'),80);setTimeout(()=>f.classList.add('active'),180);setTimeout(()=>f.classList.remove('active'),260);if(dmg>=2){setTimeout(()=>f.classList.add('active'),380);setTimeout(()=>f.classList.remove('active'),480);}}
 function shakeScreen(){const el=$('screen-game');el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');setTimeout(()=>el.classList.remove('shake'),380);}
 function hitLives(){const el=$('lives-display');el.classList.remove('lives-hit');void el.offsetWidth;el.classList.add('lives-hit');setTimeout(()=>el.classList.remove('lives-hit'),380);}
