@@ -1230,11 +1230,15 @@ function showToast(mode,pts,waitShape,isCrit,dmg,reason){
     const r=reason?`<span class="toast-reason">${reason}</span>`:'';
     t.innerHTML=isCrit?`★ 現物ヒット！ +${pts}pt<br>${r}<small>${waitShape}</small>`:`✅ セーフ！ +${pts}pt<br>${r}<small>${waitShape}</small>`;
   } else if(mode==='danger'){
+    const p=G.currentProblem;
+    const yStr=p?.yaku?`<span class="toast-yaku">ロン！ ${p.yaku} ${'★'.repeat(p.yakuValue||1)}</span>`:'';
     t.className='game-toast toast-danger show';
-    t.innerHTML=`💥 振り込み！${dmg>=2?' -'+dmg+'ライフ！！':''}<br><small>待ち → ${waitShape}</small>`;
+    t.innerHTML=`💥 振り込み！${dmg>=2?' -'+dmg+'ライフ！！':''}<br>${yStr}<small>待ち → ${waitShape}</small>`;
   } else {
+    const p=G.currentProblem;
+    const yStr=p?.yaku?`<span class="toast-yaku">ツモ！ ${p.yaku} ${'★'.repeat(p.yakuValue||1)}</span>`:'';
     t.className='game-toast toast-danger show';
-    t.innerHTML=`⏰ タイムオーバー！<br><small>待ち → ${waitShape}</small>`;
+    t.innerHTML=`⏰ タイムオーバー！<br>${yStr}<small>待ち → ${waitShape}</small>`;
   }
   // Toast tap: skip to next turn or next encounter depending on current turn
   t.onclick=()=>{

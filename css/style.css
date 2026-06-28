@@ -701,6 +701,7 @@ html, body {
 .toast-danger { background: #3d0f0f; color: #fecaca; border: 1.5px solid #ef4444; box-shadow: 0 4px 20px rgba(239,68,68,.25); }
 .toast-crit   { background: #2a0f38; color: #f5d0fe; border: 1.5px solid #d946ef; box-shadow: 0 4px 20px rgba(217,70,239,.35); }
 .toast-reason { display: block; font-size: 11px; font-weight: 600; opacity: .85; margin: 2px 0 1px; }
+.toast-yaku   { display: block; font-size: 12px; font-weight: 800; color: #fca5a5; letter-spacing: .05em; margin: 2px 0 1px; }
 
 /* ── Top strip (stage counter) ────────────────────────── */
 .top-strip {
