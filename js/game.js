@@ -465,8 +465,13 @@ function renderHandForTurn() {
     const safe   =remaining.filter(x=>!genzaiSet.has(x.td.tile)&&(x.td.safe||x.td.lucky));
     const danger =remaining.filter(x=>!x.td.safe&&!x.td.lucky);
     if(G.eTurn>=3){
-      // 究極の選択: 1危険 + 1安全（捨て牌=現物は除外。安全牌の中から選ぶ）
-      const d=danger.length>0?danger[Math.floor(Math.random()*danger.length)]:null;
+      // 究極の選択: 必ず1危険 + 1安全
+      let d=danger.length>0?danger[Math.floor(Math.random()*danger.length)]:null;
+      // remaining に danger がない場合 → eUsed済み含む全手牌から復活
+      if(!d){
+        const allD=p.hand.map((td,i)=>({td,i})).filter(x=>!x.td.safe&&!x.td.lucky&&!genzaiSet.has(x.td.tile));
+        if(allD.length>0) d=allD[Math.floor(Math.random()*allD.length)];
+      }
       const picked_s=safe.length>0?safe[Math.floor(Math.random()*safe.length)]:(genzai.length>0?genzai[Math.floor(Math.random()*genzai.length)]:null);
       const pair=[d,picked_s].filter(Boolean);
       toShow=shuffle(pair.length===2?pair:[...remaining].slice(0,2));
@@ -759,11 +764,23 @@ function advanceTurn() {
   G.eTurn++;
   G.phase='playing';
   renderDiscards();
-  renderHandForTurn();
-  showYakuTarget();
   updateRiichiBanner();
   $('round-display').textContent=`第 ${RIVALS[G.rivalIdx].hp-G.rivalHp+1} / ${RIVALS[G.rivalIdx].hp} 撃`;
-  startTimer();
+  if(G.eTurn>=3){
+    showUltimateChoiceCutin();
+    setTimeout(()=>{renderHandForTurn();showYakuTarget();startTimer();},900);
+  } else {
+    renderHandForTurn();
+    showYakuTarget();
+    startTimer();
+  }
+}
+function showUltimateChoiceCutin(){
+  const el=document.createElement('div');
+  el.className='ultimate-cutin';
+  el.innerHTML='<div class="uc-text">究極の選択！！</div>';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),1200);
 }
 
 // ── Tile reveal helpers ───────────────────────────────────────────────────────

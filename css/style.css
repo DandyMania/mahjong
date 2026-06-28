@@ -275,10 +275,15 @@ html, body {
   0%, 100% { box-shadow: 0 5px 0 rgba(160,138,100,.7), 0 6px 14px rgba(0,0,0,.4); }
   40%  { box-shadow: 0 5px 0 rgba(34,197,94,.6), 0 6px 24px rgba(34,197,94,.5), 0 0 16px rgba(34,197,94,.4); border-color: rgba(34,197,94,.7); }
 }
-/* 現物（明らかな安全牌）常時強調 */
+/* 現物（明らかな安全牌）常時点滅強調 */
 .tile-hand.tile-genzai {
-  border-color: rgba(34,197,94,.55) !important;
-  box-shadow: 0 5px 0 rgba(34,197,94,.45), 0 6px 14px rgba(0,0,0,.4), 0 0 10px rgba(34,197,94,.25) !important;
+  border-color: rgba(34,197,94,.75) !important;
+  box-shadow: 0 5px 0 rgba(34,197,94,.5), 0 6px 14px rgba(0,0,0,.4), 0 0 12px rgba(34,197,94,.4) !important;
+  animation: genzai-pulse 1.5s ease-in-out infinite;
+}
+@keyframes genzai-pulse {
+  0%,100% { box-shadow: 0 5px 0 rgba(34,197,94,.4), 0 6px 14px rgba(0,0,0,.4), 0 0 6px rgba(34,197,94,.2); border-color: rgba(34,197,94,.5) !important; }
+  50%     { box-shadow: 0 5px 0 rgba(34,197,94,.7), 0 6px 20px rgba(34,197,94,.3), 0 0 22px rgba(34,197,94,.6); border-color: rgba(34,197,94,.95) !important; }
 }
 .hand-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 8px; }
 .hand-area { display: flex; align-items: flex-start; }
@@ -523,6 +528,34 @@ html, body {
 @keyframes move-slam { 0%{opacity:0;transform:scale(3) rotate(-8deg);filter:blur(14px)} 15%{opacity:1;transform:scale(1.06) rotate(2deg);filter:blur(0)} 28%{transform:scale(1) rotate(0)} 70%{opacity:1} 100%{opacity:0;transform:scale(.88) translateY(-28px)} }
 
 /* ── 役崩しスプラッシュ ─────────────────────────────── */
+/* ── 究極の選択 カットイン ──────────────────────────── */
+.ultimate-cutin {
+  position: fixed; inset: 0; z-index: 180;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  animation: uc-bg 1.2s ease-out forwards;
+}
+.uc-text {
+  font-size: clamp(32px, 9vw, 56px); font-weight: 900;
+  color: #fff; letter-spacing: .14em;
+  text-shadow: 0 0 18px rgba(249,115,22,.95), 0 0 50px rgba(249,115,22,.6), 0 0 100px rgba(249,115,22,.35);
+  animation: uc-slam 1.2s ease-out forwards;
+}
+@keyframes uc-bg {
+  0%   { background: rgba(0,0,0,0); }
+  10%  { background: rgba(0,0,0,.72); }
+  68%  { background: rgba(0,0,0,.72); }
+  100% { background: rgba(0,0,0,0); }
+}
+@keyframes uc-slam {
+  0%   { opacity:0; transform: scale(2.4) skewX(-10deg); }
+  12%  { opacity:1; transform: scale(.9)  skewX(2deg); }
+  22%  { transform: scale(1.04) skewX(0); }
+  32%  { transform: scale(1); }
+  68%  { opacity:1; }
+  100% { opacity:0; transform: translateY(-14px); }
+}
+
 /* ── 究極の選択 成功スプラッシュ ───────────────────── */
 .ultimate-splash {
   position: fixed; inset: 0; z-index: 195;
