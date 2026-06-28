@@ -557,7 +557,7 @@ html, body {
 .shop-exp-row { display: flex; align-items: center; justify-content: space-between; }
 .shop-exp-earned { font-size: 22px; font-weight: 900; color: #a78bfa; }
 .shop-exp-total  { font-size: 14px; font-weight: 700; color: #c4b5fd; }
-.shop-list { flex: 1; overflow-y: auto; padding: 12px 14px 0; display: flex; flex-direction: column; gap: 10px; }
+.shop-list { flex: 1; overflow-y: auto; padding: 12px 14px 16px; display: flex; flex-direction: column; gap: 10px; }
 .shop-item { background: rgba(255,255,255,.05); border: 1.5px solid rgba(255,255,255,.09); border-radius: 14px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
 .shop-item.maxed { opacity: .45; }
 .shop-icon { font-size: 26px; flex-shrink: 0; }

@@ -460,8 +460,7 @@ function showRivalTransition(idx, cb) {
     ov.classList.remove('show');
     setTimeout(()=>{ ov.classList.add('hidden'); cb(); }, 350);
   };
-  const t=setTimeout(advance, 2200);
-  ov.addEventListener('click',()=>{ clearTimeout(t); advance(); });
+  ov.addEventListener('click', advance);
 }
 
 // ── Problem loading ───────────────────────────────────────────────────────────
@@ -1178,7 +1177,7 @@ function showGameOver() {
     const waitTiles=(p.waits||[]).map(t=>{
       const el=mkTile(t,'result'); return el.outerHTML;
     }).join('');
-    const expStr=p.explanation?`<div class="go-explanation">${p.explanation.replace(/\n/g,'<br>')}</div>`:'';
+    const expStr=p.explanation?`<div class="go-explanation">${tileIdToJa(p.explanation).replace(/\n/g,'<br>')}</div>`:'';
     waitEl.innerHTML=`<div class="go-wait-label">相手の待ち（${shape}）</div><div class="go-wait-tiles">${waitTiles}</div>${expStr}`;
   }
   const handEl=$('gameover-hand');
@@ -1414,6 +1413,13 @@ function showAchievements(page=0){
 
 // ── Utils ──────────────────────────────────────────────────────────────────────
 function pick(arr){return arr[Math.floor(Math.random()*arr.length)];}
+function tileIdToJa(text){
+  return text.replace(/([1-9])([mpsz])/g,(_,n,s)=>{
+    const num=parseInt(n);
+    if(s==='z') return HONOR_MAP[n+s]||n+s;
+    return KANJI_NUM[num]+(SUIT_KANJI[s]||s);
+  });
+}
 function shuffle(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
 
 // ── Pause / resume / go-title ─────────────────────────────────────────────────
