@@ -451,6 +451,7 @@ function loadNextProblem() {
 
   // Reset encounter state for each new problem
   G.eTurn=1; G.eSafeCount=0; G.eRiichi=false; G.eUsed=[]; G.eShownIdx=[];
+  G.mouhaiNext=false;
 
   // Lucky: one dangerous tile becomes safe
   if (G.safeOneNext) {
@@ -1429,9 +1430,10 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('btn-easy').addEventListener('click', ()=>{EASY_MODE=!EASY_MODE;updateTitleUI();});
   $('btn-debug').addEventListener('click',()=>{DEBUG_MODE=!DEBUG_MODE;updateTitleUI();});
   $('btn-reset').addEventListener('click',()=>{if(confirm('セーブデータを全削除しますか？')){localStorage.removeItem(SAVE_KEY);location.reload();}});
-  $('btn-mouhai').addEventListener('click',()=>{
+  const mouhaiActivateBtn=$('btn-mouhai');
+  if(mouhaiActivateBtn) mouhaiActivateBtn.addEventListener('click',()=>{
     G.mouhaiNext=true; G.mouhaiUsed=true;
-    $('btn-mouhai').classList.add('hidden');
+    mouhaiActivateBtn.classList.add('hidden');
     renderHandForTurn();
     showEventToast('🦾 盲牌発動！正解で3倍スコア','safe');
   });
