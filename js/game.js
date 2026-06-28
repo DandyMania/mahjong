@@ -1298,6 +1298,21 @@ function showGameOver() {
     handEl.appendChild(dw);
     if(p.yaku){ const yl=document.createElement('div'); yl.className='go-wait-label'; yl.style.marginTop='8px'; yl.textContent=`役: ${p.yaku}${'★'.repeat(p.yakuValue||1)}`; handEl.appendChild(yl); }
   }
+  // Hide detail sections behind reveal button
+  if(waitEl) waitEl.classList.add('hidden');
+  if(handEl) handEl.classList.add('hidden');
+  const oldRevBtn=document.getElementById('go-reveal-btn');
+  if(oldRevBtn) oldRevBtn.remove();
+  const revBtn=document.createElement('button');
+  revBtn.id='go-reveal-btn'; revBtn.className='go-reveal-btn';
+  revBtn.textContent='手牌を見る ›';
+  revBtn.onclick=()=>{
+    if(waitEl) waitEl.classList.remove('hidden');
+    if(handEl) handEl.classList.remove('hidden');
+    revBtn.remove();
+  };
+  if(waitEl) waitEl.parentNode.insertBefore(revBtn, waitEl);
+
   G.pendingExpEarned=expEarned;
   showScreen('screen-gameover');
   if(_goTimer) clearTimeout(_goTimer);

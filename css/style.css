@@ -588,6 +588,7 @@ html, body {
 #final-score  { font-size: calc(24px * var(--s,1)); font-weight: 700; color: var(--gold); }
 #final-detail { font-size: calc(14px * var(--s,1)); color: #fca5a5; }
 .rival-win-quote { font-size: 14px; color: #c084fc; font-style: italic; }
+.go-reveal-btn { background: none; border: 1px solid rgba(192,132,252,.4); color: #c084fc; font-size: 13px; padding: 8px 24px; border-radius: 20px; cursor: pointer; letter-spacing: .05em; }
 .gameover-waits { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 8px 12px; }
 .gameover-hand  { background: rgba(52,211,153,.04); border: 1px solid rgba(52,211,153,.2); border-radius: 14px; padding: 8px 12px; }
 .go-wait-label { font-size: 11px; color: #9d79c0; font-weight: 700; letter-spacing: .08em; margin-bottom: 8px; }
