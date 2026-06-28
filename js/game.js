@@ -346,8 +346,8 @@ function loadNextProblem() {
   if (!EASY_MODE && !DEBUG_MODE) {
     const MAX_FILLER = [4, 2, 1, 0, 0][G.rivalIdx] ?? 0;
     const prob = G.currentProblem;
-    const filler = prob.hand.filter(td => td.safe && !td.lucky && (td.reason||'').includes('今回は安全') && !td.tile.endsWith('z'));
-    const otherSafe = prob.hand.filter(td => td.safe && !td.lucky && !(td.reason||'').includes('今回は安全')).length;
+    const filler = prob.hand.filter(td => td.safe && !td.lucky && td.safeType === 'unknown' && !td.tile.endsWith('z'));
+    const otherSafe = prob.hand.filter(td => td.safe && !td.lucky && td.safeType !== 'unknown').length;
     const keep = Math.max(MAX_FILLER, 3 - otherSafe);
     shuffle(filler).slice(keep).forEach(td => { td.safe = false; td.damage = 1; });
   }
@@ -368,8 +368,8 @@ function loadNextProblem() {
   }
   // 透視フラグを立てる（renderHandForTurn で視覚化）
   if (G.toshiNext) { G.toshiNext=false; G.toshiThisProblem=true; }
-  // ピンチ時にたまに透視が自動発動（ライフ1、30%）
-  if (!G.toshiThisProblem && G.lives===1 && Math.random()<0.3) {
+  // ピンチ時にたまに透視が自動発動（ライフ1、30%）— mouhai中は発動しない
+  if (!G.toshiThisProblem && !G.mouhaiNext && G.lives===1 && Math.random()<0.3) {
     G.toshiThisProblem=true;
     setTimeout(()=>showEventToast('👁️ 透視が発動した…！','safe'),400);
   }
@@ -382,7 +382,7 @@ function loadNextProblem() {
   startTimer();
 
   if(hasRunSkill('mouhai')&&!G.mouhaiNext) { G.mouhaiNext=true; }
-  if (EASY_MODE || G.hintAll) setTimeout(showHint, 400);
+  if ((EASY_MODE || G.hintAll) && !G.mouhaiNext) setTimeout(showHint, 400);
 }
 
 // ── Random events ─────────────────────────────────────────────────────────────
@@ -715,13 +715,13 @@ function selectTile(td, el) {
     if(G.eTurn===1) {
       // Turn 1: advance to turn 2
       revealOneTile(td,el);
-      showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
+      showToast('safe',pts,p.waitShape,isClutch||isCrit,0,td.reason);
       _adv=setTimeout(advanceTurn,1200);
 
     } else if(G.eTurn===2 && !G.eRiichi) {
       // Turn 2 perfect (both safe, no riichi) → YAKU BREAK! Encounter ends
       revealOneTile(td,el);
-      showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
+      showToast('safe',pts,p.waitShape,isClutch||isCrit,0,td.reason);
       G.rivalHp=Math.max(0,G.rivalHp-1); renderRivalHp(true,2);
       setTimeout(()=>showYakuBreak(p.yaku,p.yakuValue),700);
       if(G.rivalHp<=0) setTimeout(rivalDefeated,4500);
@@ -730,14 +730,14 @@ function selectTile(td, el) {
     } else if(G.eTurn===2 && G.eRiichi) {
       // Turn 2 safe but riichi already declared → advance to turn 3
       revealOneTile(td,el);
-      showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
+      showToast('safe',pts,p.waitShape,isClutch||isCrit,0,td.reason);
       _adv=setTimeout(advanceTurn,1200);
 
     } else {
       // Turn 3 (final, riichi mode) safe → ULTIMATE!! 演出
       const hpDmg=(isCrit?G.critMult:G.rivalDmgMult)+(isClutch?1:0);
       revealHand(td);
-      showToast('safe',pts,p.waitShape,isClutch||isCrit,0);
+      showToast('safe',pts,p.waitShape,isClutch||isCrit,0,td.reason);
       flashGold();
       setTimeout(showUltimateSplash,80);
       G.rivalHp=Math.max(0,G.rivalHp-hpDmg); renderRivalHp(true, Math.min(hpDmg+1,3));
@@ -1088,11 +1088,12 @@ function showMoveName(mode,text){
 }
 function pickSafeMove(combo){if(combo>=5)return pick(MOVES.safe_c5);if(combo>=4)return pick(MOVES.safe_c4);if(combo>=3)return pick(MOVES.safe_c3);if(combo>=2)return pick(MOVES.safe_c2);return pick(MOVES.safe);}
 
-function showToast(mode,pts,waitShape,isCrit,dmg){
+function showToast(mode,pts,waitShape,isCrit,dmg,reason){
   const t=$('game-toast');
   if(mode==='safe'){
     t.className='game-toast '+(isCrit?'toast-crit':'toast-safe')+' show';
-    t.innerHTML=isCrit?`★ 現物ヒット！ +${pts}pt<br><small>${waitShape}</small>`:`✅ セーフ！ +${pts}pt<br><small>${waitShape}</small>`;
+    const r=reason?`<span class="toast-reason">${reason}</span>`:'';
+    t.innerHTML=isCrit?`★ 現物ヒット！ +${pts}pt<br>${r}<small>${waitShape}</small>`:`✅ セーフ！ +${pts}pt<br>${r}<small>${waitShape}</small>`;
   } else if(mode==='danger'){
     t.className='game-toast toast-danger show';
     t.innerHTML=`💥 振り込み！${dmg>=2?' -'+dmg+'ライフ！！':''}<br><small>待ち → ${waitShape}</small>`;
@@ -1111,6 +1112,7 @@ function hideToast(){const t=$('game-toast');t.className='game-toast';t.onclick=
 // ── Hint ──────────────────────────────────────────────────────────────────────
 function showHint(){
   if(G.phase!=='playing') return;
+  if(G.mouhaiNext) return; // mouhai中はヒント無効
   // Only visible discards count as known genzai (partial info per turn)
   const visLimit=G.eTurn===1?2:G.eTurn===2?4:G.currentProblem.opponentDiscards.length;
   const discards=new Set(G.currentProblem.opponentDiscards.slice(0,visLimit));
