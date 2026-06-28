@@ -961,7 +961,7 @@ function selectTile(td, el) {
       revealOneTile(td,el);
       showToast('safe',pts,p.waitShape,isClutch||isCrit,0,td.reason);
       updateRivalFlavor('safe');
-      _adv=setTimeout(advanceTurn,1200);
+      _adv=setTimeout(advanceTurn,2000);
 
     } else if(G.eTurn===2 && !G.eRiichi) {
       // Turn 2 perfect (both safe, no riichi) → YAKU BREAK! Encounter ends
@@ -977,7 +977,7 @@ function selectTile(td, el) {
       revealOneTile(td,el);
       showToast('safe',pts,p.waitShape,isClutch||isCrit,0,td.reason);
       updateRivalFlavor('safe');
-      _adv=setTimeout(advanceTurn,1200);
+      _adv=setTimeout(advanceTurn,2000);
 
     } else {
       // Turn 3 (final, riichi mode) safe → ULTIMATE!! 演出
