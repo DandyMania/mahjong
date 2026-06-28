@@ -1132,7 +1132,8 @@ function goTitle() {
 
 // ── Responsive scale ─────────────────────────────────────────────────────────
 function applyScale(){
-  const s=Math.min(window.innerWidth/390,1.5);
+  const w=Math.min(window.innerWidth,540); // コンテンツ幅上限に合わせる
+  const s=Math.min(Math.max(w/390,0.8),1.5);
   document.documentElement.style.setProperty('--s',s.toFixed(3));
 }
 window.addEventListener('resize',applyScale);
