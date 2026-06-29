@@ -1461,7 +1461,7 @@ function pickSafeMove(combo){if(combo>=5)return pick(MOVES.safe_c5);if(combo>=4)
 function showToast(mode,pts,waitShape,isCrit,dmg,reason){
   const t=$('game-toast');
   const ws=tileIdToJa(waitShape||'');
-  const sp=ws?`<span class="spoiler" onclick="this.classList.add('revealed');event.stopPropagation()">${ws}</span>`:'';
+  const sp=ws?(EASY_MODE?ws:`<span class="spoiler" onclick="this.classList.add('revealed');event.stopPropagation()">${ws}</span>`):'';
   if(mode==='safe'){
     t.className='game-toast '+(isCrit?'toast-crit':'toast-safe')+' show';
     const r=reason?`<span class="toast-reason">${tileIdToJa(reason)}</span>`:'';
