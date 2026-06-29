@@ -1461,20 +1461,21 @@ function pickSafeMove(combo){if(combo>=5)return pick(MOVES.safe_c5);if(combo>=4)
 function showToast(mode,pts,waitShape,isCrit,dmg,reason){
   const t=$('game-toast');
   const ws=tileIdToJa(waitShape||'');
+  const sp=ws?`<span class="spoiler" onclick="this.classList.add('revealed');event.stopPropagation()">${ws}</span>`:'';
   if(mode==='safe'){
     t.className='game-toast '+(isCrit?'toast-crit':'toast-safe')+' show';
     const r=reason?`<span class="toast-reason">${tileIdToJa(reason)}</span>`:'';
-    t.innerHTML=isCrit?`★ 読み切り！ +${pts}pt<br>${r}<small>${ws}</small>`:`✅ セーフ！ +${pts}pt<br>${r}<small>${ws}</small>`;
+    t.innerHTML=isCrit?`★ 読み切り！ +${pts}pt<br>${r}<small>${sp}</small>`:`✅ セーフ！ +${pts}pt<br>${r}<small>${sp}</small>`;
   } else if(mode==='danger'){
     const p=G.currentProblem;
     const yStr=p?.yaku?`<span class="toast-yaku">ロン（当てられた）！ ${p.yaku} ${'★'.repeat(p.yakuValue||1)}</span>`:'';
     t.className='game-toast toast-danger show';
-    t.innerHTML=`💥 当たり牌を出した！${dmg>=2?' -'+dmg+'ライフ！！':''}<br>${yStr}<small>相手の当たり牌 → ${ws}</small>`;
+    t.innerHTML=`💥 当たり牌を出した！${dmg>=2?' -'+dmg+'ライフ！！':''}<br>${yStr}<small>相手の当たり牌 → ${sp}</small>`;
   } else {
     const p=G.currentProblem;
     const yStr=p?.yaku?`<span class="toast-yaku">ツモ（時間切れ当たり）！ ${p.yaku} ${'★'.repeat(p.yakuValue||1)}</span>`:'';
     t.className='game-toast toast-danger show';
-    t.innerHTML=`⏰ タイムオーバー！<br>${yStr}<small>相手の当たり牌 → ${ws}</small>`;
+    t.innerHTML=`⏰ タイムオーバー！<br>${yStr}<small>相手の当たり牌 → ${sp}</small>`;
   }
   // Toast tap: skip to next turn or next encounter depending on current turn
   t.onclick=()=>{
