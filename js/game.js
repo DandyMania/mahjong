@@ -716,7 +716,7 @@ function renderHandForTurn() {
   const isUltimate=G.eTurn>=3;
   hr.classList.toggle('ultimate-choice',isUltimate);
   const cl=document.querySelector('.cut-line');
-  if(cl) cl.textContent=isUltimate?'究極の選択！！':'どれ切る？';
+  if(cl) cl.textContent=isUltimate?'究極の選択！！':'⬇️ 安全な牌を選ぼう！';
 
   toShow.forEach(({td,i})=>{
     const el=mkTile(td.tile,'hand',G.mouhaiNext);
