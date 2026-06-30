@@ -672,7 +672,7 @@ html, body {
 }
 .mode-toggle.active { background: rgba(251,191,36,.15); border-color: var(--gold); color: var(--gold); }
 .title-hs { font-size: 13px; color: #9ca3af; margin-top: 6px; }
-.title-ranking { margin: 6px 0 4px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 8px 14px; text-align: left; flex: 1; min-height: 40px; max-height: 220px; overflow: hidden; scrollbar-width: none; }
+.title-ranking { margin: 6px 0 4px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); border-radius: 14px; padding: 8px 14px; text-align: left; flex: 1; min-height: 40px; max-height: 220px; overflow-y: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .title-nav-row { display: flex; gap: 10px; margin-top: calc(8px * var(--s,1)); }
 .title-nav-row .btn-secondary { flex: 1; margin-top: 0; }
 .title-ranking::-webkit-scrollbar { display: none; }
